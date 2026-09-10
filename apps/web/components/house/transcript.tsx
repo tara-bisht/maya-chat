@@ -1,4 +1,4 @@
-import { COSTUME_CLASS } from "@/lib/company";
+import { COSTUME_WASH_CLASS } from "@/lib/company";
 import type { CostumeId } from "@maya/shared";
 import { MarkdownBody } from "./markdown-body";
 
@@ -57,7 +57,7 @@ export function Transcript({
           return (
             <article
               key={turn.id}
-              className={`rounded-md px-4 py-3 ${COSTUME_CLASS[costume]}/90`}
+              className={`rounded-md px-4 py-3 ${COSTUME_WASH_CLASS[costume]}`}
             >
               <p className="flex items-baseline justify-between gap-4 font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
                 <span>{label}</span>

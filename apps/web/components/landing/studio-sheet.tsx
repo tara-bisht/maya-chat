@@ -7,7 +7,7 @@ export function StudioSheet() {
   return (
     <section
       id="studio"
-      className="relative z-10 scroll-mt-8 py-10 md:py-14"
+      className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">

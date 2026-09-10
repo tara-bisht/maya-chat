@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Marketplace · Maya Chat",
   description:
-    "Eight agents now, four coming soon. Sign in to chat.",
+    "Featured voices now. More on the way. Sign in to chat, or write yours in Studio.",
 };
 
 export default async function MarketplacePage() {
@@ -30,7 +30,7 @@ export default async function MarketplacePage() {
   const sections = buildMarketplaceBill();
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-night text-cream">
+    <div className="min-h-screen overflow-x-clip bg-night text-cream">
       <LobbyHeader
         signedIn={false}
         cta={{ href: "/login?next=/gallery", label: "Get started" }}

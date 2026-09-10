@@ -21,13 +21,13 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-night text-cream">
+    <div className="min-h-screen overflow-x-clip bg-night text-cream">
       <LobbyHeader signedIn={signedIn} />
-      <Hero signedIn={signedIn} />
+      <Hero />
 
       <section
         id="company"
-        className="relative z-10 scroll-mt-8 py-10 md:py-14"
+        className="relative z-10 scroll-mt-28 py-10 md:py-14"
       >
         <PageInner>
           <SectionKicker kicker={COMPANY_KICKER.kicker} title={COMPANY_KICKER.title}>

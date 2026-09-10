@@ -1,16 +1,16 @@
 import { PageInner } from "@/components/app/page-frame";
-import { HOUSE_STEPS } from "@/lib/landing";
+import { HOUSE_KICKER, HOUSE_STEPS } from "@/lib/landing";
 import { SectionKicker } from "@/components/landing/section-kicker";
 
 export function HouseSteps() {
   return (
     <section
       id="house"
-      className="relative z-10 scroll-mt-8 py-10 md:py-14"
+      className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="How it works" title="Three steps">
-          Pick an agent. Chat. They remember what you told them.
+        <SectionKicker kicker={HOUSE_KICKER.kicker} title={HOUSE_KICKER.title}>
+          {HOUSE_KICKER.body}
         </SectionKicker>
         <ol className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {HOUSE_STEPS.map((step) => (
