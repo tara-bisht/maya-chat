@@ -508,9 +508,10 @@ Studio may pick from the costume tokens. It may not accept an arbitrary hex that
 
 - Interactive (hover, press, focus): **180ms**, `cubic-bezier(0.2, 0, 0, 1)`
 - Panel / dialog: **220ms**, same curve
-- Nothing in chrome exceeds **220ms**
-- Streaming tokens are the only long-running motion. Caret is a 6px acid square that blinks at 1Hz
-- `prefers-reduced-motion`: durations 0ms; caret static; posters lose tilt/hover translate
+- Nothing in **app chrome** exceeds **220ms**
+- Chat: streaming tokens are the long-running motion. Caret is a 6px acid square that blinks at 1Hz
+- Lobby only (`(marketing)`): CSS loops are allowed — wheatpaste sticker float (~5s, 8px), circular stub stamp (~14s), stub scribble draw-on on the H1 (~0.7s), scripted House-window typewriter after the first scene. Not live chat. Not Framer. Not bounce. First paint still shows the full first turn.
+- `prefers-reduced-motion`: durations 0ms; caret static; posters lose tilt/hover translate; lobby loops off; scribble already drawn; typewriter snaps to full text
 
 No page-load shimmer. First paint of night + grain + “Setting the house…” in `{typography.label-caps}` is enough. No layout animation on the rail. No message-bubble pop.
 
@@ -535,14 +536,15 @@ These are generation rules for MVP surfaces. If a control is not named here, inh
 Night, full bleed, grain on. Featured posters are a start, not a closed roster — Studio is the product. Sections after the wall are **wall artifacts** (scene posters, cream tickets, stub notes) — not a SaaS features essay, not a blog column. Do not lead marketing with “eight agents.”
 
 1. Sticky header. Desktop: floating night ticket (`sticky top-3`), cream 2px edge, 6px acid offset — wordmark left, jump links optically centered, ghost “Sign in” + acid “Create an agent.” right (`#studio`). Sign in and the CTA stay on screen while the wall scrolls. Mobile: sticky top, night fill, hairline rule; one row — wordmark, ghost Sign in, acid CTA. Jump links are not in the mobile bar (they stay in the footer). No hamburger. One acid fill in the chrome. No second Sign in in the hero.
-2. Hero: stacked. `{typography.display}` italic — “Give your AI a personality.” — spans the stage width. *personality* carries a stub marker underline (stroke, not a second acid fill). Then one `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast and tells you to cast a character or write one. Stub die-cut “Write yours in Studio”, then “Start with a voice. Or write yours.” Under the copy: a House window — night fill, cream 2px edge, 8px acid offset. Desktop: three-voice rail (Marcus, Dr. Priya, Alex) + You ticket + costume-wash reply + dummy composer. Click a rail row to switch the voice. Mobile: same window, portrait chips instead of the rail. Not a wheatpaste quote fan, not Apple laptop chrome, not a three-column icon row. No model alias. No live chat. No second Sign in in the copy block. No “eight agents.”
-3. `#company`: kicker (“Start with a voice”) + featured posters on the staggered wall. Examples, not the whole product. No three-column icon row.
-4. `#nights`: three costume-flood scene posters (maths / advice / code). The moment picks the personality; if none fit, you write one.
-5. `#house`: three cream tickets — pick or create, talk, they remember. Acid hard offset.
-6. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Title: “Write the personality.” Ghost “Sign in.” This is the platform, not a side door.
-7. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get started”). Plus/Pro are ghost. Seed copy until `plans` is live. Do not sell “all eight agents.”
-8. `#notes`: native `<details>` FAQ on night paper. Fraunces questions, Bricolage answers. Lead with “Can I make my own agent?”
-9. Footer: `{components.ticket-footer}` with jump links. Copy: “Opinionated AI — yours, or one we already wrote. Not a helpdesk. Not a copilot.”
+2. Hero: stacked, H1 centered. `{typography.display}` italic — “Give your AI a personality.” *personality* carries a stub **SVG scribble** underline (hand-drawn stroke, `preserveAspectRatio="none"`, not a rectangle, not a second acid fill). Then one centered `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast and tells you to cast a character or write one. No Studio die-cut. No “Start with a voice. Or write yours.” under the H1. Under the copy: a House window — night fill, cream 2px edge, 8px acid offset. Desktop: centered, `max-w-5xl`, 16:10 frame; rail lists the live company (not three voices) + You ticket + costume-wash reply + dummy composer. Click a rail row to switch the voice. Mobile: same window as a phone stack (chips, well, composer) — not a letterboxed 16:10. First paint shows the full first turn. Later turns may type, then cycle, unless hover/focus or `prefers-reduced-motion`. Wheatpaste stamps (existing Free/Plus recipe) may float on the window. Not a wheatpaste quote fan, not Apple laptop chrome, not a three-column icon row. No model alias. No live chat. No second Sign in in the copy block. No “eight agents.”
+3. `#company`: Fraunces italic “Start with a voice” + featured posters on the staggered wall. No numbered act, no document kicker row. Examples, not the whole product. No three-column icon row.
+4. `#usual`: one shared You ticket, then four replies — cream “Assistant” leftover (struck hedge) plus three costume-flood nights (Marcus, Nonna Maria, Barnaby). Title: “Same question. Different night.” Prompt chips swap the question and all four replies. Scripted, not live chat.
+5. `#nights`: three costume-flood scene posters (maths / advice / code), each with a nested House scrap (You ticket + wash). The moment picks the personality; if none fit, you write one. Title only — no numbered act.
+6. `#house`: three cream tickets — pick or create, talk, they remember. Acid hard offset. Cream/stub pills for the meaning already in the body. Hover is the existing ticket lift. Step marks `01`–`03` live on the tickets, not as a section index.
+7. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Title: “Write the personality.” Ghost “Sign in.” This is the platform, not a side door. No numbered act.
+8. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get started”). Plus/Pro are ghost. Seed copy until `plans` is live. Do not sell “all eight agents.” Title: “Plans.”
+9. `#notes`: native `<details>` FAQ. Desktop: title left, accordion right. Mobile stacked. Fraunces questions, Bricolage answers. Lead with “Can I make my own agent?” Title: “Before you start.” No FAQ index stamp.
+10. Closing band, then footer. Night band, Fraunces italic “The house is open.” Cream secondary CTA (header keeps the one acid fill) + ghost “See plans.” Optional rotating stub-stroke stamp. Then `{components.ticket-footer}` with jump links. Copy: “Opinionated AI — yours, or one we already wrote. Not a helpdesk. Not a copilot.”
 
 Primary CTA: “Create an agent.” Secondary: “Sign in.” Free plan: “Get started.”
 
