@@ -28,7 +28,7 @@ export function LobbyFooter() {
               href="/#notes"
               className="font-sans text-sm font-semibold underline-offset-4 hover:underline"
             >
-              Notes
+              FAQ
             </Link>
             <Link
               href="/login"

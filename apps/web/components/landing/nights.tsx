@@ -10,7 +10,7 @@ export function Nights() {
       className="relative z-10 scroll-mt-8 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="Scenes" title="Different nights, different players">
+        <SectionKicker kicker="Scenes" title="Different moments, different agents">
           Context picks the character. A proof, a pep talk, and a production fire
           do not share a voice.
         </SectionKicker>

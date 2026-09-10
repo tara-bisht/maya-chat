@@ -9,7 +9,6 @@ import {
   type SettingsView,
 } from "@maya/shared";
 import { updateProfile } from "@/app/(app)/settings/actions";
-import { SignOutButton } from "./sign-out-button";
 
 function seatStatusLabel(status: SettingsView["seat"]["status"]) {
   if (status === "past_due") {
@@ -114,7 +113,7 @@ export function SettingsForm({ view }: { view: SettingsView }) {
           className="rounded-md bg-cream-dim px-3 py-3 font-sans text-base leading-snug text-night"
         />
         <p id="globalBio-help" className="font-sans text-sm text-ink-soft">
-          500 characters. What they should already know.
+          500 characters. What they should already know about you.
         </p>
         {fieldErrors?.globalBio ? (
           <p id="globalBio-error" className="font-sans text-sm text-acid">
@@ -141,7 +140,7 @@ export function SettingsForm({ view }: { view: SettingsView }) {
 
       <section className="border-t border-rule pt-6">
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-          Seat
+          Plan
         </p>
         <p className="mt-2 font-display text-2xl text-cream italic">
           {view.seat.displayName} · {seatStatusLabel(view.seat.status)}
@@ -152,27 +151,23 @@ export function SettingsForm({ view }: { view: SettingsView }) {
               href={view.bill.href}
               className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
             >
-              Manage the bill
+              Upgrade
             </Link>
           ) : (
             <span
               className="font-sans text-sm font-semibold text-cream/40"
-              title="The house portal is not open yet."
+              title="Billing portal is not open yet."
             >
-              Manage the bill
+              Manage plan
             </span>
           )}
         </p>
         {view.bill.kind === "portal-disabled" ? (
           <p className="mt-2 font-sans text-sm text-ink-soft">
-            The house portal is not open yet.
+            Billing portal is not open yet.
           </p>
         ) : null}
       </section>
-
-      <p>
-        <SignOutButton />
-      </p>
     </form>
   );
 }

@@ -1,14 +1,9 @@
-import { HouseHeader } from "@/components/app/house-header";
+import { AppShell } from "@/components/app/app-shell";
 
 export default function SettingsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <>
-      <HouseHeader />
-      {children}
-    </>
-  );
+  return <AppShell>{children}</AppShell>;
 }

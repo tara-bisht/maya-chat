@@ -34,7 +34,7 @@ export async function saveSettings(
     .maybeSingle();
 
   if (error || !data) {
-    return { ok: false, formError: "The line dropped." };
+    return { ok: false, formError: "Something went wrong." };
   }
 
   return { ok: true };

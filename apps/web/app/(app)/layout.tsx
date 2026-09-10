@@ -11,7 +11,7 @@ export default async function AppLayout({
   await requireUser(pathname);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-night text-cream">
+    <div className="h-dvh overflow-hidden bg-night text-cream">
       {children}
     </div>
   );

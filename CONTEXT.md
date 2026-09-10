@@ -25,11 +25,11 @@ A custom agent with `is_public` false. Only the owner can see or chat. Plus and 
 _Avoid_: Hidden bot, secret persona, unlisted
 
 **House listing**:
-The gallery section of public custom agents the signed-in user does not own.
+The gallery section of public custom agents the signed-in user does not own. UI label: **From other people**.
 _Avoid_: Marketplace, explore feed, community tab
 
 **Archive**:
-Soft-removal of a custom agent (`archived_at` set). Leaves the wall and blocks new threads; the row remains for existing conversations.
+Soft-removal of a custom agent (`archived_at` set). Leaves Home and blocks new threads; the row remains for existing conversations.
 _Avoid_: Hard delete, unpublish
 
 **Free-tier agent**:
@@ -37,7 +37,7 @@ A curated agent with `free_tier = true`. Only Marcus and Dr. Priya. Plus and Pro
 _Avoid_: Free agent limit, first N agents, `curated_agent_limit` as a runtime gate
 
 **Company**:
-The eight curated agents as a repertory. Gallery copy says “the company,” not “your bots.”
+The eight curated agents as a repertory. Gallery copy says **Featured agents**, not “your bots.”
 _Avoid_: Roster of chatbots, AI team
 
 **Studio**:
@@ -73,23 +73,23 @@ Chat on night paper: attributed dialogue, costume wash on the agent’s turn, cr
 _Avoid_: ChatGPT chrome, iMessage bubbles, beige document, per-agent app theme
 
 **Conversation**:
-One thread of messages between one user and one agent. Nested under that agent. Table `conversations`.
-_Avoid_: Chat, session, room, untitled “New Chat”
+One thread of messages between one user and one agent. Nested under that agent. Table `conversations`. UI: **chat** / **New chat**.
+_Avoid_: session, room, untitled “New Chat” as a DB leftover shown raw
 
 **Thread**:
-The House word for a Conversation in the cast rail. Same object as Conversation.
-_Avoid_: Sidebar chat, history item, DM
+A Conversation in the agent rail. Same object as Conversation. UI: **Chats**.
+_Avoid_: DM
 
 **Lobby**:
-Landing, gallery, marketplace, studio, pricing: the night wall / festival lineup before the play.
-_Avoid_: Dashboard, marketing SaaS layout, quiet beige brochure
+Landing, marketplace, and signed-in Home (gallery), Explore, Studio, Profile: night-wall surfaces before chat.
+_Avoid_: Marketing SaaS layout, quiet beige brochure. Do not name the UI “Dashboard.”
 
 **Marketplace**:
-The public, unauthenticated bill of first-party players — the company plus coming-soon posters — organized by category. Browse is open; talking requires sign-in.
+The public, unauthenticated bill of first-party players — the company plus coming-soon posters — organized by category. Browse is open; talking requires sign-in. Signed-in users see the same bill at **Explore** (`/explore`) inside AppShell; `/marketplace` redirects them there.
 _Avoid_: Agent store, App Store for bots, community marketplace, listing of user-owned custom agents
 
 **Coming-soon player**:
-A first-party character announced on the marketplace who is not a chat-able `agents` row. Stamped Next bill. No Talk thread.
+A first-party character announced on the marketplace who is not a chat-able `agents` row. Stamp: **Coming soon**. No Chat link.
 _Avoid_: Draft agent, unpublished bot, disabled custom agent
 
 **Playbill**:
@@ -101,9 +101,28 @@ The agent’s flood color. Owns the poster and the chat wash. Never the page bac
 _Avoid_: Theme, skin, brand color per app chrome
 
 **Voice**:
-In the UI, the model the agent speaks through (`Voice through grok-fast`). Not speech audio (that is v1.1).
+The model the agent speaks through. Chat chrome shows the model id (`grok-fast`), not “Voice through.” Not speech audio (that is v1.1).
 _Avoid_: Provider badge, “powered by Claude”
 
-**Wristband copy**:
-The member’s global profile: name, preferred language, and bio. Every player is told this. It is not a costume and not a custom agent.
-_Avoid_: Account page, custom instructions, user persona, settings panel as the product name
+**Profile**:
+The member’s global profile at `/settings`: name, preferred language, bio, plan, and **Your agents**. Every agent is told the bio. It is not a costume.
+_Avoid_: Wristband, custom instructions, user persona, “account settings” as the product name
+
+## UI labels
+
+Chrome is plain. Agent voices stay opinionated. Strings live in `apps/web/lib/ui-copy.ts`.
+
+| Do not put in chrome | Use |
+|---|---|
+| Wristband / Wristband check | Profile / Sign in |
+| Casting notes / Cast someone | Create agent / Edit agent |
+| Tonight's company / The lineup | Home / Featured agents |
+| Your roles / On your wall | Your agents |
+| House listing / Also on the wall | From other people |
+| House (stamp) | Public |
+| Next bill | Coming soon |
+| Back to the wall | Home |
+| Nights / The player | Chats / About |
+| Seat / Buy a better seat | Plan / Upgrade |
+| Daily curtain / The line dropped | Daily limit reached / Something went wrong |
+| Setting the house… | Loading… |

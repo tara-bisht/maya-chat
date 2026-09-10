@@ -28,7 +28,7 @@ function agent(overrides: Partial<HouseAgentRow> = {}): HouseAgentRow {
 }
 
 describe("displayThreadTitle", () => {
-  it("never shows New Chat", () => {
+  it("falls back to the default thread title when empty", () => {
     expect(displayThreadTitle("")).toBe(OPEN_NIGHT_TITLE);
     expect(displayThreadTitle("   ")).toBe(OPEN_NIGHT_TITLE);
     expect(displayThreadTitle("Roast the excuses")).toBe("Roast the excuses");

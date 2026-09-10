@@ -55,6 +55,7 @@ export type HouseConversation = {
 export type HouseView = {
   agent: HouseAgent;
   plan: MayaPlan;
+  displayName: string;
   defaultModelId: string;
   dailyLimit: number | null;
   threads: ThreadSummary[];

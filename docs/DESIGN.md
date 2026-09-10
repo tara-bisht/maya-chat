@@ -216,7 +216,7 @@ This is the live system in `apps/web`. It **supersedes** the old “Maya House�
 
 The reference object is **a festival lineup wheatpasted onto a city wall after dark.** Overlapping posters. Costume color floods. Cream type. One acid ticket for the move that matters. A 7% film-grain overlay sits on the whole product (`pointer-events: none`) so the night feels printed, not vector-clean.
 
-The lobby (landing, gallery, marketplace, studio, pricing) is the wall: the eight players *are* the page. `/marketplace` is the public bill — live posters plus Next bill coming-soon posters, grouped by category. Talk takes a wristband. The house (chat) is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
+The lobby (landing, Home/gallery, marketplace, studio, pricing) is the wall: the eight agents *are* the page. `/marketplace` is the public catalog — live posters plus coming-soon posters, grouped by category. Chat requires sign-in. Chat is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
 
 **North star:** the company is loud. The product looks like a show, not a settings panel.
 
@@ -404,7 +404,7 @@ My boss ignored the extra hours I put in.
 
 ### Auth ticket
 
-`{components.auth-ticket}`: 24rem cream card, −1.5°, 8px acid offset. Wordmark + “Wristband check.” Google/Apple as secondary. Ghost “Back to the wall.”
+`{components.auth-ticket}`: 24rem cream card, −1.5°, 8px acid offset. Wordmark + “Sign in.” Google/Apple as secondary. Ghost “Back.”
 
 ### Footer ticket
 
@@ -420,7 +420,7 @@ Mobile tab bar: night, hairline rule on top, 44px items, cream glyphs, acid only
 
 ## Voice & Copy
 
-The product voice is dry, specific, and slightly theatrical. It assumes an adult in the room. It never performs “friendly AI.” Chrome must not imitate the agents — Marcus may roast; the send button may not.
+The visual language stays theatrical (night wall, posters, tickets). Chrome copy is plain so a new user can navigate without a glossary. Agent voices stay opinionated. The send button may not roast.
 
 **Hooks (unchanged)**
 
@@ -428,40 +428,34 @@ The product voice is dry, specific, and slightly theatrical. It assumes an adult
 - "Every conversation deserves a character."
 - "Talk to someone with a point of view."
 
-**Allowed register**
+**Allowed register (chrome)**
 
-- "Meet the company."
-- "Tonight's lineup."
-- "Wristband check."
-- "Back to the wall."
+- "Home." / "Explore." / "Create agent." / "Profile."
+- "Meet the agents."
+- "Sign in." / "Get started."
 - "Marcus is listening."
-- "Voice through grok-fast."
-- "Alex is on the Plus bill."
-- "Daily curtain. Fifty lines. Come back tomorrow, or buy a better seat."
-- "No one on the wall yet."
-- "The rest of the company plays Plus."
-- "Choose a player, or cast your own in the Studio."
-- "The bill"
-- "Next bill"
-- "Not on tonight's bill"
-- "Talk takes a wristband."
-- "A touring company for opinionated AI. Not a helpdesk. Not a copilot."
-- "Setting the house…" (loading)
+- "Alex is on Plus. Marcus and Dr. Priya are free."
+- "Daily limit reached. Fifty messages. Come back tomorrow, or upgrade."
+- "You have not created an agent yet."
+- "Continue chatting."
+- "Coming soon."
+- "Opinionated AI characters. Not a helpdesk. Not a copilot."
+- "Loading…"
 
 **Forbidden register**
 
 - Unlock / supercharge / harness / unleash
 - Companion, copilot (in marketing), assistant-with-a-sparkle
 - "What's on your mind?" as a global placeholder
-- "The house is members only." (that was Maya House)
+- Wristband, Casting notes, Daily curtain, Back to the wall, Tonight's company
 - "Oops, something went wrong!" without a next step
 - Emoji in chrome
 
 **Paywall (prices and model names still come from `plans` / `models`)**
 
-- Locked agent: "Alex is on the Plus bill. Marcus and Dr. Priya are already in."
-- Quota: "Daily curtain. {limit} lines. The house reopens {reset}, or you can buy a better seat."
-- Locked model: "This voice is not on your bill. Your instruments: {allowlist}."
+- Locked agent: "Alex is on Plus. Marcus and Dr. Priya are free."
+- Quota: "Daily limit reached. {limit} messages. Come back tomorrow, or upgrade."
+- Locked model: "This model is not on your plan. Your models: {allowlist}."
 
 **Empty thread.** The agent's tagline in Fraunces italic cream. Not "Start a conversation with your AI."
 
@@ -525,7 +519,7 @@ No page-load shimmer. First paint of night + grain + “Setting the house…” 
 
 Stroke icons, 1.5px, rounded caps, 20/24px, cream on night. Lucide is the implementation default if paths are restroked.
 
-Allowed metaphors: mask / program (agent), paper plane (send), sliders (studio), ticket (billing), wristband (auth). Forbidden: sparkles, magic wand, neural net, robot head, chat-bubble-with-dots as the brand glyph.
+Allowed metaphors: mask / program (agent), paper plane (send), sliders (studio), ticket (billing). Forbidden: sparkles, magic wand, neural net, robot head, chat-bubble-with-dots as the brand glyph.
 
 Favicon: a small acid square with a night *M* in Fraunces italic, or the wordmark at small size. Not a gradient.
 
@@ -539,52 +533,58 @@ These are generation rules for MVP surfaces. If a control is not named here, inh
 
 Night, full bleed, grain on. The eight posters remain the visual center. Sections after the wall are **wall artifacts** (scene posters, cream tickets, stub notes) — not a SaaS features essay, not a blog column.
 
-1. Top: cream Fraunces italic wordmark, jump links (Company, The house, Studio, Seats), ghost “Sign in”, acid “Meet the company.” (cream offset). Jump links wrap under the action row on small screens. No hamburger. One acid fill in the chrome.
-2. Hero: `{typography.display}` italic — “Talk to someone with a point of view.” — then one `{typography.body-lg}` cream-dim sentence, a stub die-cut “Marcus + Priya on Free”, ghost “Wristband check”, then the stub lineup line: “Tonight's lineup. Choose a player, or cast your own in the Studio.”
-3. `#company`: kicker (“Tonight's company”) + the eight posters on the staggered wall. This is the product, not a mockup frame. No three-column icon row.
+1. Top: cream Fraunces italic wordmark, jump links (Marketplace, How it works, Create an agent, Plans), ghost “Sign in”, acid “Meet the agents.” (cream offset). Jump links wrap under the action row on small screens. No hamburger. One acid fill in the chrome.
+2. Hero: `{typography.display}` italic — “Talk to someone with a point of view.” — then one `{typography.body-lg}` cream-dim sentence, a stub die-cut “Marcus + Priya on Free”, ghost “Sign in”, then “Choose an agent, or create your own.”
+3. `#company`: kicker (“Meet the lineup”) + the eight posters on the staggered wall. This is the product, not a mockup frame. No three-column icon row.
 4. `#nights`: three costume-flood scene posters (maths / advice / code). Context picks the character.
 5. `#house`: three cream tickets — pick a player, talk, they remember. Acid hard offset.
-6. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Ghost “Wristband check.” Studio route is later.
-7. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get a wristband”). Plus/Pro are ghost. Seed copy until `plans` is live.
+6. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Ghost “Sign in.”
+7. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get started”). Plus/Pro are ghost. Seed copy until `plans` is live.
 8. `#notes`: native `<details>` FAQ on night paper. Fraunces questions, Bricolage answers.
 9. Footer: `{components.ticket-footer}` with jump links. Copy: “A touring company for opinionated AI. Not a helpdesk. Not a copilot.”
 
-Primary CTA: “Meet the company.” Secondary: “Sign in.” Free seat: “Get a wristband.”
+Primary CTA: “Meet the agents.” Secondary: “Sign in.” Free plan: “Get started.”
 
 ### Auth — `/login`
 
-`{components.auth-ticket}` on night. “Wristband check.” Helper: “Google and Apple open the door.” Ghost: “Back to the wall.” No mascot, no split-screen photo, no “members only.”
+`{components.auth-ticket}` on night. “Sign in.” Helper: “Continue with Google. Apple lands later.” Ghost: “Back.” No mascot, no split-screen photo, no “members only.”
 
 ### Gallery — `(app)/gallery`
 
-The wall again. Title optional; the posters speak. Curated first, then “Your roles” (every plan), then “Also on the wall” when other people’s public custom roles exist. Locked curated posters keep the Plus sticker and stay fully readable. Owner custom posters link to Casting notes until chat exists. Opening a curated card later opens **that agent's** threads — not a global chat.
+Signed-in home. Left sidebar (icon + label nav, recents, your agents) + header (greeting, acid Create agent, plan chip, profile menu). Mobile: top bar (wordmark, plan, avatar, menu), bottom nav (Home / Explore / Create / Profile) with icons, menu drawer. Main column: Continue chatting, Featured agents, Your agents, From other people. Jump chips skip empty sections. Locked curated posters keep the Plus sticker and stay fully readable. Opening a card opens **that agent's** latest thread — not a global chat. Signed-in posters sit on a straight grid like the landing company wall (no wheatpaste tilt). Public `/marketplace` still tilts.
 
-Empty custom list: “No one on the wall yet.” + acid “Cast someone.”
+Profile menu: avatar initial, dropdown with Profile, Your agents, Upgrade/Plan, Sign out. Free shows **Upgrade** → `/#seats`; Plus/Pro show the plan name → Profile.
 
-Custom stamps: House on public, Private on owner-only.
+### Explore — `(app)/explore`
+
+Same AppShell as Home. Category bill of the eight live agents plus four coming-soon posters. Chat links go to `/chat/{id}`. Signed-in `/marketplace` redirects here. Guests stay on public `/marketplace`.
+
+Empty custom list: “You have not created an agent yet.” + acid “Create agent.”
+
+Custom stamps: Public / Private.
 
 ### Chat — `(app)/chat/[conversationId]`
 
-Night stage. Header: 32px square portrait, Fraunces italic name, model picker, overflow. Transcript is attributed dialogue in `{spacing.measure}`. Composer anchored. Quota and 403 render as `{components.paywall-ticket}` in the well.
+Night stage. Header: 32px square portrait, Fraunces italic name, model alias, About, the same plan chip + profile menu as the lobby (Upgrade hidden on small screens). Transcript is attributed dialogue in `{spacing.measure}`. Composer anchored. Quota and 403 render as `{components.paywall-ticket}` in the well.
 
 ### Studio — `(app)/studio`
 
-Title in Fraunces italic: “Casting notes.” Fields in document order: name, tagline, language preset, costume flood, backstory, tone faders, tool toggles, House / Private tickets. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE. Free locks Private with “Private roles are Plus.” Cap overage is a paywall ticket, not a toast.
+Title in Fraunces italic: “Create agent” / “Edit agent.” Fields in document order: name, tagline, language preset, costume flood, backstory, tone faders, tool toggles, Public / Private. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE. Free locks Private with “Private agents are Plus.” Cap overage is a paywall ticket, not a toast. `/studio` index redirects to Profile `#your-agents`.
 
 ### Pricing
 
 Three cream tickets on night, acid offset only on the plan the user can buy (Plus if Free; Pro if Plus; portal if Pro). Plan name in Fraunces italic. Price from `plans`. Model list in Plex Mono from the catalog. No “Most Popular” ribbon. No yearly toggle animation.
 
-### Settings
+### Settings — Profile `/settings`
 
-Boring on purpose. Night, cream fields. Display name, preferred language, “Manage the bill” ghost (Stripe portal). Sign out ghost. No hero.
+Night, cream fields. Display name, preferred language, bio, plan, **Your agents** (Chat + Edit). Upgrade ghost (pricing) or “Billing portal is not open yet.” Sign out ghost. No hero.
 
 ### Empty, error, loading
 
 - Empty thread: agent tagline as Fraunces italic cream pull-quote
-- Stream failure: “The line dropped.” + ghost “Try again.”
+- Stream failure: “Something went wrong.” + ghost “Try again.”
 - 429 / 402: paywall ticket, not a toast
-- Loading the gallery: night + grain + `{typography.label-caps}` “Setting the house…”
+- Loading: night + grain + `{typography.label-caps}` “Loading…”
 
 ### Mobile (Phase 6)
 

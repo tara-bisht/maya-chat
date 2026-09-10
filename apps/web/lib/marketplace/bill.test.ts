@@ -3,9 +3,19 @@ import { COMPANY } from "@/lib/company";
 import {
   COMING_SOON,
   MARKETPLACE_CATEGORIES,
+  MARKETPLACE_COPY,
   buildMarketplaceBill,
   talkHref,
 } from "./bill";
+
+describe("MARKETPLACE_COPY", () => {
+  it("drops the sign-in line for the signed-in Explore body", () => {
+    expect(MARKETPLACE_COPY.body).toContain("Sign in to chat");
+    expect(MARKETPLACE_COPY.signedInBody).toBe(
+      "Eight agents now. Four coming soon.",
+    );
+  });
+});
 
 describe("buildMarketplaceBill", () => {
   const sections = buildMarketplaceBill();
@@ -70,10 +80,10 @@ describe("talkHref", () => {
     .find((player) => player.shortName === "Marcus");
   const jules = COMING_SOON.find((player) => player.shortName === "Jules");
 
-  it("sends signed-out Talk to login, signed-in Talk to gallery", () => {
+  it("sends signed-out Chat to login, signed-in Chat to that agent", () => {
     expect(marcus).toBeDefined();
-    expect(talkHref(marcus!, false)).toBe("/login?next=/gallery");
-    expect(talkHref(marcus!, true)).toBe("/gallery");
+    expect(talkHref(marcus!, false)).toBe(`/login?next=/chat/${marcus!.id}`);
+    expect(talkHref(marcus!, true)).toBe(`/chat/${marcus!.id}`);
   });
 
   it("never gives coming-soon players a Talk href", () => {

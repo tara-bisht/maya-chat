@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { PageInner } from "@/components/app/page-frame";
+import { redirect } from "next/navigation";
 import { LobbyFooter } from "@/components/landing/lobby-footer";
 import { LobbyHeader } from "@/components/landing/lobby-header";
-import { SectionKicker } from "@/components/landing/section-kicker";
-import {
-  CategoryChips,
-  MarketplaceWall,
-} from "@/components/marketplace/wall";
+import { MarketplaceBill } from "@/components/marketplace/wall";
 import { getSessionUser } from "@/lib/auth/session";
 import {
   MARKETPLACE_COPY,
@@ -16,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Marketplace · Maya Chat",
   description:
-    "The bill. Eight players tonight, four on the next bill. Talk takes a wristband.",
+    "Eight agents now, four coming soon. Sign in to chat.",
 };
 
 export default async function MarketplacePage() {
@@ -27,46 +23,26 @@ export default async function MarketplacePage() {
     signedIn = false;
   }
 
+  if (signedIn) {
+    redirect("/explore");
+  }
+
   const sections = buildMarketplaceBill();
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-night text-cream">
       <LobbyHeader
-        signedIn={signedIn}
-        cta={
-          signedIn
-            ? { href: "/gallery", label: "Tonight's company" }
-            : { href: "/login?next=/gallery", label: "Wristband check" }
-        }
+        signedIn={false}
+        cta={{ href: "/login?next=/gallery", label: "Get started" }}
       />
-      <main>
-        <section className="relative z-10 pt-6 pb-4 md:pt-10">
-          <PageInner>
-            <SectionKicker
-              kicker={MARKETPLACE_COPY.kicker}
-              title={MARKETPLACE_COPY.title}
-            >
-              {MARKETPLACE_COPY.body}
-            </SectionKicker>
-            <CategoryChips categories={sections} />
-          </PageInner>
-        </section>
-
-        {sections.map((section) => (
-          <section
-            key={section.id}
-            id={section.id}
-            className="relative z-10 scroll-mt-8 py-6 md:py-10"
-          >
-            <PageInner>
-              <SectionKicker kicker="Category" title={section.label}>
-                {section.body}
-              </SectionKicker>
-              <MarketplaceWall players={section.players} signedIn={signedIn} />
-            </PageInner>
-          </section>
-        ))}
-      </main>
+      <MarketplaceBill
+        sections={sections}
+        signedIn={false}
+        tilt
+        kicker={MARKETPLACE_COPY.kicker}
+        title={MARKETPLACE_COPY.title}
+        body={MARKETPLACE_COPY.body}
+      />
       <LobbyFooter />
     </div>
   );

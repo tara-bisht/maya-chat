@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { PageInner } from "@/components/app/page-frame";
+import { DroppedNotice } from "@/components/app/dropped-notice";
 import { CastingForm } from "@/components/studio/casting-form";
 import { StudioSheet } from "@/components/studio/studio-sheet";
 import { requireUser } from "@/lib/auth/session";
 import { loadOwnSheet, loadStudioContext } from "@/lib/studio/load";
+import { COPY } from "@/lib/ui-copy";
 
 export default async function StudioEditPage({
   params,
@@ -18,15 +19,7 @@ export default async function StudioEditPage({
   ]);
 
   if (!context) {
-    return (
-      <section className="py-16">
-        <PageInner width="sheet">
-          <p className="font-display text-3xl text-cream italic">
-            The line dropped.
-          </p>
-        </PageInner>
-      </section>
-    );
+    return <DroppedNotice retryHref="/studio" />;
   }
 
   if (!sheet) {
@@ -34,7 +27,7 @@ export default async function StudioEditPage({
   }
 
   return (
-    <StudioSheet kicker="Casting notes" title={sheet.name}>
+    <StudioSheet kicker={COPY.editAgent} title={sheet.name}>
       <CastingForm
         agentId={sheet.id}
         planId={context.planId}

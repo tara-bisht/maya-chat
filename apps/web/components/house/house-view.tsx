@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
+import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
 import { lockedAgentCopy, quotaCopy } from "@/lib/house/copy";
@@ -126,7 +127,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
             href="/gallery"
             className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline lg:hidden"
           >
-            Wall
+            Home
           </Link>
           <AgentPortrait
             name={house.agent.shortName}
@@ -139,7 +140,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
               {house.agent.shortName}
             </p>
             <p className="font-mono text-xs text-ink-soft">
-              Voice through {house.defaultModelId}
+              {house.defaultModelId}
             </p>
           </div>
           <button
@@ -147,34 +148,39 @@ export function HouseView({ house }: { house: HouseViewData }) {
             className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline lg:hidden"
             onClick={() => setNightsOpen(true)}
           >
-            Nights
+            Chats
           </button>
           <button
             type="button"
             className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
             onClick={() => setSheetOpen(true)}
           >
-            The player
+            About
           </button>
+          <AccountMenu
+            displayName={house.displayName}
+            plan={house.plan}
+            dense
+          />
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           {showLocked ? (
             <div className="flex flex-1 items-center justify-center px-4 py-10">
               <PaywallTicket
-                title={`${house.agent.shortName} is on the Plus bill`}
+                title={`${house.agent.shortName} is on Plus`}
                 body={lockedAgentCopy(house.agent.shortName)}
                 href="/#seats"
-                cta="Buy a better seat"
+                cta="Upgrade"
               />
             </div>
           ) : showQuota ? (
             <div className="flex flex-1 items-center justify-center px-4 py-10">
               <PaywallTicket
-                title="Daily curtain"
+                title="Daily limit reached"
                 body={quotaCopy(house.dailyLimit ?? 50)}
                 href="/#seats"
-                cta="Buy a better seat"
+                cta="Upgrade"
               />
             </div>
           ) : (
@@ -188,7 +194,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
               />
               {showDropped ? (
                 <p className="mx-auto max-w-measure px-4 pb-6 font-sans text-base text-cream">
-                  The line dropped.{" "}
+                  Something went wrong.{" "}
                   <button
                     type="button"
                     className="font-semibold underline-offset-4 hover:underline"
@@ -231,7 +237,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
             onClick={(event) => event.stopPropagation()}
           >
             <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-              Nights with {house.agent.shortName}
+              Chats with {house.agent.shortName}
             </p>
             <ul className="mt-4 space-y-2">
               {house.threads.map((thread) => (
@@ -251,7 +257,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
               className="mt-4 inline-block font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
               onClick={() => setNightsOpen(false)}
             >
-              New thread
+              New chat
             </Link>
           </aside>
         </div>

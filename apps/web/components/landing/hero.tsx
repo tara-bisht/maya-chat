@@ -23,7 +23,7 @@ export function Hero({ signedIn = false }: { signedIn?: boolean }) {
             href={signedIn ? "/gallery" : "/login"}
             className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
           >
-            {signedIn ? "Tonight's company" : "Wristband check"}
+            {signedIn ? "Home" : "Sign in"}
           </Link>
         </p>
       </PageInner>

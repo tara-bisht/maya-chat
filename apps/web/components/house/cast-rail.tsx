@@ -24,7 +24,7 @@ export function CastRail({
           Maya
         </Link>
         <p className="mt-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-          Back to the wall
+          Home
         </p>
       </div>
       <nav className="min-h-0 flex-1 overflow-y-auto px-2 pb-6">
@@ -84,7 +84,7 @@ export function CastRail({
                       href={houseHref(member.id)}
                       className="block py-1 font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
                     >
-                      New thread
+                      New chat
                     </Link>
                   </li>
                 </ul>
