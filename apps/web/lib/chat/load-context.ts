@@ -64,16 +64,47 @@ export async function loadChatAgent(
   };
 }
 
+export type ChatUserProfile = {
+  displayName: string;
+  bio: string;
+};
+
+export async function loadChatProfile(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+): Promise<ChatUserProfile> {
+  const result = await supabase
+    .from("profiles")
+    .select("display_name, global_bio")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (result.error || !result.data) {
+    return { displayName: "", bio: "" };
+  }
+
+  return {
+    displayName: result.data.display_name?.trim() ?? "",
+    bio: result.data.global_bio?.trim() ?? "",
+  };
+}
+
 export async function loadPlanModel(
   supabase: SupabaseClient<Database>,
   planId: MayaPlan,
 ): Promise<
-  | { ok: true; dailyLimit: number | null; defaultModelId: string; gatewayId: string }
+  | {
+      ok: true;
+      dailyLimit: number | null;
+      defaultModelId: string;
+      gatewayId: string;
+      toolsAllowed: string[];
+    }
   | { ok: false }
 > {
   const planResult = await supabase
     .from("plans")
-    .select("default_model_id, daily_message_limit")
+    .select("default_model_id, daily_message_limit, tools_allowed")
     .eq("id", planId)
     .maybeSingle();
 
@@ -96,6 +127,7 @@ export async function loadPlanModel(
     dailyLimit: planResult.data.daily_message_limit,
     defaultModelId: planResult.data.default_model_id,
     gatewayId: modelResult.data.gateway_id,
+    toolsAllowed: planResult.data.tools_allowed ?? [],
   };
 }
 
