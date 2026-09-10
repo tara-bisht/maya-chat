@@ -400,6 +400,10 @@ export type Database = {
         Args: { p_agent_id: string };
         Returns: string;
       };
+      consume_chat_turn: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
       match_agent_memories: {
         Args: { p_agent_id: string; p_match_count?: number; p_query: string };
         Returns: {

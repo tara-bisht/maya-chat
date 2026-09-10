@@ -32,6 +32,7 @@ function row(
   return {
     title: "A real thread",
     updated_at: "2026-09-10T11:00:00.000Z",
+    messageCount: 1,
     ...overrides,
   };
 }
@@ -104,5 +105,28 @@ describe("toRecentChats", () => {
       href: houseHref(PRIYA.id, "c-priya"),
     });
     expect(recents.some((item) => item.conversationId === "c-ghost")).toBe(false);
+  });
+
+  it("skips conversations with zero messages", () => {
+    const recents = toRecentChats(
+      [
+        row({
+          id: "c-empty",
+          agent_id: MARCUS.id,
+          title: "",
+          messageCount: 0,
+        }),
+        row({
+          id: "c-live",
+          agent_id: MARCUS.id,
+          title: "A real thread",
+          messageCount: 2,
+        }),
+      ],
+      agents,
+      { nowMs: NOW, limit: 8 },
+    );
+
+    expect(recents.map((item) => item.conversationId)).toEqual(["c-live"]);
   });
 });

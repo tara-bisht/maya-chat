@@ -5,6 +5,7 @@ import type { Database } from "@maya/database";
 import {
   HISTORY_WINDOW,
   canUseAgent,
+  chronologicalWindow,
   parseMayaPlan,
   type MayaPlan,
 } from "@maya/shared";
@@ -133,7 +134,7 @@ export async function loadConversationHistory(
     .select("role, content")
     .eq("conversation_id", conversation.id)
     .in("role", ["user", "assistant"])
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(HISTORY_WINDOW);
 
   if (messagesResult.error) {
@@ -141,7 +142,7 @@ export async function loadConversationHistory(
   }
 
   const history: Array<{ role: "user" | "assistant"; content: string }> = [];
-  for (const row of messagesResult.data ?? []) {
+  for (const row of chronologicalWindow(messagesResult.data ?? [])) {
     if (row.role === "user" || row.role === "assistant") {
       history.push({ role: row.role, content: row.content });
     }

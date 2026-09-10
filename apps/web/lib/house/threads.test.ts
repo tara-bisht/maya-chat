@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { COMPANY } from "@/lib/company";
 import { OPEN_NIGHT_TITLE } from "@maya/shared";
-import { buildCast, displayThreadTitle, latestByAgent, threadsForAgent } from "./threads";
+import {
+  buildCast,
+  displayThreadTitle,
+  latestByAgent,
+  messageCountFromEmbed,
+  threadsForAgent,
+} from "./threads";
 import type { HouseAgentRow } from "./columns";
 
 const MARCUS = COMPANY[0];
@@ -27,6 +33,14 @@ function agent(overrides: Partial<HouseAgentRow> = {}): HouseAgentRow {
   };
 }
 
+describe("messageCountFromEmbed", () => {
+  it("reads the PostgREST count embed", () => {
+    expect(messageCountFromEmbed([{ count: 3 }])).toBe(3);
+    expect(messageCountFromEmbed([])).toBe(0);
+    expect(messageCountFromEmbed(null)).toBe(0);
+  });
+});
+
 describe("displayThreadTitle", () => {
   it("falls back to the default thread title when empty", () => {
     expect(displayThreadTitle("")).toBe(OPEN_NIGHT_TITLE);
@@ -42,18 +56,28 @@ describe("thread grouping", () => {
       agent_id: MARCUS.id,
       title: "Newer Marcus",
       updated_at: "2026-09-10T12:00:00.000Z",
+      messageCount: 2,
     },
     {
       id: "c0",
       agent_id: MARCUS.id,
       title: "Older Marcus",
       updated_at: "2026-09-10T08:00:00.000Z",
+      messageCount: 2,
     },
     {
       id: "p1",
       agent_id: PRIYA.id,
       title: "",
       updated_at: "2026-09-10T11:00:00.000Z",
+      messageCount: 1,
+    },
+    {
+      id: "ghost",
+      agent_id: MARCUS.id,
+      title: "",
+      updated_at: "2026-09-10T13:00:00.000Z",
+      messageCount: 0,
     },
   ];
 
@@ -68,6 +92,13 @@ describe("thread grouping", () => {
     const latest = latestByAgent(rows);
     expect(latest.get(MARCUS.id)?.id).toBe("c1");
     expect(latest.get(PRIYA.id)?.title).toBe(OPEN_NIGHT_TITLE);
+  });
+
+  it("omits conversations with zero messages", () => {
+    expect(threadsForAgent(rows, MARCUS.id).map((thread) => thread.id)).not.toContain(
+      "ghost",
+    );
+    expect(latestByAgent(rows).get(MARCUS.id)?.id).toBe("c1");
   });
 });
 
@@ -98,6 +129,7 @@ describe("buildCast", () => {
           agent_id: MARCUS.id,
           title: "Night one",
           updated_at: "2026-09-10T12:00:00.000Z",
+          messageCount: 2,
         },
       ],
       activeAgentId: MARCUS.id,

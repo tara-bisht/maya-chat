@@ -1,0 +1,15 @@
+-- Manual SQL checks for atomic chat quota.
+-- Requires a JWT so auth.uid() is set. Do not run as postgres without
+-- `select set_config('request.jwt.claim.sub', '<user-uuid>', true);`
+-- and `set role authenticated;`.
+--
+-- Expected:
+-- 1. Free user under the cap: consume_chat_turn() returns true and inserts
+--    one usage_events row.
+-- 2. After daily_message_limit - 1 stamps, the next call returns true; the
+--    following call returns false and does not insert.
+-- 3. Pro user (daily_message_limit is null): consume_chat_turn() always
+--    returns true and still inserts (cost logging).
+-- 4. Concurrent calls at the boundary: only the remaining allowance returns
+--    true (advisory lock). Reproduce with parallel sessions, not this file.
+-- 5. anon / no JWT: consume_chat_turn() returns false.

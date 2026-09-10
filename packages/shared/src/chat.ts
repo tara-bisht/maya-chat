@@ -84,6 +84,15 @@ export function parseConversationCreate(
   return { ok: true, agentId: parsed.data.agentId };
 }
 
+export function chronologicalWindow<T>(newestFirst: T[]): T[] {
+  return [...newestFirst].reverse();
+}
+
+export function isDefaultConversationTitle(title: string): boolean {
+  const normalized = title.trim().toLowerCase();
+  return normalized === "" || normalized === "new chat";
+}
+
 export function titleFromFirstMessage(text: string): string {
   const collapsed = text.replace(/\s+/g, " ").trim();
   if (!collapsed) {
