@@ -175,6 +175,24 @@ body::before {
   animation: maya-caret 1s steps(1) infinite;
 }
 
+.katex {
+  color: inherit;
+  font-size: 1.05em;
+}
+
+.katex-display {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  margin: 0.75em 0;
+  padding: 0.15em 0;
+}
+
+.katex-display > .katex {
+  max-width: 100%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .maya-caret {
     animation: none;

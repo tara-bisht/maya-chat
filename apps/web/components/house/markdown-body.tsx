@@ -1,5 +1,9 @@
 import Markdown from "react-markdown";
+import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import { normalizeMathMarkdown } from "@/lib/house/math";
+import "katex/dist/katex.min.css";
 
 export function MarkdownBody({
   text,
@@ -11,7 +15,17 @@ export function MarkdownBody({
   return (
     <div className={className}>
       <Markdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[
+          [
+            rehypeKatex,
+            {
+              throwOnError: false,
+              strict: "ignore",
+              errorColor: "var(--maya-stub)",
+            },
+          ],
+        ]}
         components={{
           p: ({ children }) => (
             <p className="mb-3 last:mb-0 whitespace-pre-wrap">{children}</p>
@@ -35,6 +49,9 @@ export function MarkdownBody({
             </ol>
           ),
           code: ({ className, children }) => {
+            if (className?.includes("math")) {
+              return <code className={className}>{children}</code>;
+            }
             const block = Boolean(className);
             if (block) {
               return (
@@ -52,7 +69,7 @@ export function MarkdownBody({
           ),
         }}
       >
-        {text}
+        {normalizeMathMarkdown(text)}
       </Markdown>
     </div>
   );
