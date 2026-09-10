@@ -22,6 +22,14 @@ export type GalleryAgentRow = {
 
 export type PlaybillStamp = "free" | "plus" | "house" | "private" | "next-bill";
 
+export const PLAYBILL_STAMP_LABEL: Record<PlaybillStamp, string> = {
+  free: "Free",
+  plus: "Plus",
+  house: "Public",
+  private: "Private",
+  "next-bill": "Coming soon",
+};
+
 export type Playbill = {
   id: string;
   shortName: string;

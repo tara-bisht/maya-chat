@@ -27,7 +27,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
         {seat.stamp}
       </span>
       <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-        Seat
+        Plan
       </p>
       <h3 className="mt-1 font-display text-[2rem] leading-none font-semibold tracking-[-0.03em] italic">
         {seat.name}
@@ -46,7 +46,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
         ))}
       </ul>
       <p className="mt-5 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-        Voices
+        Models
       </p>
       <p className="mt-1 font-mono text-xs leading-relaxed text-night/80">
         {seat.models.join(" · ")}
@@ -79,9 +79,9 @@ export function Seats() {
       className="relative z-10 scroll-mt-8 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="The bill" title="Seats">
-          Free is already in. Plus takes the rest of the company. Pro takes every
-          voice on the catalog.
+        <SectionKicker kicker="Pricing" title="Plans">
+          Free includes Marcus and Dr. Priya. Plus unlocks the rest. Pro unlocks
+          every model on the catalog.
         </SectionKicker>
         <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
           {SEATS.map((seat) => (

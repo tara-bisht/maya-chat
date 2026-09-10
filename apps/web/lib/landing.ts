@@ -3,22 +3,22 @@ import type { CostumeId } from "@/lib/company";
 /** Jump links shared by the lobby header and footer. */
 export const LOBBY_NAV = [
   { href: "/marketplace", label: "Marketplace" },
-  { href: "/#house", label: "The house" },
-  { href: "/#studio", label: "Studio" },
-  { href: "/#seats", label: "Seats" },
+  { href: "/#house", label: "How it works" },
+  { href: "/#studio", label: "Create an agent" },
+  { href: "/#seats", label: "Plans" },
 ] as const;
 
 export const HERO = {
   title: "Talk to someone with a point of view.",
-  body: "Don't talk to a boring AI chatbot. Eight players, zero generic answers — math with a flirt, stoicism with a roast, code review from someone who has been on call too long.",
-  lineup: "Tonight's lineup. Choose a player, or cast your own in the Studio.",
+  body: "Don't talk to a boring AI chatbot. Eight agents, zero generic answers — math with a flirt, stoicism with a roast, code review from someone who has been on call too long.",
+  lineup: "Choose an agent, or create your own.",
   sticker: "Marcus + Priya on Free",
 } as const;
 
 export const COMPANY_KICKER = {
-  kicker: "The lineup",
-  title: "Tonight's company",
-  body: "Two players on Free. Six stamped Plus. Studio is where you cast your own.",
+  kicker: "The agents",
+  title: "Meet the lineup",
+  body: "Two agents on Free. Six need Plus. Create your own in Studio.",
 } as const;
 
 export type NightScene = {
@@ -60,25 +60,25 @@ export const NIGHTS: NightScene[] = [
 export const HOUSE_STEPS = [
   {
     n: "01",
-    title: "Pick a player",
-    body: "Eight on the wall tonight. Marcus and Dr. Priya are already in. The rest of the company plays Plus.",
+    title: "Pick an agent",
+    body: "Eight featured agents. Marcus and Dr. Priya are free. The others need Plus.",
   },
   {
     n: "02",
-    title: "Talk",
-    body: "Attributed dialogue on night paper. Costume wash on their turn. They stay in character. Chrome does not impersonate them.",
+    title: "Chat",
+    body: "They stay in character. The app chrome does not impersonate them.",
   },
   {
     n: "03",
     title: "They remember",
-    body: "Plus and Pro keep private memory per player. Free is the last stretch of the thread. Pick the instrument with “Voice through grok-fast.”",
+    body: "Plus and Pro keep private memory per agent. Free keeps the latest stretch of the thread. Pick the model they speak through.",
   },
 ] as const;
 
 export const STUDIO = {
-  kicker: "Casting notes",
-  title: "Cast your own",
-  body: "Name, tagline, costume, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari, not a costume.",
+  kicker: "Create an agent",
+  title: "Your own character",
+  body: "Name, tagline, color, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari.",
   cap: "Free: 3 public · Plus: 10 · Pro: unlimited",
   fields: [
     { label: "Name", value: "Yours" },
@@ -112,13 +112,13 @@ export const SEATS: Seat[] = [
     name: "Free",
     price: "$0",
     cadence: "No bill",
-    stamp: "In tonight",
+    stamp: "Included",
     stampTone: "cream",
-    cta: { href: "/login", label: "Get a wristband", kind: "acid" },
+    cta: { href: "/login", label: "Get started", kind: "acid" },
     bullets: [
       "50 messages a day",
       "Marcus + Dr. Priya",
-      "3 public custom players",
+      "3 public custom agents",
       "No vector memory",
       "No tools",
     ],
@@ -131,11 +131,11 @@ export const SEATS: Seat[] = [
     cadence: "/ month · $90 / year",
     stamp: "Plus",
     stampTone: "stub",
-    cta: { href: "/login", label: "Wristband check", kind: "ghost" },
+    cta: { href: "/login", label: "Sign in", kind: "ghost" },
     bullets: [
       "200 messages a day",
-      "All eight players",
-      "10 custom players, public or private",
+      "All eight agents",
+      "10 custom agents, public or private",
       "Private per-agent memory",
       "Memory saver, math solver",
     ],
@@ -148,11 +148,11 @@ export const SEATS: Seat[] = [
     cadence: "/ month · $190 / year",
     stamp: "Pro",
     stampTone: "stub",
-    cta: { href: "/login", label: "Wristband check", kind: "ghost" },
+    cta: { href: "/login", label: "Sign in", kind: "ghost" },
     bullets: [
       "Unlimited messages",
-      "All eight players",
-      "Unlimited custom players, public or private",
+      "All eight agents",
+      "Unlimited custom agents, public or private",
       "Private per-agent memory",
       "Plus tools, and web search",
     ],
@@ -171,33 +171,33 @@ export const SEATS: Seat[] = [
 ];
 
 export const SEATS_FOOTNOTE =
-  "Seats follow the catalog. Prices and voices can move without a deploy.";
+  "Plans follow the catalog. Prices and models can move without a deploy.";
 
 export const NOTES = [
   {
     q: "What can I do on Free?",
-    a: "Marcus and Dr. Priya. Fifty lines a day. Voices: qwen-flash, gemini-flash, and grok-fast. Three public custom players. No memory, no private roles, no tools. Daily curtain, then a better seat or tomorrow.",
+    a: "Marcus and Dr. Priya. Fifty messages a day. Models: qwen-flash, gemini-flash, and grok-fast. Three public custom agents. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
   },
   {
     q: "Do they remember me?",
-    a: "Plus and Pro keep private episodic memory per player. Marcus does not hear what you told Nonna. Free keeps the last stretch of the thread only.",
+    a: "Plus and Pro keep private memory per agent. Marcus does not hear what you told Nonna. Free keeps the last stretch of the thread only.",
   },
   {
-    q: "Can I make my own player?",
-    a: "Free can cast three public roles. Plus gets ten, public or private. Pro does not count. Tone sliders overlay custom players only — curated prompts stay locked.",
+    q: "Can I make my own agent?",
+    a: "Free can create three public agents. Plus gets ten, public or private. Pro is unlimited. Tone sliders apply to custom agents only — curated prompts stay locked.",
   },
   {
     q: "Hindi and Hinglish?",
-    a: "First-class. Custom players get language presets. Devanagari is real type, not a pattern on the wall.",
+    a: "First-class. Custom agents get language presets. Devanagari is real type.",
   },
   {
-    q: "Which models? What is “voice through”?",
-    a: "The model is the instrument, not the character. You pick “Voice through grok-fast.” Free: Gemini Flash and Grok Fast. Plus adds DeepSeek, Qwen, Grok, and GPT. Pro adds Claude and Kimi. The catalog is the bill.",
+    q: "Which models?",
+    a: "The model is the instrument, not the character. Free: Gemini Flash and Grok Fast. Plus adds DeepSeek, Qwen, Grok, and GPT. Pro adds Claude and Kimi.",
   },
 ] as const;
 
 export const FOOTER = {
   wordmark: "Maya",
   tagline:
-    "A touring company for opinionated AI. Not a helpdesk. Not a copilot.",
+    "Opinionated AI characters. Not a helpdesk. Not a copilot.",
 } as const;

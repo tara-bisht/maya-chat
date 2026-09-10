@@ -9,9 +9,8 @@ export function HouseSteps() {
       className="relative z-10 scroll-mt-8 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="House rules" title="How a night works">
-          Pick a player. Talk. They keep what is theirs. You pick the voice they
-          speak through.
+        <SectionKicker kicker="How it works" title="Three steps">
+          Pick an agent. Chat. They remember what you told them.
         </SectionKicker>
         <ol className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {HOUSE_STEPS.map((step) => (

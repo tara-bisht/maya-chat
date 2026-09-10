@@ -1,9 +1,9 @@
 import "server-only";
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@maya/database";
+import { cache } from "react";
 import { parseMayaPlan, type MayaPlan } from "@maya/shared";
 import { houseHref } from "@/lib/house/href";
+import { createClient } from "@/lib/supabase/server";
 import { logDropped } from "@/lib/supabase/dropped";
 import {
   GALLERY_AGENT_COLUMNS,
@@ -12,6 +12,22 @@ import {
   type GalleryAgentRow,
   type Playbill,
 } from "./playbill";
+import {
+  RECENT_CHAT_LIMIT,
+  toRecentChats,
+  type GalleryViewer,
+  type RecentAgent,
+  type RecentChat,
+  type RecentConversation,
+} from "./recents";
+
+export type { GalleryViewer };
+
+export type LobbyChrome = {
+  viewer: GalleryViewer;
+  recents: RecentChat[];
+  custom: Playbill[];
+};
 
 export type GalleryLoad =
   | {
@@ -19,27 +35,38 @@ export type GalleryLoad =
       curated: Playbill[];
       custom: Playbill[];
       house: Playbill[];
+      recents: RecentChat[];
+      viewer: GalleryViewer;
       plan: MayaPlan;
     }
   | { ok: false };
 
 const HOUSE_LISTING_LIMIT = 24;
 
-export async function loadGallery(
-  supabase: SupabaseClient<Database>,
-  userId: string,
-): Promise<GalleryLoad> {
+type ConversationRow = RecentConversation;
+
+type GalleryBundle = {
+  curatedError: boolean;
+  curatedRows: GalleryAgentRow[];
+  customRows: GalleryAgentRow[];
+  houseRows: GalleryAgentRow[];
+  extraRows: GalleryAgentRow[];
+  conversations: ConversationRow[];
+  plan: MayaPlan;
+  displayName: string;
+};
+
+const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> => {
+  const supabase = await createClient();
   const [
     curatedResult,
     customResult,
     houseResult,
     entitlementResult,
     conversationsResult,
+    profileResult,
   ] = await Promise.all([
-    supabase
-      .from("agents")
-      .select(GALLERY_AGENT_COLUMNS)
-      .eq("is_curated", true),
+    supabase.from("agents").select(GALLERY_AGENT_COLUMNS).eq("is_curated", true),
     supabase
       .from("agents")
       .select(GALLERY_AGENT_COLUMNS)
@@ -63,14 +90,18 @@ export async function loadGallery(
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, updated_at")
+      .select("id, agent_id, title, updated_at")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false }),
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", userId)
+      .maybeSingle(),
   ]);
 
   if (curatedResult.error) {
     logDropped("gallery", { curated: curatedResult.error });
-    return { ok: false };
   }
 
   if (customResult.error || houseResult.error || conversationsResult.error) {
@@ -81,8 +112,55 @@ export async function loadGallery(
     });
   }
 
+  const curatedRows = (curatedResult.data ?? []) as GalleryAgentRow[];
+  const customRows = (customResult.data ?? []) as GalleryAgentRow[];
+  const houseRows = (houseResult.data ?? []) as GalleryAgentRow[];
+  const conversations = (conversationsResult.data ?? []) as ConversationRow[];
+
+  const known = new Set<string>(
+    [...curatedRows, ...customRows, ...houseRows].map((row) => row.id),
+  );
+  const missing: string[] = [];
+  for (const conversation of conversations) {
+    if (known.has(conversation.agent_id)) {
+      continue;
+    }
+    if (!missing.includes(conversation.agent_id)) {
+      missing.push(conversation.agent_id);
+    }
+    if (missing.length >= RECENT_CHAT_LIMIT) {
+      break;
+    }
+  }
+
+  let extraRows: GalleryAgentRow[] = [];
+  if (missing.length > 0) {
+    const extraResult = await supabase
+      .from("agents")
+      .select(GALLERY_AGENT_COLUMNS)
+      .in("id", missing);
+    if (extraResult.error) {
+      logDropped("gallery", { extra: extraResult.error });
+    } else {
+      extraRows = (extraResult.data ?? []) as GalleryAgentRow[];
+    }
+  }
+
+  return {
+    curatedError: Boolean(curatedResult.error),
+    curatedRows,
+    customRows,
+    houseRows,
+    extraRows,
+    conversations,
+    plan: parseMayaPlan(entitlementResult.data?.plan),
+    displayName: profileResult.data?.display_name?.trim() ?? "",
+  };
+});
+
+function assemble(userId: string, bundle: GalleryBundle) {
   const latestByAgent = new Map<string, string>();
-  for (const conversation of conversationsResult.data ?? []) {
+  for (const conversation of bundle.conversations) {
     if (!latestByAgent.has(conversation.agent_id)) {
       latestByAgent.set(conversation.agent_id, conversation.id);
     }
@@ -93,17 +171,48 @@ export async function loadGallery(
     href: houseHref(playbill.id, latestByAgent.get(playbill.id)),
   });
 
-  const curatedRows = (curatedResult.data ?? []) as GalleryAgentRow[];
-  const customRows = (customResult.data ?? []) as GalleryAgentRow[];
-  const houseRows = (houseResult.data ?? []) as GalleryAgentRow[];
+  const curated = sortCuratedPlaybills(
+    bundle.curatedRows.map((row) => playbillFromAgent(row, userId)),
+  ).map(withDoor);
+  const custom = bundle.customRows
+    .map((row) => playbillFromAgent(row, userId))
+    .map(withDoor);
+  const house = bundle.houseRows
+    .map((row) => playbillFromAgent(row, userId))
+    .map(withDoor);
 
+  const agentsById = new Map<string, RecentAgent>();
+  for (const playbill of [...curated, ...custom, ...house]) {
+    agentsById.set(playbill.id, playbill);
+  }
+  for (const row of bundle.extraRows) {
+    const playbill = playbillFromAgent(row, userId);
+    agentsById.set(playbill.id, playbill);
+  }
+
+  const recents = toRecentChats(bundle.conversations, agentsById);
+  const viewer: GalleryViewer = {
+    displayName: bundle.displayName,
+    plan: bundle.plan,
+  };
+
+  return { curated, custom, house, recents, viewer, plan: bundle.plan };
+}
+
+export async function loadGallery(userId: string): Promise<GalleryLoad> {
+  const bundle = await loadGalleryBundle(userId);
+  if (bundle.curatedError) {
+    return { ok: false };
+  }
+  return { ok: true, ...assemble(userId, bundle) };
+}
+
+export async function loadLobbyChrome(userId: string): Promise<LobbyChrome> {
+  const bundle = await loadGalleryBundle(userId);
+  const assembled = assemble(userId, bundle);
   return {
-    ok: true,
-    curated: sortCuratedPlaybills(
-      curatedRows.map((row) => playbillFromAgent(row, userId)),
-    ).map(withDoor),
-    custom: customRows.map((row) => playbillFromAgent(row, userId)).map(withDoor),
-    house: houseRows.map((row) => playbillFromAgent(row, userId)).map(withDoor),
-    plan: parseMayaPlan(entitlementResult.data?.plan),
+    viewer: assembled.viewer,
+    recents: assembled.recents,
+    custom: assembled.custom,
   };
 }

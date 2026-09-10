@@ -1,24 +1,17 @@
-import { PageInner } from "@/components/app/page-frame";
+import { DroppedNotice } from "@/components/app/dropped-notice";
 import { PaywallTicket, studioCapCopy } from "@/components/app/paywall-ticket";
 import { CastingForm } from "@/components/studio/casting-form";
 import { StudioSheet } from "@/components/studio/studio-sheet";
 import { requireUser } from "@/lib/auth/session";
 import { loadStudioContext } from "@/lib/studio/load";
+import { COPY } from "@/lib/ui-copy";
 
 export default async function StudioNewPage() {
   const user = await requireUser("/studio/new");
   const context = await loadStudioContext(user.id);
 
   if (!context) {
-    return (
-      <section className="py-16">
-        <PageInner width="sheet">
-          <p className="font-display text-3xl text-cream italic">
-            The line dropped.
-          </p>
-        </PageInner>
-      </section>
-    );
+    return <DroppedNotice retryHref="/studio/new" />;
   }
 
   const atCap =
@@ -26,13 +19,13 @@ export default async function StudioNewPage() {
     context.liveCustomCount >= context.maxCustomAgents;
 
   return (
-    <StudioSheet kicker="Casting notes" title="Cast someone">
+    <StudioSheet kicker={COPY.createAgent} title={COPY.newAgent}>
       {atCap ? (
         <PaywallTicket
-          title="The sheet is full."
+          title={COPY.agentLimit}
           body={studioCapCopy(context.maxCustomAgents, context.planDisplayName)}
-          href="/login?next=/studio"
-          cta="Wristband check"
+          href="/#seats"
+          cta={COPY.upgrade}
         />
       ) : (
         <CastingForm

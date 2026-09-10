@@ -5,7 +5,7 @@ import {
   type LanguagePresetId,
 } from "./profile";
 
-export const OPEN_NIGHT_TITLE = "Open night";
+export const OPEN_NIGHT_TITLE = "New chat";
 export const HISTORY_WINDOW = 20;
 export const USER_MESSAGE_MAX = 8000;
 export const CONVERSATION_TITLE_MAX = 48;

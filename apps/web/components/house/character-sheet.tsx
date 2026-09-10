@@ -34,7 +34,7 @@ export function CharacterSheet({
         aria-labelledby="player-sheet-title"
       >
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/50 uppercase">
-          The player
+          About
         </p>
         <h2
           id="player-sheet-title"
@@ -57,7 +57,7 @@ export function CharacterSheet({
             <dd className="font-mono text-xs">
               {agent.toolsEnabled.length > 0
                 ? agent.toolsEnabled.join(" · ")
-                : "None on this sheet"}
+                : "None"}
             </dd>
           </div>
           <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:gap-6">
@@ -81,7 +81,7 @@ export function CharacterSheet({
               href={`/studio/${agent.id}`}
               className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
             >
-              Casting notes
+              Edit agent
             </Link>
           ) : null}
           <button

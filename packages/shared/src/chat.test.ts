@@ -93,9 +93,9 @@ describe("titleFromFirstMessage", () => {
     expect(title).not.toBe("New Chat");
   });
 
-  it("falls back to Open night, never New Chat", () => {
+  it("falls back to the default thread title", () => {
     expect(titleFromFirstMessage("   ")).toBe(OPEN_NIGHT_TITLE);
-    expect(titleFromFirstMessage("")).not.toBe("New Chat");
+    expect(titleFromFirstMessage("")).toBe("New chat");
   });
 });
 

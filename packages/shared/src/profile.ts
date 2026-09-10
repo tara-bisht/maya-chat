@@ -26,7 +26,7 @@ export const profileUpdateSchema = z.object({
     .min(1, "Give a name.")
     .max(DISPLAY_NAME_MAX, "Keep it under 80 characters."),
   preferredLanguage: z.enum(LANGUAGE_PRESET_IDS, {
-    error: "Pick a language the house knows.",
+    error: "Pick a language.",
   }),
   globalBio: z
     .string()

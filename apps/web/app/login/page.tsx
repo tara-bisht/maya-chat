@@ -29,7 +29,7 @@ export default async function LoginPage({
       >
         <p className="font-display text-3xl italic">Maya</p>
         <h1 className="mt-3 font-display text-3xl leading-none font-medium tracking-[-0.03em] italic">
-          Wristband check.
+          Sign in.
         </h1>
         <p className="mt-3 font-sans text-sm leading-snug text-night/70">
           Continue with Google. Apple lands later.
@@ -49,7 +49,7 @@ export default async function LoginPage({
             href="/"
             className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
           >
-            Back to the wall
+            Back
           </Link>
         </p>
       </div>

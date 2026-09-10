@@ -52,25 +52,35 @@ export async function loadHouse(
     return { ok: false, reason: "not_found" };
   }
 
-  const [agentResult, entitlementResult, conversationResult, agentsResult] =
-    await Promise.all([
-      supabase
-        .from("agents")
-        .select(HOUSE_AGENT_COLUMNS)
-        .eq("id", input.agentId)
-        .maybeSingle(),
-      supabase
-        .from("entitlements")
-        .select("plan")
-        .eq("user_id", input.userId)
-        .maybeSingle(),
-      supabase
-        .from("conversations")
-        .select("id, agent_id, title, updated_at")
-        .eq("user_id", input.userId)
-        .order("updated_at", { ascending: false }),
-      supabase.from("agents").select(HOUSE_AGENT_COLUMNS),
-    ]);
+  const [
+    agentResult,
+    entitlementResult,
+    conversationResult,
+    agentsResult,
+    profileResult,
+  ] = await Promise.all([
+    supabase
+      .from("agents")
+      .select(HOUSE_AGENT_COLUMNS)
+      .eq("id", input.agentId)
+      .maybeSingle(),
+    supabase
+      .from("entitlements")
+      .select("plan")
+      .eq("user_id", input.userId)
+      .maybeSingle(),
+    supabase
+      .from("conversations")
+      .select("id, agent_id, title, updated_at")
+      .eq("user_id", input.userId)
+      .order("updated_at", { ascending: false }),
+    supabase.from("agents").select(HOUSE_AGENT_COLUMNS),
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", input.userId)
+      .maybeSingle(),
+  ]);
 
   if (agentResult.error || conversationResult.error || agentsResult.error) {
     logDropped("house", {
@@ -153,6 +163,7 @@ export async function loadHouse(
     house: {
       agent,
       plan: planId,
+      displayName: profileResult.data?.display_name?.trim() ?? "",
       defaultModelId: planResult.data?.default_model_id ?? "qwen-flash",
       dailyLimit: planResult.data?.daily_message_limit ?? null,
       threads,

@@ -25,7 +25,7 @@ const COSTUME_LABEL: Record<CostumeId, string> = {
   valerian: "Valerian indigo",
   barnaby: "Barnaby tawny",
   ren: "Ren slate",
-  custom: "House brown",
+  custom: "Custom brown",
 };
 
 const TOOL_LABEL: Record<StudioTool, string> = {
@@ -115,10 +115,10 @@ export function CastingForm({
   if (error?.code === "studio_cap") {
     return (
       <PaywallTicket
-        title="The sheet is full."
+        title="Agent limit reached."
         body={studioCapCopy(maxCustomAgents, planDisplayName)}
-        href="/login?next=/studio"
-        cta="Wristband check"
+        href="/#seats"
+        cta="Upgrade"
       />
     );
   }
@@ -126,10 +126,10 @@ export function CastingForm({
   if (error?.code === "studio_private_forbidden") {
     return (
       <PaywallTicket
-        title="Private roles are Plus."
-        body="This one stays on the house until you take a better seat."
-        href="/login?next=/studio"
-        cta="Wristband check"
+        title="Private agents are Plus."
+        body="Upgrade to Plus to make this agent private."
+        href="/#seats"
+        cta="Upgrade"
       />
     );
   }
@@ -149,13 +149,13 @@ export function CastingForm({
     >
       {archived ? (
         <p className="font-sans text-sm font-semibold text-night/70">
-          On the wall this is struck.
+          This agent is archived.
         </p>
       ) : null}
 
       {error?.code === "invalid" ? (
         <p className="font-sans text-sm font-semibold text-night">
-          Check the sheet. Name, tagline, and backstory are required.
+          Name, tagline, and backstory are required.
         </p>
       ) : null}
 
@@ -308,7 +308,7 @@ export function CastingForm({
 
       <fieldset disabled={archived || pending}>
         <legend className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-          On the house
+          Visibility
         </legend>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <button
@@ -319,10 +319,9 @@ export function CastingForm({
               isPublic ? "border-night bg-stub" : "border-night/20 bg-cream"
             }`}
           >
-            <span className="block font-display text-xl italic">House</span>
+            <span className="block font-display text-xl italic">Public</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
-              Anyone with a wristband can see the playbill and start their own
-              thread.
+              Anyone signed in can chat. They do not see the backstory.
             </span>
           </button>
           <button
@@ -341,8 +340,8 @@ export function CastingForm({
             <span className="block font-display text-xl italic">Private</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
               {canPrivate
-                ? "Only you can see or talk to this role."
-                : "Private roles are Plus."}
+                ? "Only you can chat with this agent."
+                : "Private agents are Plus."}
             </span>
           </button>
         </div>
@@ -364,7 +363,7 @@ export function CastingForm({
               disabled={pending}
               className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
             >
-              Strike from the wall
+              Archive
             </button>
           ) : null}
         </div>

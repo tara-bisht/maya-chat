@@ -50,7 +50,7 @@ export function StudioSheet() {
               href="/login"
               className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
             >
-              Wristband check
+              Sign in
             </Link>
           </p>
         </article>

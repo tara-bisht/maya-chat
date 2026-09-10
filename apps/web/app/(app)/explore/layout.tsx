@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/app/app-shell";
 
-export default function GalleryLayout({
+export default function ExploreLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

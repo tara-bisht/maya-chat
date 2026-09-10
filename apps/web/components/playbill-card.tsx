@@ -2,22 +2,18 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { COMPANY, COSTUME_CLASS } from "@/lib/company";
 import { AgentPortrait } from "@/components/app/agent-portrait";
-import type { Playbill, PlaybillStamp } from "@/lib/gallery/playbill";
+import {
+  PLAYBILL_STAMP_LABEL,
+  type Playbill,
+  type PlaybillStamp,
+} from "@/lib/gallery/playbill";
 
 const POSTER_TILTS = [-2.4, 1.6, -1.1, 2.8, -3, 1.2, 2.2, -1.8] as const;
 
 export const PLAYBILL_GRID_CLASS =
   "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:gap-x-10 md:gap-y-14 lg:grid-cols-3 xl:grid-cols-4";
 
-export const PLAYBILL_CELL_CLASS = "min-w-0 pt-4 pr-4 pb-2";
-
-const STAMP_LABEL: Record<PlaybillStamp, string> = {
-  free: "Free",
-  plus: "Plus",
-  house: "House",
-  private: "Private",
-  "next-bill": "Next bill",
-};
+export const PLAYBILL_CELL_CLASS = "min-w-0 h-full pt-4 pr-4 pb-2";
 
 function stampClass(stamp: PlaybillStamp): string {
   if (stamp === "next-bill") {
@@ -45,7 +41,7 @@ export function PlaybillCard({
       <span
         className={`absolute -top-2 -right-2 z-10 px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase ${stampClass(stamp)}`}
       >
-        {STAMP_LABEL[stamp]}
+        {PLAYBILL_STAMP_LABEL[stamp]}
       </span>
       <div className="overflow-hidden rounded-md">
         <AgentPortrait

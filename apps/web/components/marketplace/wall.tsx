@@ -1,31 +1,38 @@
 import type { CSSProperties } from "react";
+import { PageInner } from "@/components/app/page-frame";
+import { SectionKicker } from "@/components/landing/section-kicker";
 import {
   PLAYBILL_CELL_CLASS,
   PLAYBILL_GRID_CLASS,
   PlaybillCard,
 } from "@/components/playbill-card";
-import { talkHref, type MarketplacePlayer } from "@/lib/marketplace/bill";
+import {
+  talkHref,
+  type MarketplacePlayer,
+  type MarketplaceSection,
+} from "@/lib/marketplace/bill";
 
 const POSTER_TILTS = [-2.4, 1.6, -1.1, 2.8, -3, 1.2, 2.2, -1.8] as const;
 
 export function MarketplaceWall({
   players,
   signedIn,
+  tilt = true,
 }: {
   players: MarketplacePlayer[];
   signedIn: boolean;
+  tilt?: boolean;
 }) {
   return (
     <ul className={PLAYBILL_GRID_CLASS}>
       {players.map((player, index) => {
         const deg = POSTER_TILTS[index % POSTER_TILTS.length];
         const href = talkHref(player, signedIn);
+        const style = tilt
+          ? ({ "--tilt": `${deg}deg` } as CSSProperties)
+          : undefined;
         return (
-          <li
-            key={player.id}
-            className={PLAYBILL_CELL_CLASS}
-            style={{ "--tilt": `${deg}deg` } as CSSProperties}
-          >
+          <li key={player.id} className={PLAYBILL_CELL_CLASS} style={style}>
             <PlaybillCard
               player={{
                 id: player.id,
@@ -46,11 +53,11 @@ export function MarketplaceWall({
               footer={
                 href ? (
                   <span className="font-sans text-sm font-semibold text-cream underline-offset-4 group-hover:underline">
-                    Talk
+                    Chat
                   </span>
                 ) : (
                   <span className="font-sans text-sm font-semibold text-cream/55">
-                    Not on tonight&apos;s bill
+                    Coming soon
                   </span>
                 )
               }
@@ -82,5 +89,53 @@ export function CategoryChips({
         </a>
       ))}
     </nav>
+  );
+}
+
+export function MarketplaceBill({
+  sections,
+  signedIn,
+  tilt,
+  kicker,
+  title,
+  body,
+}: {
+  sections: readonly MarketplaceSection[];
+  signedIn: boolean;
+  tilt?: boolean;
+  kicker: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <main>
+      <section className="relative z-10 pt-6 pb-4 md:pt-10">
+        <PageInner>
+          <SectionKicker kicker={kicker} title={title}>
+            {body}
+          </SectionKicker>
+          <CategoryChips categories={sections} />
+        </PageInner>
+      </section>
+
+      {sections.map((section) => (
+        <section
+          key={section.id}
+          id={section.id}
+          className="relative z-10 scroll-mt-8 py-6 md:py-10"
+        >
+          <PageInner>
+            <SectionKicker kicker="Category" title={section.label}>
+              {section.body}
+            </SectionKicker>
+            <MarketplaceWall
+              players={section.players}
+              signedIn={signedIn}
+              tilt={tilt}
+            />
+          </PageInner>
+        </section>
+      ))}
+    </main>
   );
 }

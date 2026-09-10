@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { COMPANY } from "@/lib/company";
 import {
   GALLERY_AGENT_COLUMNS,
+  PLAYBILL_STAMP_LABEL,
   playbillFromAgent,
   type GalleryAgentRow,
 } from "./playbill";
@@ -25,6 +26,14 @@ function row(overrides: Partial<GalleryAgentRow> = {}): GalleryAgentRow {
     ...overrides,
   };
 }
+
+describe("PLAYBILL_STAMP_LABEL", () => {
+  it("uses plain product words for house and next-bill stamps", () => {
+    expect(PLAYBILL_STAMP_LABEL.house).toBe("Public");
+    expect(PLAYBILL_STAMP_LABEL.private).toBe("Private");
+    expect(PLAYBILL_STAMP_LABEL["next-bill"]).toBe("Coming soon");
+  });
+});
 
 describe("GALLERY_AGENT_COLUMNS", () => {
   it("does not select system_prompt, tone, or tools", () => {

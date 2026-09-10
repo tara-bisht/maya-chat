@@ -9,10 +9,10 @@ export default function AuthCodeErrorPage() {
       >
         <p className="font-display text-3xl italic">Maya</p>
         <h1 className="mt-3 font-display text-3xl leading-none font-medium tracking-[-0.03em] italic">
-          The door did not open.
+          Sign-in did not finish.
         </h1>
         <p className="mt-3 font-sans text-sm leading-snug text-night/70">
-          Google sign-in did not finish. Try again from the wall.
+          Google sign-in did not complete. Try again.
         </p>
         <p className="mt-6">
           <Link

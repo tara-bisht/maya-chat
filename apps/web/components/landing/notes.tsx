@@ -9,7 +9,7 @@ export function Notes() {
       className="relative z-10 scroll-mt-8 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="Program notes" title="Before you take a seat" />
+        <SectionKicker kicker="FAQ" title="Before you start" />
         <div className="max-w-measure border-t border-rule">
           {NOTES.map((note) => (
             <details key={note.q} className="group border-b border-rule">

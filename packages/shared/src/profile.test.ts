@@ -104,13 +104,11 @@ describe("parseProfileUpdate", () => {
     }
   });
 
-  it("rejects a language the house does not know", () => {
+  it("rejects an unknown language", () => {
     const result = parseProfileUpdate({ ...valid, preferredLanguage: "fr" });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.fieldErrors.preferredLanguage).toBe(
-        "Pick a language the house knows.",
-      );
+      expect(result.fieldErrors.preferredLanguage).toBe("Pick a language.");
     }
   });
 

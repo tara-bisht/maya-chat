@@ -14,14 +14,7 @@ import {
   type StudioTool,
   type ToneSettings,
 } from "@maya/shared";
-import { logDropped } from "@/lib/supabase/dropped";
 import { createClient } from "@/lib/supabase/server";
-import {
-  GALLERY_AGENT_COLUMNS,
-  playbillFromAgent,
-  type GalleryAgentRow,
-  type Playbill,
-} from "@/lib/gallery/playbill";
 
 export type StudioContext = {
   planId: MayaPlan;
@@ -80,31 +73,6 @@ export async function loadStudioContext(
     maxCustomAgents: plan.max_custom_agents,
     toolsAllowed: plan.tools_allowed,
     liveCustomCount: countResult.count ?? 0,
-  };
-}
-
-export async function loadOwnRoles(
-  userId: string,
-): Promise<{ ok: true; playbills: Playbill[] } | { ok: false }> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("agents")
-    .select(GALLERY_AGENT_COLUMNS)
-    .eq("user_id", userId)
-    .eq("is_curated", false)
-    .is("archived_at", null)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    logDropped("studio", { roles: error });
-    return { ok: false };
-  }
-
-  return {
-    ok: true,
-    playbills: ((data ?? []) as GalleryAgentRow[]).map((row) =>
-      playbillFromAgent(row, userId),
-    ),
   };
 }
 

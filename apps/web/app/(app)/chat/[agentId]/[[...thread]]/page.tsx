@@ -38,14 +38,14 @@ export default async function HousePage({
       <section className="flex min-h-dvh items-center justify-center px-4">
         <div>
           <p className="font-display text-3xl text-cream italic">
-            The line dropped.
+            Something went wrong.
           </p>
           <p className="mt-4">
             <Link
               href="/gallery"
               className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
             >
-              Back to the wall
+              Home
             </Link>
           </p>
         </div>

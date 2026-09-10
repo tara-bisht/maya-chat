@@ -28,9 +28,10 @@ export type MarketplaceSection = {
 };
 
 export const MARKETPLACE_COPY = {
-  kicker: "The bill",
-  title: "Who's on the wall",
-  body: "Eight playing tonight. Four on the next bill. Talk takes a wristband.",
+  kicker: "Explore",
+  title: "Agents",
+  body: "Eight agents now. Four coming soon. Sign in to chat.",
+  signedInBody: "Eight agents now. Four coming soon.",
 } as const;
 
 export const MARKETPLACE_CATEGORIES: readonly {
@@ -158,5 +159,5 @@ export function talkHref(
   if (player.status === "coming_soon") {
     return null;
   }
-  return signedIn ? "/gallery" : "/login?next=/gallery";
+  return signedIn ? `/chat/${player.id}` : `/login?next=/chat/${player.id}`;
 }
