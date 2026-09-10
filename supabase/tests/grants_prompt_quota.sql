@@ -1,0 +1,13 @@
+-- Manual SQL checks for MAYA-111 / 112 / 113.
+-- Requires a user JWT. Do not run as postgres without
+-- `select set_config('request.jwt.claim.sub', '<user-uuid>', true);`
+-- and `set role authenticated;`.
+--
+-- Expected:
+-- 1. authenticated rpc('chat_agent_prompt', public custom id) is denied
+--    (42501) or returns null. service_role rpc returns the prompt.
+-- 2. own_custom_agent_sheet still returns the owner's prompt.
+-- 3. authenticated INSERT into usage_events is denied (42501).
+--    rpc consume_chat_turn() still inserts one server-timestamped row.
+-- 4. 6th empty conversations INSERT (no messages) raises empty_conversation_cap.
+-- 5. Creating a conversation after a prior empty row has a message still works.

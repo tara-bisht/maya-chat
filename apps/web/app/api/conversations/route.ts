@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { isDailyCapReached, parseConversationCreate } from "@maya/shared";
+import { parseConversationCreate } from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
-import { loadChatAgent, loadPlanModel } from "@/lib/chat/load-context";
-import { countTurnsToday } from "@/lib/chat/persist";
+import { loadChatAgent } from "@/lib/chat/load-context";
 import {
   messageCountFromEmbed,
   type ConversationQueryRow,
@@ -45,15 +44,6 @@ export async function POST(request: Request) {
     return chatError("locked_agent", 403);
   }
 
-  const planLoad = await loadPlanModel(supabase, loaded.planId);
-  if (!planLoad.ok) {
-    return chatError("dropped", 500);
-  }
-  const used = await countTurnsToday(supabase, user.id);
-  if (isDailyCapReached(planLoad.dailyLimit, used)) {
-    return chatError("quota", 429);
-  }
-
   const { data, error } = await supabase
     .from("conversations")
     .insert({
@@ -65,6 +55,9 @@ export async function POST(request: Request) {
     .single();
 
   if (error || !data) {
+    if (error?.code === "P0001") {
+      return chatError("invalid", 400);
+    }
     return chatError("dropped", 500);
   }
 

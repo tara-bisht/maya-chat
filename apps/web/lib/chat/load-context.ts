@@ -2,6 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
+import { createServiceSupabaseClient } from "@maya/database/service";
 import {
   HISTORY_WINDOW,
   canUseAgent,
@@ -9,8 +10,9 @@ import {
   parseMayaPlan,
   type MayaPlan,
 } from "@maya/shared";
+import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "@/lib/house/columns";
 import { toAccessAgent } from "@/lib/house/public-agent";
-import type { HouseAgentRow } from "@/lib/house/columns";
+import { logDropped } from "@/lib/supabase/dropped";
 
 export type ChatAgentRow = HouseAgentRow & { system_prompt: string };
 
@@ -21,12 +23,10 @@ export async function loadChatAgent(
   | { ok: true; agent: ChatAgentRow; planId: MayaPlan; canChat: boolean }
   | { ok: false; reason: "not_found" | "dropped" }
 > {
-  const [agentResult, entitlementResult, promptResult] = await Promise.all([
+  const [agentResult, entitlementResult] = await Promise.all([
     supabase
       .from("agents")
-      .select(
-        "id, user_id, name, tagline, avatar_url, category, is_curated, is_public, free_tier, language_preset, tone_settings, tools_enabled, costume_id, archived_at",
-      )
+      .select(HOUSE_AGENT_COLUMNS)
       .eq("id", input.agentId)
       .maybeSingle(),
     supabase
@@ -34,33 +34,52 @@ export async function loadChatAgent(
       .select("plan")
       .eq("user_id", input.userId)
       .maybeSingle(),
-    supabase.rpc("chat_agent_prompt", { p_agent_id: input.agentId }),
   ]);
 
-  if (agentResult.error || promptResult.error) {
+  if (agentResult.error) {
+    logDropped("loadChatAgent", { agent: agentResult.error });
     return { ok: false, reason: "dropped" };
   }
 
   const row = agentResult.data as HouseAgentRow | null;
-  if (!row || row.archived_at || !promptResult.data) {
+  if (!row || row.archived_at) {
     return { ok: false, reason: "not_found" };
   }
 
-  const agent: ChatAgentRow = {
-    ...row,
-    system_prompt: promptResult.data,
-  };
-
   const planId = parseMayaPlan(entitlementResult.data?.plan);
+  const canChat = canUseAgent({
+    planId,
+    viewerId: input.userId,
+    agent: toAccessAgent(row),
+  });
+
+  if (!canChat) {
+    return {
+      ok: true,
+      agent: { ...row, system_prompt: "" },
+      planId,
+      canChat: false,
+    };
+  }
+
+  const service = createServiceSupabaseClient();
+  const promptResult = await service.rpc("chat_agent_prompt", {
+    p_agent_id: input.agentId,
+  });
+
+  if (promptResult.error) {
+    logDropped("loadChatAgent", { prompt: promptResult.error });
+    return { ok: false, reason: "dropped" };
+  }
+  if (!promptResult.data) {
+    return { ok: false, reason: "not_found" };
+  }
+
   return {
     ok: true,
-    agent,
+    agent: { ...row, system_prompt: promptResult.data },
     planId,
-    canChat: canUseAgent({
-      planId,
-      viewerId: input.userId,
-      agent: toAccessAgent(agent),
-    }),
+    canChat: true,
   };
 }
 
