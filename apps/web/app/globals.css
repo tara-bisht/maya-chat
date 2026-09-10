@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+:root {
+  --maya-night: #14110f;
+  --maya-cream: #f6efe4;
+  --maya-cream-dim: #e4d8c8;
+  --maya-acid: #ff4d2e;
+  --maya-acid-hover: #e03a1c;
+  --maya-on-acid: #14110f;
+  --maya-stub: #d6f25c;
+  --maya-on-stub: #14110f;
+  --maya-rule: #3a342e;
+  --maya-ink-soft: #b7a99a;
+  --maya-code-well: #0c0a09;
+  --maya-on-code: #e4d8c8;
+  --maya-overlay: #14110f99;
+  --maya-costume-marcus: #1f5a3c;
+  --maya-costume-priya: #9b1b4e;
+  --maya-costume-alex: #3a2418;
+  --maya-costume-nonna: #b33a1c;
+  --maya-costume-viktor: #4a6324;
+  --maya-costume-valerian: #24306e;
+  --maya-costume-barnaby: #8a3f16;
+  --maya-costume-ren: #3a4a58;
+  --maya-costume-custom: #5c4636;
+
+  --background: var(--maya-night);
+  --foreground: var(--maya-cream);
+  --card: var(--maya-cream);
+  --card-foreground: var(--maya-night);
+  --popover: var(--maya-cream);
+  --popover-foreground: var(--maya-night);
+  --primary: var(--maya-acid);
+  --primary-foreground: var(--maya-on-acid);
+  --secondary: var(--maya-rule);
+  --secondary-foreground: var(--maya-cream);
+  --muted: var(--maya-rule);
+  --muted-foreground: var(--maya-ink-soft);
+  --accent: var(--maya-stub);
+  --accent-foreground: var(--maya-on-stub);
+  --destructive: var(--maya-acid);
+  --destructive-foreground: var(--maya-on-acid);
+  --border: var(--maya-rule);
+  --input: var(--maya-rule);
+  --ring: var(--maya-acid);
+  --radius: 10px;
+}
+
+@theme inline {
+  --color-night: var(--maya-night);
+  --color-cream: var(--maya-cream);
+  --color-cream-dim: var(--maya-cream-dim);
+  --color-acid: var(--maya-acid);
+  --color-acid-hover: var(--maya-acid-hover);
+  --color-on-acid: var(--maya-on-acid);
+  --color-stub: var(--maya-stub);
+  --color-on-stub: var(--maya-on-stub);
+  --color-rule: var(--maya-rule);
+  --color-ink-soft: var(--maya-ink-soft);
+  --color-code-well: var(--maya-code-well);
+  --color-on-code: var(--maya-on-code);
+  --color-costume-marcus: var(--maya-costume-marcus);
+  --color-costume-priya: var(--maya-costume-priya);
+  --color-costume-alex: var(--maya-costume-alex);
+  --color-costume-nonna: var(--maya-costume-nonna);
+  --color-costume-viktor: var(--maya-costume-viktor);
+  --color-costume-valerian: var(--maya-costume-valerian);
+  --color-costume-barnaby: var(--maya-costume-barnaby);
+  --color-costume-ren: var(--maya-costume-ren);
+  --color-costume-custom: var(--maya-costume-custom);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-bricolage), var(--font-plex-devanagari), sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --max-width-measure: 42rem;
+}
+
+html,
+body {
+  background: var(--maya-night);
+  color: var(--maya-cream);
+}
+
+body {
+  font-family: var(--font-bricolage), var(--font-plex-devanagari), sans-serif;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: var(--maya-acid);
+  color: var(--maya-night);
+}
+
+:focus-visible {
+  outline: 2px solid var(--maya-acid);
+  outline-offset: 2px;
+}
+
+.poster {
+  transform: rotate(var(--tilt, 0deg));
+  box-shadow: 6px 6px 0 var(--maya-cream);
+  transition:
+    transform 180ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.poster:hover {
+  transform: rotate(var(--tilt, 0deg)) translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--maya-cream);
+}
+
+.ticket {
+  transform: rotate(var(--tilt, 0deg));
+  box-shadow: var(--ticket-shadow, 6px 6px 0 var(--maya-acid));
+  transition:
+    transform 180ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.ticket:hover {
+  transform: rotate(var(--tilt, 0deg)) translate(-3px, -3px);
+  box-shadow: var(--ticket-shadow-hover, 9px 9px 0 var(--maya-acid));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster,
+  .poster:hover,
+  .ticket,
+  .ticket:hover {
+    transition: none;
+    transform: none;
+  }
+}

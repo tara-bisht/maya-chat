@@ -1,0 +1,16 @@
+node_modules
+.turbo
+.next
+dist
+.DS_Store
+.env
+.env.local
+.env.*.local
+*.log
+.vercel
+.supabase
+supabase/.temp
+supabase/.branches
+playwright-report
+test-results
+.pnpm-store
