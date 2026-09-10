@@ -4,11 +4,14 @@ import {
   FOOTER,
   HERO,
   HERO_SCENES,
+  HOUSE_OPEN,
   HOUSE_STEPS,
+  NIGHTS,
   NOTES,
   SEATS,
   SEATS_KICKER,
   STUDIO,
+  USUAL,
 } from "./landing";
 
 describe("HERO", () => {
@@ -40,7 +43,13 @@ describe("lobby marketing copy", () => {
       STUDIO.body,
       SEATS_KICKER.body,
       FOOTER.tagline,
-      ...HOUSE_STEPS.map((step) => step.body),
+      USUAL.title,
+      USUAL.body,
+      ...USUAL.leftover.lines,
+      HOUSE_OPEN.title,
+      HOUSE_OPEN.body,
+      ...HOUSE_STEPS.flatMap((step) => [step.body, ...step.pills]),
+      ...NIGHTS.flatMap((scene) => [scene.body, scene.prompt, scene.quote]),
       ...SEATS.flatMap((seat) => seat.bullets),
       ...NOTES.map((note) => `${note.q} ${note.a}`),
     ].join(" ");
@@ -68,6 +77,29 @@ describe("HERO_SCENES", () => {
       expect(scene.quote.length).toBeGreaterThan(0);
       expect(scene.prompt.length).toBeGreaterThan(0);
       expect(scene.kicker.length).toBeGreaterThan(0);
+      expect(scene.sticker.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("USUAL", () => {
+  it("contrasts a generic chatbot with a named voice", () => {
+    expect(USUAL.leftover.stamp).toMatch(/usual/i);
+    expect(USUAL.leftover.lines.length).toBeGreaterThan(1);
+    expect(HERO_SCENES[0]?.shortName).toBe("Marcus");
+  });
+});
+
+describe("NIGHTS", () => {
+  it("puts a House scrap on each scene", () => {
+    expect(NIGHTS.map((scene) => scene.id)).toEqual([
+      "maths",
+      "advice",
+      "code",
+    ]);
+    for (const scene of NIGHTS) {
+      expect(scene.prompt.length).toBeGreaterThan(0);
+      expect(scene.quote.length).toBeGreaterThan(0);
     }
   });
 });

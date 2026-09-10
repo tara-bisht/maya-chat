@@ -29,6 +29,7 @@ export type HeroScene = {
   kicker: string;
   quote: string;
   prompt: string;
+  sticker: string;
 };
 
 function companyPlayer(shortName: string) {
@@ -55,6 +56,7 @@ export const HERO_SCENES: HeroScene[] = [
     quote:
       "Delay is fear in a nicer shirt. The work is yours; the mood is not. Twenty ugly minutes. Now.",
     prompt: "I keep putting off the thing that actually matters.",
+    sticker: "Twenty minutes",
   },
   {
     id: "priya",
@@ -66,6 +68,7 @@ export const HERO_SCENES: HeroScene[] = [
     quote:
       "Outer function, inner function — I do like a close approach. Differentiate the outside, multiply by the inside. Your move: d/dx of sin(x²).",
     prompt: "Walk me through the chain rule without the textbook voice.",
+    sticker: "Chain rule",
   },
   {
     id: "alex",
@@ -77,6 +80,7 @@ export const HERO_SCENES: HeroScene[] = [
     quote:
       "You are not shipping 800 lines tonight. Split the migration. If prod pages me it will be the “also cleaned up the logger” hunk.",
     prompt: "This PR is 800 lines and I need it tonight.",
+    sticker: "Split it",
   },
 ];
 
@@ -93,6 +97,8 @@ export type NightScene = {
   kicker: string;
   title: string;
   body: string;
+  prompt: string;
+  quote: string;
 };
 
 export const NIGHTS: NightScene[] = [
@@ -103,6 +109,8 @@ export const NIGHTS: NightScene[] = [
     kicker: "Learning",
     title: "When you are learning maths",
     body: "You need pedagogical rigor, an interactive breakdown, and a little banter — not a cold formula dump.",
+    prompt: "d/dx of sin(x²)?",
+    quote: "Outside, then inside. Your move.",
   },
   {
     id: "advice",
@@ -111,6 +119,8 @@ export const NIGHTS: NightScene[] = [
     kicker: "Wellbeing",
     title: "When you need advice",
     body: "You need fierce care or a stoic roast — not a canned corporate disclaimer.",
+    prompt: "I skipped lunch again.",
+    quote: "Sit. Eat. Then we talk.",
   },
   {
     id: "code",
@@ -119,6 +129,8 @@ export const NIGHTS: NightScene[] = [
     kicker: "Productivity",
     title: "When the PR is on fire",
     body: "You need production edge cases from someone who has been on call too long — not a cheerful autocomplete.",
+    prompt: "This PR is 800 lines.",
+    quote: "Split it. Prod will not wait.",
   },
 ];
 
@@ -139,18 +151,44 @@ export const HOUSE_STEPS = [
     n: "01",
     title: "Pick or create",
     body: "Start from a featured character, or open Studio and write your own — name, backstory, tone.",
+    pills: ["Name", "Backstory", "Tone"],
   },
   {
     n: "02",
     title: "Chat",
     body: "They stay in character. The app chrome does not impersonate them. Yours will not either.",
+    pills: ["In character", "Chrome stays yours"],
   },
   {
     n: "03",
     title: "They remember",
     body: "Plus and Pro keep private memory per agent. Free keeps the latest stretch of the thread. Pick the model they speak through.",
+    pills: ["Per-agent memory", "Pick the model"],
   },
 ] as const;
+
+export const USUAL = {
+  kicker: "The difference",
+  title: "Same question. Different night.",
+  body: "A generic chatbot hedges. A character answers. If none of these fit, you write one.",
+  leftover: {
+    stamp: "The usual",
+    lines: [
+      "That’s a great question!",
+      "As an AI, I can’t have a point of view.",
+      "Here are several options you might consider.",
+    ],
+  },
+} as const;
+
+export const HOUSE_OPEN = {
+  kicker: "Tonight",
+  title: "The house is open.",
+  body: "Pick a voice, or write the one you actually need.",
+  cta: { href: "/#studio", label: "Create an agent" },
+  secondary: { href: "/#seats", label: "See plans" },
+  stamp: "Tonight · write a voice",
+} as const;
 
 export const STUDIO = {
   kicker: "Create an agent",

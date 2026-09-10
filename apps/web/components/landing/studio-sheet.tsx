@@ -10,9 +10,15 @@ export function StudioSheet() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-          {STUDIO.kicker}
-        </p>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-7 min-w-7 items-center justify-center bg-cream px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night uppercase shadow-[2px_2px_0_#FF4D2E]">
+            05
+          </span>
+          <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+            {STUDIO.kicker}
+          </p>
+          <span aria-hidden className="h-px min-w-8 flex-1 bg-rule" />
+        </div>
         <article
           className="ticket mt-4 max-w-[40rem] bg-cream p-6 text-night"
           style={

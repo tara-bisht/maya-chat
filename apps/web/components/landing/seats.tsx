@@ -79,7 +79,11 @@ export function Seats() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker={SEATS_KICKER.kicker} title={SEATS_KICKER.title}>
+        <SectionKicker
+          index="06"
+          kicker={SEATS_KICKER.kicker}
+          title={SEATS_KICKER.title}
+        >
           {SEATS_KICKER.body}
         </SectionKicker>
         <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">

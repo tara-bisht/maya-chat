@@ -157,6 +157,42 @@ body::before {
   }
 }
 
+@keyframes maya-floaty {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--tilt, 0deg));
+  }
+}
+
+.maya-floaty {
+  animation: maya-floaty 5s ease-in-out infinite;
+}
+
+.maya-floaty-late {
+  animation-delay: -2.4s;
+}
+
+@keyframes maya-spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.maya-spin-slow {
+  animation: maya-spin-slow 14s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maya-floaty,
+  .maya-floaty-late,
+  .maya-spin-slow {
+    animation: none;
+  }
+}
+
 @keyframes maya-caret {
   0%,
   49% {

@@ -8,9 +8,9 @@ export function Notes() {
       id="notes"
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
-      <PageInner>
-        <SectionKicker kicker="FAQ" title="Before you start" />
-        <div className="max-w-measure border-t border-rule">
+      <PageInner className="md:grid md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] md:items-start md:gap-12">
+        <SectionKicker index="07" kicker="FAQ" title="Before you start" />
+        <div className="border-t border-rule">
           {NOTES.map((note) => (
             <details key={note.q} className="group border-b border-rule">
               <summary className="cursor-pointer list-none py-4 font-display text-2xl leading-tight font-semibold tracking-[-0.03em] text-cream italic [&::-webkit-details-marker]:hidden">

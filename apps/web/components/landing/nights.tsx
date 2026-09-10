@@ -10,7 +10,11 @@ export function Nights() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker={NIGHTS_KICKER.kicker} title={NIGHTS_KICKER.title}>
+        <SectionKicker
+          index="03"
+          kicker={NIGHTS_KICKER.kicker}
+          title={NIGHTS_KICKER.title}
+        >
           {NIGHTS_KICKER.body}
         </SectionKicker>
         <ul className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8">
@@ -29,6 +33,24 @@ export function Nights() {
                 <p className="font-sans text-sm leading-snug text-cream/90">
                   {scene.body}
                 </p>
+                <div className="mt-auto flex flex-col gap-2 pt-2">
+                  <article className="rounded-md bg-cream px-3 py-2 text-night shadow-[3px_3px_0_#FF4D2E]">
+                    <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase">
+                      You
+                    </p>
+                    <p className="mt-1 font-sans text-sm leading-snug">
+                      {scene.prompt}
+                    </p>
+                  </article>
+                  <article className="rounded-md bg-night/25 px-3 py-2">
+                    <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
+                      {scene.player}
+                    </p>
+                    <p className="mt-1 font-sans text-sm leading-snug text-cream">
+                      {scene.quote}
+                    </p>
+                  </article>
+                </div>
               </article>
             </li>
           ))}
