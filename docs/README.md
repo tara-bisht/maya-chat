@@ -34,6 +34,7 @@ monetization: "Free / Plus $9/mo / Pro $19/mo — configurable model allowlists 
 | 🖥️ **[Web app (`apps/web`)](apps/web)** | **Night-wall lobby + Next.js 15 shell**:<br>• Character-first landing (festival lineup, not a chatbot)<br>• Maya Street Cast tokens, costume-flood playbills | Founder, Web, Design |
 | 🛠️ **[Technical Architecture Blueprint](architecture.md)** | **Original schema & monorepo sketch**:<br>• Turborepo layout, Postgres + pgvector + RLS SQL<br>• §4 14-day dual-track checklist is **superseded by [roadmap.md](roadmap.md)** | CTO, Engineering Pod |
 | 📐 **[Implementation Plan](implementation-plan.md)** | **PR-level build sequence**:<br>• Locked decisions, vertical slices, ordered PRs<br>• Phase 0 scaffold through Web MVP | Founder, Engineering |
+| 🌿 **[Git and GitHub](git.md)** | **GitHub Flow**:<br>• Branch names, conventional commits, squash-merge to `main`<br>• Owner ruleset and merge-button checklist | Engineering, Grok |
 | 📖 **[Domain glossary (`CONTEXT.md`)](../CONTEXT.md)** | **Words**: agent, company, plan, entitlement, house, playbill, costume | Everyone |
 
 ---
