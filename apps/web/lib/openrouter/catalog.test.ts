@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { parseGatewayId, SEED_MODELS } from "./catalog";
 
 describe("SEED_MODELS", () => {
-  it("covers the eight seed aliases", () => {
+  it("covers the seed aliases", () => {
     expect(SEED_MODELS.map((model) => model.alias)).toEqual([
+      "qwen-flash",
       "gemini-flash",
       "grok-fast",
       "deepseek",

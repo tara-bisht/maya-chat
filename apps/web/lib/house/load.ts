@@ -153,7 +153,7 @@ export async function loadHouse(
     house: {
       agent,
       plan: planId,
-      defaultModelId: planResult.data?.default_model_id ?? "gemini-flash",
+      defaultModelId: planResult.data?.default_model_id ?? "qwen-flash",
       dailyLimit: planResult.data?.daily_message_limit ?? null,
       threads,
       cast: buildCast({

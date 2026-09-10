@@ -15,11 +15,18 @@ export type SeedModel = {
  */
 export const SEED_MODELS: readonly SeedModel[] = [
   {
+    alias: "qwen-flash",
+    gatewayId: "qwen/qwen3.8-flash",
+    displayName: "Qwen Flash",
+    provider: "qwen",
+    sortOrder: 10,
+  },
+  {
     alias: "gemini-flash",
     gatewayId: "google/gemini-2.5-flash",
     displayName: "Gemini Flash",
     provider: "google",
-    sortOrder: 10,
+    sortOrder: 15,
   },
   {
     alias: "grok-fast",
