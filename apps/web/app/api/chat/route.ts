@@ -97,6 +97,7 @@ export async function POST(request: Request) {
 
   const quota = await supabase.rpc("consume_chat_turn");
   if (quota.error) {
+    logDropped("chat", { quota: quota.error });
     return chatError("dropped", 500);
   }
   if (quota.data !== true) {

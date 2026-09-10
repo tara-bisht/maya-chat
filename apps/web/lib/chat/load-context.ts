@@ -128,6 +128,7 @@ export async function loadPlanModel(
     .maybeSingle();
 
   if (planResult.error || !planResult.data) {
+    if (planResult.error) logDropped("chat", { plan: planResult.error });
     return { ok: false };
   }
 
@@ -138,6 +139,7 @@ export async function loadPlanModel(
     .maybeSingle();
 
   if (modelResult.error || !modelResult.data?.is_enabled) {
+    if (modelResult.error) logDropped("chat", { model: modelResult.error });
     return { ok: false };
   }
 
@@ -168,6 +170,7 @@ export async function loadConversationHistory(
     .maybeSingle();
 
   if (conversationResult.error) {
+    logDropped("chat", { conversation: conversationResult.error });
     return { ok: false, reason: "dropped" };
   }
 
@@ -189,6 +192,7 @@ export async function loadConversationHistory(
     .limit(HISTORY_WINDOW);
 
   if (messagesResult.error) {
+    logDropped("chat", { messages: messagesResult.error });
     return { ok: false, reason: "dropped" };
   }
 
