@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { PageInner } from "@/components/app/page-frame";
+import { HeroStage } from "@/components/landing/hero-stage";
 import { HERO } from "@/lib/landing";
 
 export function Hero({ signedIn = false }: { signedIn?: boolean }) {
   return (
-    <section className="relative z-10 pt-6 pb-4 md:pt-10">
+    <section className="relative z-10 pt-6 pb-8 md:pt-10 md:pb-14">
       <PageInner>
-        <h1 className="max-w-[16ch] font-display text-[clamp(3.25rem,11vw,5.75rem)] leading-[0.92] font-medium tracking-[-0.04em] text-cream italic">
+        <h1 className="font-display text-[clamp(3.25rem,11vw,5.75rem)] leading-[0.92] font-medium tracking-[-0.04em] text-cream italic">
           {HERO.title}
         </h1>
         <p className="mt-6 max-w-xl font-sans text-lg leading-snug text-cream-dim">
@@ -26,6 +27,9 @@ export function Hero({ signedIn = false }: { signedIn?: boolean }) {
             {signedIn ? "Home" : "Sign in"}
           </Link>
         </p>
+        <div className="mt-10 md:mt-12">
+          <HeroStage />
+        </div>
       </PageInner>
     </section>
   );

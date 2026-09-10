@@ -426,7 +426,7 @@ The visual language stays theatrical (night wall, posters, tickets). Chrome copy
 
 - "Don't talk to a boring AI chatbot. Give your AI personality and character."
 - "Every conversation deserves a character."
-- "Talk to someone with a point of view."
+- "Give your AI a personality."
 
 **Allowed register (chrome)**
 
@@ -533,8 +533,8 @@ These are generation rules for MVP surfaces. If a control is not named here, inh
 
 Night, full bleed, grain on. The eight posters remain the visual center. Sections after the wall are **wall artifacts** (scene posters, cream tickets, stub notes) — not a SaaS features essay, not a blog column.
 
-1. Top: cream Fraunces italic wordmark, jump links (Marketplace, How it works, Create an agent, Plans), ghost “Sign in”, acid “Meet the agents.” (cream offset). Jump links wrap under the action row on small screens. No hamburger. One acid fill in the chrome.
-2. Hero: `{typography.display}` italic — “Talk to someone with a point of view.” — then one `{typography.body-lg}` cream-dim sentence, a stub die-cut “Marcus + Priya on Free”, ghost “Sign in”, then “Choose an agent, or create your own.”
+1. Top: cream Fraunces italic wordmark left, jump links (Marketplace, How it works, Create an agent, Plans) optically centered, ghost “Sign in” + acid “Meet the agents.” (cream offset) right. Jump links wrap under the action row on small screens and stay centered. No hamburger. One acid fill in the chrome.
+2. Hero: stacked. `{typography.display}` italic — “Give your AI a personality.” — spans the stage width, then one `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast, a stub die-cut “Marcus + Priya on Free”, ghost “Sign in”, then “Choose an agent, or create your own.” Under the copy: a wheatpaste quote fan — three overlapping costume-flood posters (Marcus, Dr. Priya, Alex). Featured poster is square and on top; the others sit behind at a tilt. Each poster is a linocut, a Fraunces pull-quote, and a cream “You — …” stub. Not a chat replica, not a device mockup, not a three-column icon row. Click a poster to feature that voice; Alex carries Plus. Mobile shows one poster plus portrait chips. No second acid fill in the copy block.
 3. `#company`: kicker (“Meet the lineup”) + the eight posters on the staggered wall. This is the product, not a mockup frame. No three-column icon row.
 4. `#nights`: three costume-flood scene posters (maths / advice / code). Context picks the character.
 5. `#house`: three cream tickets — pick a player, talk, they remember. Acid hard offset.

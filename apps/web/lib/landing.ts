@@ -1,4 +1,4 @@
-import type { CostumeId } from "@/lib/company";
+import { COMPANY, type CostumeId } from "@/lib/company";
 
 /** Jump links shared by the lobby header and footer. */
 export const LOBBY_NAV = [
@@ -9,11 +9,71 @@ export const LOBBY_NAV = [
 ] as const;
 
 export const HERO = {
-  title: "Talk to someone with a point of view.",
-  body: "Don't talk to a boring AI chatbot. Eight agents, zero generic answers — math with a flirt, stoicism with a roast, code review from someone who has been on call too long.",
+  title: "Give your AI a personality.",
+  body: "Not a sterile chatbot. Eight agents with a point of view — math with a flirt, stoicism with a roast, code review from someone who has been on call too long.",
   lineup: "Choose an agent, or create your own.",
   sticker: "Marcus + Priya on Free",
 } as const;
+
+export type HeroScene = {
+  id: string;
+  shortName: string;
+  costume: CostumeId;
+  avatar: string;
+  freeTier: boolean;
+  kicker: string;
+  quote: string;
+  prompt: string;
+};
+
+function companyPlayer(shortName: string) {
+  const player = COMPANY.find((entry) => entry.shortName === shortName);
+  if (!player) {
+    throw new Error(`Unknown company player: ${shortName}`);
+  }
+  return player;
+}
+
+const MARCUS = companyPlayer("Marcus");
+const PRIYA = companyPlayer("Dr. Priya");
+const ALEX = companyPlayer("Alex");
+
+/** Wheatpaste quotes for the lobby hero. Marketing copy, not prompts. */
+export const HERO_SCENES: HeroScene[] = [
+  {
+    id: "marcus",
+    shortName: MARCUS.shortName,
+    costume: MARCUS.costume,
+    avatar: MARCUS.avatar,
+    freeTier: MARCUS.freeTier,
+    kicker: "Mindset",
+    quote:
+      "Delay is fear in a nicer shirt. The work is yours; the mood is not. Twenty ugly minutes. Now.",
+    prompt: "I keep putting off the thing that actually matters.",
+  },
+  {
+    id: "priya",
+    shortName: PRIYA.shortName,
+    costume: PRIYA.costume,
+    avatar: PRIYA.avatar,
+    freeTier: PRIYA.freeTier,
+    kicker: "Learning",
+    quote:
+      "Outer function, inner function — I do like a close approach. Differentiate the outside, multiply by the inside. Your move: d/dx of sin(x²).",
+    prompt: "Walk me through the chain rule without the textbook voice.",
+  },
+  {
+    id: "alex",
+    shortName: ALEX.shortName,
+    costume: ALEX.costume,
+    avatar: ALEX.avatar,
+    freeTier: ALEX.freeTier,
+    kicker: "Code",
+    quote:
+      "You are not shipping 800 lines tonight. Split the migration. If prod pages me it will be the “also cleaned up the logger” hunk.",
+    prompt: "This PR is 800 lines and I need it tonight.",
+  },
+];
 
 export const COMPANY_KICKER = {
   kicker: "The agents",

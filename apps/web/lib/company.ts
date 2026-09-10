@@ -130,3 +130,20 @@ export const COSTUME_CLASS: Record<PosterCostumeId, string> = {
   kenji: "bg-costume-kenji",
   sofia: "bg-costume-sofia",
 };
+
+/** Full class strings so Tailwind emits the 90% costume wash. */
+export const COSTUME_WASH_CLASS: Record<PosterCostumeId, string> = {
+  marcus: "bg-costume-marcus/90",
+  priya: "bg-costume-priya/90",
+  alex: "bg-costume-alex/90",
+  nonna: "bg-costume-nonna/90",
+  viktor: "bg-costume-viktor/90",
+  valerian: "bg-costume-valerian/90",
+  barnaby: "bg-costume-barnaby/90",
+  ren: "bg-costume-ren/90",
+  custom: "bg-costume-custom/90",
+  jules: "bg-costume-jules/90",
+  meera: "bg-costume-meera/90",
+  kenji: "bg-costume-kenji/90",
+  sofia: "bg-costume-sofia/90",
+};

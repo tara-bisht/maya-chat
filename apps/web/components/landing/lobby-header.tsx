@@ -11,13 +11,16 @@ export function LobbyHeader({
 }) {
   return (
     <header className="relative z-20 py-5">
-      <PageInner className="flex flex-wrap items-center gap-x-4 gap-y-3">
-        <Link href="/" className="font-display text-3xl text-cream italic">
+      <PageInner className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 md:grid-cols-[1fr_auto_1fr]">
+        <Link
+          href="/"
+          className="justify-self-start font-display text-3xl text-cream italic"
+        >
           Maya
         </Link>
         <nav
           aria-label="Landing"
-          className="order-3 flex w-full flex-wrap gap-x-4 gap-y-1 md:order-none md:w-auto md:flex-1"
+          className="order-3 col-span-2 flex w-full flex-wrap items-center justify-center gap-x-5 gap-y-1 md:order-none md:col-span-1 md:w-auto"
         >
           {LOBBY_NAV.map((item) => (
             <Link
@@ -29,7 +32,7 @@ export function LobbyHeader({
             </Link>
           ))}
         </nav>
-        <nav className="ml-auto flex flex-wrap items-center gap-3">
+        <nav className="flex flex-wrap items-center justify-end gap-3 justify-self-end">
           {signedIn ? (
             <Link
               href="/gallery"
