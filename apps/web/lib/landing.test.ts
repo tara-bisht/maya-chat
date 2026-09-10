@@ -29,7 +29,6 @@ describe("HERO", () => {
   it("sells writing a character, not a closed roster", () => {
     expect(HERO.body).not.toMatch(/eight/i);
     expect(HERO.body).toMatch(/write/i);
-    expect(HERO.lineup).toMatch(/write yours/i);
   });
 });
 
@@ -37,15 +36,17 @@ describe("lobby marketing copy", () => {
   it("does not count a fixed number of agents as the product", () => {
     const surfaces = [
       HERO.body,
-      HERO.lineup,
-      HERO.sticker,
       COMPANY_KICKER.body,
       STUDIO.body,
       SEATS_KICKER.body,
       FOOTER.tagline,
       USUAL.title,
       USUAL.body,
-      ...USUAL.leftover.lines,
+      ...USUAL.prompts.flatMap((entry) => [
+        entry.prompt,
+        ...entry.leftover.lines,
+        ...entry.nights.map((night) => night.quote),
+      ]),
       HOUSE_OPEN.title,
       HOUSE_OPEN.body,
       ...HOUSE_STEPS.flatMap((step) => [step.body, ...step.pills]),
@@ -61,11 +62,16 @@ describe("lobby marketing copy", () => {
 });
 
 describe("HERO_SCENES", () => {
-  it("opens on Marcus and covers the three lobby voices", () => {
+  it("opens on Marcus and covers the live company", () => {
     expect(HERO_SCENES.map((scene) => scene.id)).toEqual([
       "marcus",
       "priya",
       "alex",
+      "nonna",
+      "viktor",
+      "valerian",
+      "barnaby",
+      "ren",
     ]);
     expect(HERO_SCENES[0]?.shortName).toBe("Marcus");
     expect(HERO_SCENES[0]?.freeTier).toBe(true);
@@ -83,10 +89,19 @@ describe("HERO_SCENES", () => {
 });
 
 describe("USUAL", () => {
-  it("contrasts a generic chatbot with a named voice", () => {
-    expect(USUAL.leftover.stamp).toMatch(/usual/i);
-    expect(USUAL.leftover.lines.length).toBeGreaterThan(1);
-    expect(HERO_SCENES[0]?.shortName).toBe("Marcus");
+  it("contrasts a generic chatbot with three named voices", () => {
+    expect(USUAL.title).toMatch(/same question/i);
+    expect(USUAL.leftoverName).toMatch(/assistant/i);
+    expect(USUAL.prompts.length).toBeGreaterThan(1);
+    for (const entry of USUAL.prompts) {
+      expect(entry.leftover.stamp).toMatch(/usual/i);
+      expect(entry.leftover.lines.length).toBeGreaterThan(2);
+      expect(entry.nights.map((night) => night.player)).toEqual([
+        "Marcus",
+        "Nonna Maria",
+        "Barnaby",
+      ]);
+    }
   });
 });
 

@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { PageInner } from "@/components/app/page-frame";
 import { SEATS, SEATS_FOOTNOTE, SEATS_KICKER, type Seat } from "@/lib/landing";
-import { SectionKicker } from "@/components/landing/section-kicker";
+import { LandingHeading } from "@/components/landing/section-kicker";
 
 function SeatTicket({ seat }: { seat: Seat }) {
   const stampClass =
@@ -79,13 +79,9 @@ export function Seats() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker
-          index="06"
-          kicker={SEATS_KICKER.kicker}
-          title={SEATS_KICKER.title}
-        >
+        <LandingHeading title={SEATS_KICKER.title}>
           {SEATS_KICKER.body}
-        </SectionKicker>
+        </LandingHeading>
         <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
           {SEATS.map((seat) => (
             <li key={seat.id} className="min-w-0 pt-3 pr-3">

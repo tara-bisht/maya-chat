@@ -185,11 +185,28 @@ body::before {
   animation: maya-spin-slow 14s linear infinite;
 }
 
+@keyframes maya-scribble {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.maya-scribble path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: maya-scribble 0.7s ease-out 0.2s forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .maya-floaty,
   .maya-floaty-late,
-  .maya-spin-slow {
+  .maya-spin-slow,
+  .maya-scribble path {
     animation: none;
+  }
+
+  .maya-scribble path {
+    stroke-dashoffset: 0;
   }
 }
 

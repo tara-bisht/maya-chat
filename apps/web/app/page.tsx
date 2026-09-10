@@ -8,7 +8,7 @@ import { LobbyHeader } from "@/components/landing/lobby-header";
 import { Nights } from "@/components/landing/nights";
 import { Notes } from "@/components/landing/notes";
 import { Seats } from "@/components/landing/seats";
-import { SectionKicker } from "@/components/landing/section-kicker";
+import { LandingHeading } from "@/components/landing/section-kicker";
 import { StudioSheet } from "@/components/landing/studio-sheet";
 import { Usual } from "@/components/landing/usual";
 import { getSessionUser } from "@/lib/auth/session";
@@ -32,13 +32,9 @@ export default async function Home() {
         className="relative z-10 scroll-mt-28 py-10 md:py-14"
       >
         <PageInner>
-          <SectionKicker
-            index="01"
-            kicker={COMPANY_KICKER.kicker}
-            title={COMPANY_KICKER.title}
-          >
+          <LandingHeading title={COMPANY_KICKER.title}>
             {COMPANY_KICKER.body}
-          </SectionKicker>
+          </LandingHeading>
           <CompanyWall />
         </PageInner>
       </section>

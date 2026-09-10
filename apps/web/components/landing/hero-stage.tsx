@@ -137,7 +137,7 @@ function PreviewWell({
 }) {
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      <div className="flex items-center gap-3 border-b border-rule px-4 py-3">
+      <div className="flex shrink-0 items-center gap-3 border-b border-rule px-4 py-3">
         <AgentPortrait
           name={scene.shortName}
           costume={scene.costume}
@@ -158,7 +158,7 @@ function PreviewWell({
         role="tabpanel"
         id="hero-stage-panel"
         aria-label={`${scene.shortName} preview`}
-        className="flex min-h-[18rem] flex-col gap-4 px-4 py-5"
+        className="flex min-h-[18rem] flex-1 flex-col gap-4 overflow-y-auto px-4 py-5 md:min-h-0"
       >
         <p className="sr-only">
           You: {scene.prompt} {scene.shortName}: {scene.quote}
@@ -190,7 +190,7 @@ function PreviewWell({
       </div>
       <div
         aria-hidden="true"
-        className="border-t border-rule bg-night px-3 py-3"
+        className="shrink-0 border-t border-rule bg-night px-3 py-3"
       >
         <div className="flex items-end gap-2">
           <p className="min-h-11 flex-1 rounded-md bg-cream-dim px-3 py-2.5 font-sans text-base text-night/40 md:text-lg">
@@ -227,7 +227,7 @@ export function HeroStage() {
 
   return (
     <div
-      className="relative md:px-3 md:pt-3"
+      className="relative mx-auto w-full max-w-5xl md:px-3 md:pt-3"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -237,7 +237,7 @@ export function HeroStage() {
         }
       }}
     >
-      <div className="overflow-hidden rounded-md border-2 border-cream bg-night shadow-[8px_8px_0_#FF4D2E]">
+      <div className="flex flex-col overflow-hidden rounded-md border-2 border-cream bg-night shadow-[8px_8px_0_#FF4D2E] md:aspect-[16/10]">
         <div
           role="tablist"
           aria-label="Preview agents"
@@ -272,11 +272,11 @@ export function HeroStage() {
           })}
         </div>
 
-        <div className="flex">
+        <div className="flex min-h-0 flex-1">
           <div
             role="tablist"
             aria-label="Preview agents"
-            className="hidden w-[200px] shrink-0 flex-col border-r border-rule md:flex"
+            className="hidden w-[200px] shrink-0 flex-col overflow-y-auto border-r border-rule md:flex"
           >
             {HERO_SCENES.map((entry) => {
               const selected = entry.id === scene.id;

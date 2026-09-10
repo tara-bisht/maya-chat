@@ -1,6 +1,6 @@
 import { PageInner } from "@/components/app/page-frame";
 import { HOUSE_KICKER, HOUSE_STEPS } from "@/lib/landing";
-import { SectionKicker } from "@/components/landing/section-kicker";
+import { LandingHeading } from "@/components/landing/section-kicker";
 
 export function HouseSteps() {
   return (
@@ -9,13 +9,9 @@ export function HouseSteps() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker
-          index="04"
-          kicker={HOUSE_KICKER.kicker}
-          title={HOUSE_KICKER.title}
-        >
+        <LandingHeading title={HOUSE_KICKER.title}>
           {HOUSE_KICKER.body}
-        </SectionKicker>
+        </LandingHeading>
         <ol className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {HOUSE_STEPS.map((step) => (
             <li key={step.n} className="min-w-0">

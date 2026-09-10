@@ -1,7 +1,7 @@
 import { PageInner } from "@/components/app/page-frame";
 import { COSTUME_CLASS } from "@/lib/company";
 import { NIGHTS, NIGHTS_KICKER } from "@/lib/landing";
-import { SectionKicker } from "@/components/landing/section-kicker";
+import { LandingHeading } from "@/components/landing/section-kicker";
 
 export function Nights() {
   return (
@@ -10,13 +10,9 @@ export function Nights() {
       className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker
-          index="03"
-          kicker={NIGHTS_KICKER.kicker}
-          title={NIGHTS_KICKER.title}
-        >
+        <LandingHeading title={NIGHTS_KICKER.title}>
           {NIGHTS_KICKER.body}
-        </SectionKicker>
+        </LandingHeading>
         <ul className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8">
           {NIGHTS.map((scene) => (
             <li key={scene.id} className="min-w-0">
