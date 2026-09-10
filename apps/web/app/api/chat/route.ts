@@ -5,12 +5,7 @@ import {
   toUIMessageStream,
   type UIMessage,
 } from "ai";
-import {
-  HISTORY_WINDOW,
-  isDailyCapReached,
-  parseChatRequest,
-  systemPromptWithLanguage,
-} from "@maya/shared";
+import { parseChatRequest, systemPromptWithLanguage } from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
 import {
@@ -19,9 +14,7 @@ import {
   loadPlanModel,
 } from "@/lib/chat/load-context";
 import {
-  countTurnsToday,
   insertAssistantMessage,
-  insertUsageEvent,
   insertUserMessage,
   retitleConversation,
 } from "@/lib/chat/persist";
@@ -71,11 +64,6 @@ export async function POST(request: Request) {
     return chatError("dropped", 500);
   }
 
-  const used = await countTurnsToday(supabase, user.id);
-  if (isDailyCapReached(planLoad.dailyLimit, used)) {
-    return chatError("quota", 429);
-  }
-
   const conversationLoad = await loadConversationHistory(supabase, {
     userId: user.id,
     agentId: parsed.data.agentId,
@@ -89,7 +77,14 @@ export async function POST(request: Request) {
     );
   }
 
-  await insertUsageEvent(supabase, user.id);
+  const quota = await supabase.rpc("consume_chat_turn");
+  if (quota.error) {
+    return chatError("dropped", 500);
+  }
+  if (quota.data !== true) {
+    return chatError("quota", 429);
+  }
+
   await insertUserMessage(supabase, {
     conversationId: conversationLoad.conversation.id,
     content: parsed.text,
@@ -100,13 +95,11 @@ export async function POST(request: Request) {
     firstUserText: parsed.text,
   });
 
-  const prior: UIMessage[] = conversationLoad.history
-    .slice(-HISTORY_WINDOW)
-    .map((turn, index) => ({
-      id: `hist-${index}`,
-      role: turn.role,
-      parts: [{ type: "text" as const, text: turn.content }],
-    }));
+  const prior: UIMessage[] = conversationLoad.history.map((turn, index) => ({
+    id: `hist-${index}`,
+    role: turn.role,
+    parts: [{ type: "text" as const, text: turn.content }],
+  }));
   const nextMessages: UIMessage[] = [
     ...prior,
     {

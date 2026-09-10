@@ -2,7 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
-import { titleFromFirstMessage } from "@maya/shared";
+import { isDefaultConversationTitle, titleFromFirstMessage } from "@maya/shared";
 
 export async function insertUserMessage(
   supabase: SupabaseClient<Database>,
@@ -45,9 +45,11 @@ export async function retitleConversation(
   supabase: SupabaseClient<Database>,
   input: { conversationId: string; currentTitle: string; firstUserText: string },
 ) {
-  const nextTitle = input.currentTitle.trim()
-    ? input.currentTitle
-    : titleFromFirstMessage(input.firstUserText);
+  if (!isDefaultConversationTitle(input.currentTitle)) {
+    return;
+  }
+
+  const nextTitle = titleFromFirstMessage(input.firstUserText);
 
   const { error } = await supabase
     .from("conversations")
@@ -80,16 +82,3 @@ export async function countTurnsToday(
   return count ?? 0;
 }
 
-export async function insertUsageEvent(
-  supabase: SupabaseClient<Database>,
-  userId: string,
-) {
-  const { error } = await supabase.from("usage_events").insert({
-    user_id: userId,
-    event_type: "chat_turn",
-  });
-
-  if (error) {
-    throw new Error("Could not stamp usage.");
-  }
-}

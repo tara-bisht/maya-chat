@@ -2,12 +2,22 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
-import { HISTORY_WINDOW, isUuid, parseMayaPlan } from "@maya/shared";
+import {
+  HISTORY_WINDOW,
+  chronologicalWindow,
+  isUuid,
+  parseMayaPlan,
+} from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
 import { toHouseAgent } from "./public-agent";
-import { buildCast, displayThreadTitle, threadsForAgent } from "./threads";
-import type { ConversationRow } from "./threads";
+import {
+  buildCast,
+  displayThreadTitle,
+  threadsForAgent,
+  toConversationRow,
+  type ConversationQueryRow,
+} from "./threads";
 import type { HouseView, HydratedTurn } from "./types";
 
 export type HouseLoad =
@@ -71,10 +81,15 @@ export async function loadHouse(
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, title, updated_at")
+      .select("id, agent_id, title, updated_at, messages(count)")
       .eq("user_id", input.userId)
       .order("updated_at", { ascending: false }),
-    supabase.from("agents").select(HOUSE_AGENT_COLUMNS),
+    supabase
+      .from("agents")
+      .select(HOUSE_AGENT_COLUMNS)
+      .or(
+        `is_curated.eq.true,user_id.eq.${input.userId},id.eq.${input.agentId}`,
+      ),
     supabase
       .from("profiles")
       .select("display_name")
@@ -127,7 +142,9 @@ export async function loadHouse(
     backstory,
   });
 
-  const conversationRows = (conversationResult.data ?? []) as ConversationRow[];
+  const conversationRows = (
+    (conversationResult.data ?? []) as ConversationQueryRow[]
+  ).map(toConversationRow);
   const agentRows = (agentsResult.data ?? []) as HouseAgentRow[];
   const threads = threadsForAgent(conversationRows, agent.id);
 
@@ -144,7 +161,7 @@ export async function loadHouse(
       .select("id, role, content, created_at")
       .eq("conversation_id", summary.id)
       .in("role", ["user", "assistant"])
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(HISTORY_WINDOW);
 
     if (messagesResult.error) {
@@ -154,7 +171,7 @@ export async function loadHouse(
     conversation = {
       id: summary.id,
       title: displayThreadTitle(summary.title),
-      messages: hydrateTurns(messagesResult.data ?? []),
+      messages: hydrateTurns(chronologicalWindow(messagesResult.data ?? [])),
     };
   }
 

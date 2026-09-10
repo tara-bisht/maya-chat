@@ -3,6 +3,10 @@ import "server-only";
 import { cache } from "react";
 import { parseMayaPlan, type MayaPlan } from "@maya/shared";
 import { houseHref } from "@/lib/house/href";
+import {
+  messageCountFromEmbed,
+  type ConversationQueryRow,
+} from "@/lib/house/threads";
 import { createClient } from "@/lib/supabase/server";
 import { logDropped } from "@/lib/supabase/dropped";
 import {
@@ -90,7 +94,7 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, title, updated_at")
+      .select("id, agent_id, title, updated_at, messages(count)")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false }),
     supabase
@@ -115,13 +119,24 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
   const curatedRows = (curatedResult.data ?? []) as GalleryAgentRow[];
   const customRows = (customResult.data ?? []) as GalleryAgentRow[];
   const houseRows = (houseResult.data ?? []) as GalleryAgentRow[];
-  const conversations = (conversationsResult.data ?? []) as ConversationRow[];
+  const conversations = (
+    (conversationsResult.data ?? []) as ConversationQueryRow[]
+  ).map((row) => ({
+    id: row.id,
+    agent_id: row.agent_id,
+    title: row.title,
+    updated_at: row.updated_at,
+    messageCount: messageCountFromEmbed(row.messages),
+  }));
 
   const known = new Set<string>(
     [...curatedRows, ...customRows, ...houseRows].map((row) => row.id),
   );
   const missing: string[] = [];
   for (const conversation of conversations) {
+    if (conversation.messageCount <= 0) {
+      continue;
+    }
     if (known.has(conversation.agent_id)) {
       continue;
     }

@@ -14,6 +14,7 @@ export type RecentConversation = {
   agent_id: string;
   title: string;
   updated_at: string;
+  messageCount: number;
 };
 
 export type RecentAgent = {
@@ -75,6 +76,9 @@ export function toRecentChats(
   for (const row of conversations) {
     if (recents.length >= limit) {
       break;
+    }
+    if (row.messageCount <= 0) {
+      continue;
     }
     const agent = agentsById.get(row.agent_id);
     if (!agent) {

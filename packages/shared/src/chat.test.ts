@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   OPEN_NIGHT_TITLE,
+  chronologicalWindow,
   isDailyCapReached,
+  isDefaultConversationTitle,
   isUuid,
   parseChatRequest,
   parseConversationCreate,
@@ -96,6 +98,28 @@ describe("titleFromFirstMessage", () => {
   it("falls back to the default thread title", () => {
     expect(titleFromFirstMessage("   ")).toBe(OPEN_NIGHT_TITLE);
     expect(titleFromFirstMessage("")).toBe("New chat");
+  });
+});
+
+describe("chronologicalWindow", () => {
+  it("reverses a newest-first window into chronological order", () => {
+    const newestFirst = Array.from({ length: 30 }, (_, index) => 30 - index);
+    const window = newestFirst.slice(0, 20);
+    expect(window[0]).toBe(30);
+    expect(chronologicalWindow(window)).toEqual(
+      Array.from({ length: 20 }, (_, index) => 11 + index),
+    );
+  });
+});
+
+describe("isDefaultConversationTitle", () => {
+  it("treats empty and New chat placeholders as untitled", () => {
+    expect(isDefaultConversationTitle("")).toBe(true);
+    expect(isDefaultConversationTitle("   ")).toBe(true);
+    expect(isDefaultConversationTitle("New chat")).toBe(true);
+    expect(isDefaultConversationTitle("New Chat")).toBe(true);
+    expect(isDefaultConversationTitle("NEW CHAT")).toBe(true);
+    expect(isDefaultConversationTitle("Physics Homework")).toBe(false);
   });
 });
 

@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
-import { parseConversationCreate } from "@maya/shared";
+import { isDailyCapReached, parseConversationCreate } from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
-import { loadChatAgent } from "@/lib/chat/load-context";
+import { loadChatAgent, loadPlanModel } from "@/lib/chat/load-context";
+import { countTurnsToday } from "@/lib/chat/persist";
+import {
+  messageCountFromEmbed,
+  type ConversationQueryRow,
+} from "@/lib/house/threads";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -38,6 +43,15 @@ export async function POST(request: Request) {
 
   if (!loaded.canChat) {
     return chatError("locked_agent", 403);
+  }
+
+  const planLoad = await loadPlanModel(supabase, loaded.planId);
+  if (!planLoad.ok) {
+    return chatError("dropped", 500);
+  }
+  const used = await countTurnsToday(supabase, user.id);
+  if (isDailyCapReached(planLoad.dailyLimit, used)) {
+    return chatError("quota", 429);
   }
 
   const { data, error } = await supabase
@@ -83,7 +97,7 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase
     .from("conversations")
-    .select("id, title, updated_at")
+    .select("id, title, updated_at, messages(count)")
     .eq("user_id", user.id)
     .eq("agent_id", agentId)
     .order("updated_at", { ascending: false });
@@ -92,5 +106,13 @@ export async function GET(request: Request) {
     return chatError("dropped", 500);
   }
 
-  return NextResponse.json({ conversations: data ?? [] });
+  const conversations = ((data ?? []) as ConversationQueryRow[])
+    .filter((row) => messageCountFromEmbed(row.messages) > 0)
+    .map((row) => ({
+      id: row.id,
+      title: row.title,
+      updated_at: row.updated_at,
+    }));
+
+  return NextResponse.json({ conversations });
 }

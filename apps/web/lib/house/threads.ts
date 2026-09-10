@@ -10,7 +10,42 @@ export type ConversationRow = {
   agent_id: string;
   title: string;
   updated_at: string;
+  messageCount: number;
 };
+
+export type ConversationQueryRow = {
+  id: string;
+  agent_id: string;
+  title: string;
+  updated_at: string;
+  messages?: unknown;
+};
+
+export function messageCountFromEmbed(messages: unknown): number {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return 0;
+  }
+  const first = messages[0];
+  if (!first || typeof first !== "object" || !("count" in first)) {
+    return 0;
+  }
+  const count = first.count;
+  return typeof count === "number" && Number.isFinite(count) ? count : 0;
+}
+
+export function toConversationRow(row: ConversationQueryRow): ConversationRow {
+  return {
+    id: row.id,
+    agent_id: row.agent_id,
+    title: row.title,
+    updated_at: row.updated_at,
+    messageCount: messageCountFromEmbed(row.messages),
+  };
+}
+
+function hasMessages(row: ConversationRow): boolean {
+  return row.messageCount > 0;
+}
 
 const COMPANY_ORDER = new Map(
   COMPANY.map((player, index) => [player.id, index]),
@@ -34,7 +69,7 @@ export function threadsForAgent(
   agentId: string,
 ): ThreadSummary[] {
   return rows
-    .filter((row) => row.agent_id === agentId)
+    .filter((row) => row.agent_id === agentId && hasMessages(row))
     .map(toThreadSummary);
 }
 
@@ -43,6 +78,9 @@ export function latestByAgent(
 ): Map<string, ThreadSummary> {
   const latest = new Map<string, ThreadSummary>();
   for (const row of rows) {
+    if (!hasMessages(row)) {
+      continue;
+    }
     if (!latest.has(row.agent_id)) {
       latest.set(row.agent_id, toThreadSummary(row));
     }
