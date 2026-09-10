@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react";
-import Link from "next/link";
-import { PlaybillCard } from "@/components/playbill-card";
 import {
-  talkHref,
-  type MarketplacePlayer,
-} from "@/lib/marketplace/bill";
+  PLAYBILL_CELL_CLASS,
+  PLAYBILL_GRID_CLASS,
+  PlaybillCard,
+} from "@/components/playbill-card";
+import { talkHref, type MarketplacePlayer } from "@/lib/marketplace/bill";
 
 const POSTER_TILTS = [-2.4, 1.6, -1.1, 2.8, -3, 1.2, 2.2, -1.8] as const;
 
@@ -16,13 +16,14 @@ export function MarketplaceWall({
   signedIn: boolean;
 }) {
   return (
-    <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <ul className={PLAYBILL_GRID_CLASS}>
       {players.map((player, index) => {
         const deg = POSTER_TILTS[index % POSTER_TILTS.length];
         const href = talkHref(player, signedIn);
         return (
           <li
             key={player.id}
+            className={PLAYBILL_CELL_CLASS}
             style={{ "--tilt": `${deg}deg` } as CSSProperties}
           >
             <PlaybillCard
@@ -40,23 +41,20 @@ export function MarketplaceWall({
                     : player.freeTier
                       ? "free"
                       : "plus",
-                href: null,
+                href,
               }}
+              footer={
+                href ? (
+                  <span className="font-sans text-sm font-semibold text-cream underline-offset-4 group-hover:underline">
+                    Talk
+                  </span>
+                ) : (
+                  <span className="font-sans text-sm font-semibold text-cream/55">
+                    Not on tonight&apos;s bill
+                  </span>
+                )
+              }
             />
-            {href ? (
-              <p className="mt-3">
-                <Link
-                  href={href}
-                  className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-                >
-                  Talk
-                </Link>
-              </p>
-            ) : (
-              <p className="mt-3 font-sans text-sm font-semibold text-ink-soft">
-                Not on tonight&apos;s bill
-              </p>
-            )}
           </li>
         );
       })}

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PageInner } from "@/components/app/page-frame";
 import { CastingForm } from "@/components/studio/casting-form";
 import { StudioSheet } from "@/components/studio/studio-sheet";
 import { requireUser } from "@/lib/auth/session";
@@ -18,10 +19,12 @@ export default async function StudioEditPage({
 
   if (!context) {
     return (
-      <section className="px-4 py-16 md:px-8">
-        <p className="font-display text-3xl text-cream italic">
-          The line dropped.
-        </p>
+      <section className="py-16">
+        <PageInner width="sheet">
+          <p className="font-display text-3xl text-cream italic">
+            The line dropped.
+          </p>
+        </PageInner>
       </section>
     );
   }

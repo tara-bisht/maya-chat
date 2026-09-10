@@ -30,7 +30,10 @@ export async function POST(request: Request) {
   });
 
   if (!loaded.ok) {
-    return chatError(loaded.reason === "not_found" ? "not_found" : "dropped", loaded.reason === "not_found" ? 404 : 500);
+    return chatError(
+      loaded.reason === "not_found" ? "not_found" : "dropped",
+      loaded.reason === "not_found" ? 404 : 500,
+    );
   }
 
   if (!loaded.canChat) {

@@ -57,8 +57,9 @@ function stampFromRow(row: GalleryAgentRow): PlaybillStamp {
 
 export function playbillFromAgent(
   row: GalleryAgentRow,
-  _viewerId?: string,
+  viewerId?: string,
 ): Playbill {
+  void viewerId;
   const known = COMPANY_BY_ID.get(row.id);
 
   return {

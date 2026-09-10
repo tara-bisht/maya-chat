@@ -118,16 +118,17 @@ export async function POST(request: Request) {
 
   const result = streamText({
     model: getOpenRouterModel(planLoad.gatewayId),
+    maxOutputTokens: 2048,
     system: systemPromptWithLanguage(
       agentLoad.agent.system_prompt,
       agentLoad.agent.language_preset,
     ),
     messages: await convertToModelMessages(nextMessages),
-    onFinish: async ({ text, totalUsage, usage }) => {
-      const tokens =
-        totalUsage?.totalTokens ??
-        usage?.totalTokens ??
-        0;
+    onError: ({ error }) => {
+      console.error("[streamText error]", error);
+    },
+    onEnd: async ({ text, usage }) => {
+      const tokens = usage.totalTokens ?? 0;
       try {
         await insertAssistantMessage(supabase, {
           conversationId: conversationLoad.conversation.id,
@@ -135,7 +136,7 @@ export async function POST(request: Request) {
           tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
         });
       } catch {
-        // Stream already reached the client; persist failure is logged by the thrower.
+        // Stream already reached the client.
       }
     },
   });

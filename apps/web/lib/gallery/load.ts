@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
 import { parseMayaPlan, type MayaPlan } from "@maya/shared";
 import { houseHref } from "@/lib/house/href";
+import { logDropped } from "@/lib/supabase/dropped";
 import {
   GALLERY_AGENT_COLUMNS,
   playbillFromAgent,
@@ -67,13 +68,17 @@ export async function loadGallery(
       .order("updated_at", { ascending: false }),
   ]);
 
-  if (
-    curatedResult.error ||
-    customResult.error ||
-    houseResult.error ||
-    conversationsResult.error
-  ) {
+  if (curatedResult.error) {
+    logDropped("gallery", { curated: curatedResult.error });
     return { ok: false };
+  }
+
+  if (customResult.error || houseResult.error || conversationsResult.error) {
+    logDropped("gallery", {
+      custom: customResult.error,
+      house: houseResult.error,
+      conversations: conversationsResult.error,
+    });
   }
 
   const latestByAgent = new Map<string, string>();

@@ -44,7 +44,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
 
   const initialMessages = useMemo(() => toUiMessages(house), [house]);
 
-  const { messages, sendMessage, status, error } = useChat({
+  const { messages, sendMessage, status, error, clearError } = useChat({
     messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/chat",
@@ -102,10 +102,15 @@ export function HouseView({ house }: { house: HouseViewData }) {
   }
 
   const listening = `${house.agent.shortName} is listening.`;
-  const showQuota = wellError === "quota" || error?.message?.includes("quota");
+  const errorText = `${error?.message ?? ""} ${wellError ?? ""}`;
+  const showQuota =
+    wellError === "quota" ||
+    errorText.includes("quota") ||
+    errorText.includes("429");
   const showLocked =
     !house.agent.canChat || wellError === "locked_agent";
-  const showDropped = wellError === "dropped" || Boolean(error && !showQuota);
+  const showDropped =
+    wellError === "dropped" || Boolean(error && !showQuota && !showLocked);
 
   return (
     <div className="flex h-dvh overflow-hidden bg-night text-cream">
@@ -187,7 +192,10 @@ export function HouseView({ house }: { house: HouseViewData }) {
                   <button
                     type="button"
                     className="font-semibold underline-offset-4 hover:underline"
-                    onClick={() => setWellError(null)}
+                    onClick={() => {
+                      setWellError(null);
+                      clearError();
+                    }}
                   >
                     Try again
                   </button>
