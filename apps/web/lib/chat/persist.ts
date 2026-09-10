@@ -1,13 +1,16 @@
 import "server-only";
 
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
 import { isDefaultConversationTitle, titleFromFirstMessage } from "@maya/shared";
+import { logDropped } from "@/lib/supabase/dropped";
+
+export type PersistFail = { ok: false; error: PostgrestError | null };
 
 export async function insertUserMessage(
   supabase: SupabaseClient<Database>,
   input: { conversationId: string; content: string },
-) {
+): Promise<{ ok: true; id: string } | PersistFail> {
   const { data, error } = await supabase
     .from("messages")
     .insert({
@@ -19,16 +22,16 @@ export async function insertUserMessage(
     .single();
 
   if (error || !data) {
-    throw new Error("Could not save the line.");
+    return { ok: false, error: error ?? null };
   }
 
-  return data.id;
+  return { ok: true, id: data.id };
 }
 
 export async function insertAssistantMessage(
   supabase: SupabaseClient<Database>,
   input: { conversationId: string; content: string; tokensUsed: number },
-) {
+): Promise<{ ok: true } | PersistFail> {
   const { error } = await supabase.from("messages").insert({
     conversation_id: input.conversationId,
     role: "assistant",
@@ -37,14 +40,16 @@ export async function insertAssistantMessage(
   });
 
   if (error) {
-    throw new Error("Could not save the reply.");
+    return { ok: false, error };
   }
+
+  return { ok: true };
 }
 
 export async function retitleConversation(
   supabase: SupabaseClient<Database>,
   input: { conversationId: string; currentTitle: string; firstUserText: string },
-) {
+): Promise<void> {
   if (!isDefaultConversationTitle(input.currentTitle)) {
     return;
   }
@@ -57,14 +62,14 @@ export async function retitleConversation(
     .eq("id", input.conversationId);
 
   if (error) {
-    throw new Error("Could not name the night.");
+    logDropped("retitleConversation", { update: error });
   }
 }
 
 export async function countTurnsToday(
   supabase: SupabaseClient<Database>,
   userId: string,
-): Promise<number> {
+): Promise<{ ok: true; count: number } | PersistFail> {
   const start = new Date();
   start.setUTCHours(0, 0, 0, 0);
 
@@ -76,9 +81,8 @@ export async function countTurnsToday(
     .gte("created_at", start.toISOString());
 
   if (error) {
-    throw new Error("Could not read the daily curtain.");
+    return { ok: false, error };
   }
 
-  return count ?? 0;
+  return { ok: true, count: count ?? 0 };
 }
-

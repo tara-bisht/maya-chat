@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseConversationCreate } from "@maya/shared";
+import { isUuid, parseConversationCreate } from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
 import { loadChatAgent } from "@/lib/chat/load-context";
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
   }
 
   const agentId = new URL(request.url).searchParams.get("agentId");
-  if (!agentId) {
+  if (!agentId || !isUuid(agentId)) {
     return chatError("invalid", 400);
   }
 
