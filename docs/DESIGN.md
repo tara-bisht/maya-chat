@@ -25,6 +25,10 @@ colors:
   costume-barnaby: "#8A3F16"
   costume-ren: "#3A4A58"
   costume-custom: "#5C4636"
+  costume-jules: "#4A1638"
+  costume-meera: "#1A3F3A"
+  costume-kenji: "#2E2450"
+  costume-sofia: "#7A4A12"
 typography:
   display:
     fontFamily: Fraunces
@@ -149,6 +153,12 @@ components:
     typography: "{typography.label-caps}"
     rotate: -6deg
     shadow: "3px 3px 0 {colors.acid}"
+  sticker-next-bill:
+    backgroundColor: "{colors.rule}"
+    textColor: "{colors.cream}"
+    typography: "{typography.label-caps}"
+    rotate: -4deg
+    shadow: "3px 3px 0 {colors.cream}"
   chat-message-user:
     backgroundColor: "{colors.cream}"
     textColor: "{colors.night}"
@@ -206,7 +216,7 @@ This is the live system in `apps/web`. It **supersedes** the old “Maya House�
 
 The reference object is **a festival lineup wheatpasted onto a city wall after dark.** Overlapping posters. Costume color floods. Cream type. One acid ticket for the move that matters. A 7% film-grain overlay sits on the whole product (`pointer-events: none`) so the night feels printed, not vector-clean.
 
-The lobby (landing, gallery, studio, pricing) is the wall: the eight players *are* the page. The house (chat) is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
+The lobby (landing, gallery, marketplace, studio, pricing) is the wall: the eight players *are* the page. `/marketplace` is the public bill — live posters plus Next bill coming-soon posters, grouped by category. Talk takes a wristband. The house (chat) is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
 
 **North star:** the company is loud. The product looks like a show, not a settings panel.
 
@@ -252,6 +262,10 @@ Error uses acid. Do not invent a second error red. Selection is acid fill, night
 | Barnaby | `{colors.costume-barnaby}` | `#8A3F16` tawny | `--maya-costume-barnaby` |
 | Ren | `{colors.costume-ren}` | `#3A4A58` slate | `--maya-costume-ren` |
 | Custom | `{colors.costume-custom}` | `#5C4636` | until Studio picks |
+| Jules | `{colors.costume-jules}` | `#4A1638` velvet | `--maya-costume-jules` |
+| Meera | `{colors.costume-meera}` | `#1A3F3A` pine | `--maya-costume-meera` |
+| Kenji | `{colors.costume-kenji}` | `#2E2450` dusk | `--maya-costume-kenji` |
+| Sofia | `{colors.costume-sofia}` | `#7A4A12` brass | `--maya-costume-sofia` |
 
 **Code well** `{colors.code-well}` (`#0C0A09`) with `{colors.on-code}`. Overlay `{colors.overlay}`. No backdrop blur.
 
@@ -363,6 +377,7 @@ The gallery unit is `{components.playbill-poster}`: a **costume-flood poster**, 
 - Tagline in Bricolage 14px cream at ~90%
 - **Free** sticker (`{components.sticker-free}`): cream, night type, −6°, acid offset, top-right
 - **Plus / Pro** sticker (`{components.sticker-plus}`): stub, night type, −8°, cream offset, top-right. Not a grey wash. Not a padlock on the face
+- **Next bill** sticker (`{components.sticker-next-bill}`): rule fill, cream type, −4°, cream offset. Coming-soon posters stay costume-flooded. No Talk href.
 - Tilt from the index list. Stagger on desktop
 - Hover: lift, do not glow
 
@@ -426,6 +441,10 @@ The product voice is dry, specific, and slightly theatrical. It assumes an adult
 - "No one on the wall yet."
 - "The rest of the company plays Plus."
 - "Choose a player, or cast your own in the Studio."
+- "The bill"
+- "Next bill"
+- "Not on tonight's bill"
+- "Talk takes a wristband."
 - "A touring company for opinionated AI. Not a helpdesk. Not a copilot."
 - "Setting the house…" (loading)
 
@@ -466,6 +485,10 @@ The company is eight linocut portraits plus user-made roles. Identity is a **cos
 | `/avatars/valerian-polymath.jpg` | Valerian |
 | `/avatars/barnaby-cat.jpg` | Barnaby |
 | `/avatars/ren-philosopher.jpg` | Ren |
+| `/avatars/jules-cinephile.jpg` | Jules (coming soon) |
+| `/avatars/meera-editor.jpg` | Meera (coming soon) |
+| `/avatars/kenji-panel.jpg` | Kenji (coming soon) |
+| `/avatars/sofia-economist.jpg` | Sofia (coming soon) |
 
 - Square, two-ink linocut / wheatpaste. Cream + that agent's costume flood.
 - Cropped like a playbill headshot. No photoreal skin. No celebrity likeness. No anime. No chibi.
@@ -534,9 +557,11 @@ Primary CTA: “Meet the company.” Secondary: “Sign in.” Free seat: “Get
 
 ### Gallery — `(app)/gallery`
 
-The wall again. Title optional; the posters speak. Curated first, then “Your roles.” Locked posters keep the Plus sticker and stay fully readable. Opening a card opens **that agent's** threads — not a global chat.
+The wall again. Title optional; the posters speak. Curated first, then “Your roles” (every plan), then “Also on the wall” when other people’s public custom roles exist. Locked curated posters keep the Plus sticker and stay fully readable. Owner custom posters link to Casting notes until chat exists. Opening a curated card later opens **that agent's** threads — not a global chat.
 
-Empty custom list: “No one on the wall yet.” + acid “Cast someone.” Hidden on Free; then the paywall ticket explains Plus.
+Empty custom list: “No one on the wall yet.” + acid “Cast someone.”
+
+Custom stamps: House on public, Private on owner-only.
 
 ### Chat — `(app)/chat/[conversationId]`
 
@@ -544,7 +569,7 @@ Night stage. Header: 32px square portrait, Fraunces italic name, model picker, o
 
 ### Studio — `(app)/studio`
 
-Title in Fraunces italic: “Casting notes.” Fields in document order: name, tagline, language preset, costume flood, backstory, tone faders, tool toggles. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE.
+Title in Fraunces italic: “Casting notes.” Fields in document order: name, tagline, language preset, costume flood, backstory, tone faders, tool toggles, House / Private tickets. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE. Free locks Private with “Private roles are Plus.” Cap overage is a paywall ticket, not a toast.
 
 ### Pricing
 

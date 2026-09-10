@@ -1,12 +1,16 @@
-export type CostumeId =
-  | "marcus"
-  | "priya"
-  | "alex"
-  | "nonna"
-  | "viktor"
-  | "valerian"
-  | "barnaby"
-  | "ren";
+import type { CostumeId } from "@maya/shared";
+
+export type { CostumeId };
+
+export const COMING_SOON_COSTUME_IDS = [
+  "jules",
+  "meera",
+  "kenji",
+  "sofia",
+] as const;
+
+export type ComingSoonCostumeId = (typeof COMING_SOON_COSTUME_IDS)[number];
+export type PosterCostumeId = CostumeId | ComingSoonCostumeId;
 
 export type CompanyPlayer = {
   id: string;
@@ -111,7 +115,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
 ];
 
-export const COSTUME_CLASS: Record<CostumeId, string> = {
+export const COSTUME_CLASS: Record<PosterCostumeId, string> = {
   marcus: "bg-costume-marcus",
   priya: "bg-costume-priya",
   alex: "bg-costume-alex",
@@ -120,4 +124,9 @@ export const COSTUME_CLASS: Record<CostumeId, string> = {
   valerian: "bg-costume-valerian",
   barnaby: "bg-costume-barnaby",
   ren: "bg-costume-ren",
+  custom: "bg-costume-custom",
+  jules: "bg-costume-jules",
+  meera: "bg-costume-meera",
+  kenji: "bg-costume-kenji",
+  sofia: "bg-costume-sofia",
 };

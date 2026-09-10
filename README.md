@@ -34,4 +34,5 @@ Then open [http://localhost:3000](http://localhost:3000). Paper, Fraunces wordma
 | `pnpm dev` | Next.js on :3000 |
 | `pnpm typecheck` | `tsc --noEmit` across packages |
 | `pnpm lint` | ESLint (web) |
-| `pnpm test` | Vitest in `@maya/shared` |
+| `pnpm test` | Vitest in `@maya/shared` and `apps/web/lib` |
+| `pnpm --filter web openrouter:ping` | Resolve seed OpenRouter slugs (needs `OPENROUTER_API_KEY`) |

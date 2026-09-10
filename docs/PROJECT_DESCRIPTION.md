@@ -11,7 +11,7 @@ author: "Kamal Bisht (Founder)"
 target_audience: "CTO, Engineering Pod, Product"
 portfolio_id: "PRJ-MAYA-001"
 primary_domain: "Consumer multi-agent chat SaaS (personas, memory, tools)"
-target_stack: "Next.js 15, Expo, TypeScript, Supabase (Postgres + pgvector + RLS), Vercel AI SDK + AI Gateway, Stripe"
+target_stack: "Next.js 15, Expo, TypeScript, Supabase (Postgres + pgvector + RLS), OpenRouter + Vercel AI SDK, Stripe"
 monetization: "Free / Plus $9/mo / Pro $19/mo — model allowlists configurable in Postgres"
 ---
 ```
@@ -65,22 +65,22 @@ Stripe products: **Plus** and **Pro**. Webhook maps `price_id` → `plans.id` us
 
 ### Seed model allowlist
 
-One **LLM gateway** (Vercel AI Gateway). The app stores an alias (`grok-fast`) and a gateway string (`xai/grok-4-1-fast`). Confirm live ids on Day 0; the table is the source of truth after that.
+One **LLM gateway** (OpenRouter). The app stores an alias (`grok-fast`) and an OpenRouter slug (`x-ai/grok-4.20`). Live ids pinned 2026-09-10; the table is the source of truth after that.
 
-| Alias | Gateway id (pin at scaffold) | Free | Plus | Pro |
+| Alias | Gateway id (OpenRouter slug) | Free | Plus | Pro |
 | :--- | :--- | :---: | :---: | :---: |
 | `gemini-flash` | `google/gemini-2.5-flash` | ✓ | ✓ | ✓ |
-| `grok-fast` | `xai/grok-4-1-fast` | ✓ | ✓ | ✓ |
+| `grok-fast` | `x-ai/grok-4.20` | ✓ | ✓ | ✓ |
 | `deepseek` | `deepseek/deepseek-chat` | | ✓ | ✓ |
 | `qwen` | `qwen/qwen3-235b-a22b` | | ✓ | ✓ |
-| `grok` | `xai/grok-4.5` | | ✓ | ✓ |
+| `grok` | `x-ai/grok-4.5` | | ✓ | ✓ |
 | `gpt` | `openai/gpt-5.4` | | ✓ | ✓ |
 | `claude` | `anthropic/claude-sonnet-4.5` | | | ✓ |
 | `kimi` | `moonshotai/kimi-k2.5` | | | ✓ |
 
 Default model per plan (seed): Free → `gemini-flash`, Plus → `grok`, Pro → `claude`.
 
-If Vercel AI Gateway does not list Kimi or Qwen, **switch the whole catalog to OpenRouter** (`OPENROUTER_API_KEY` only). Do not add a second SDK per lab.
+Do not add a second SDK per lab. Chat UI still uses the Vercel AI SDK through `@openrouter/ai-sdk-provider`. See [`adr/0001-openrouter-sole-gateway.md`](adr/0001-openrouter-sole-gateway.md).
 
 ---
 
@@ -103,7 +103,7 @@ Chat path:
 2. Server loads the user’s plan → allowed models (`is_enabled` ∩ `plan_models`).
 3. Missing `modelId` → `plans.default_model_id`.
 4. `modelId` not allowed → **403** (never silently upgrade to Claude).
-5. `streamText({ model: models.gateway_id })`.
+5. `streamText({ model: openrouter(models.gateway_id) })`.
 6. `GET /api/models` returns only that plan’s list for the picker.
 
 ---
@@ -114,7 +114,7 @@ Chat path:
 Web (Next.js)  ─┐
                 ├── POST /api/chat  →  quota + plan_models + prompt compiler
 Expo (later)   ─┘         │
-                          ├── Vercel AI Gateway  →  OpenAI / Anthropic / Gemini / Grok / …
+                          ├── OpenRouter  →  OpenAI / Anthropic / Gemini / Grok / …
                           └── Supabase (RLS): agents, memories, plans, models, entitlements
                                       Stripe webhook → entitlements.plan
 ```

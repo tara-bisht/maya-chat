@@ -14,7 +14,23 @@ _Avoid_: Starter bot, default persona, NPC
 
 **Custom agent**:
 A user-owned character created in Studio. Counted against `plans.max_custom_agents`.
-_Avoid_: Private bot, user persona
+_Avoid_: Bot, user persona
+
+**Public custom agent**:
+A custom agent with `is_public` true and `archived_at` null. Any signed-in user can see the playbill and start their own thread. The backstory stays server-side for non-owners.
+_Avoid_: Marketplace listing, community bot, shared prompt, unlisted
+
+**Private custom agent**:
+A custom agent with `is_public` false. Only the owner can see or chat. Plus and Pro may create these; Free cannot create them or flip a public row private. Existing private rows are grandfathered on downgrade.
+_Avoid_: Hidden bot, secret persona, unlisted
+
+**House listing**:
+The gallery section of public custom agents the signed-in user does not own.
+_Avoid_: Marketplace, explore feed, community tab
+
+**Archive**:
+Soft-removal of a custom agent (`archived_at` set). Leaves the wall and blocks new threads; the row remains for existing conversations.
+_Avoid_: Hard delete, unpublish
 
 **Free-tier agent**:
 A curated agent with `free_tier = true`. Only Marcus and Dr. Priya. Plus and Pro see every curated agent.
@@ -41,7 +57,7 @@ The public id in `models.id` (`grok-fast`, `claude`). Clients send this. Never a
 _Avoid_: Provider model name in the client, `gateway_id` on the wire
 
 **Gateway id**:
-The vendor string stored on `models.gateway_id` and passed to `streamText` (`xai/grok-4-1-fast`).
+The vendor string stored on `models.gateway_id` and passed to the OpenRouter client (`x-ai/grok-4.20`). Never a raw gateway string on the wire.
 _Avoid_: Per-provider SDK model object
 
 **Prompt compiler**:
@@ -56,9 +72,25 @@ _Avoid_: Global memory, shared embeddings, ChatGPT-style memory dump
 Chat on night paper: attributed dialogue, costume wash on the agent’s turn, cream ticket for the user.
 _Avoid_: ChatGPT chrome, iMessage bubbles, beige document, per-agent app theme
 
+**Conversation**:
+One thread of messages between one user and one agent. Nested under that agent. Table `conversations`.
+_Avoid_: Chat, session, room, untitled “New Chat”
+
+**Thread**:
+The House word for a Conversation in the cast rail. Same object as Conversation.
+_Avoid_: Sidebar chat, history item, DM
+
 **Lobby**:
-Landing, gallery, studio, pricing: the night wall / festival lineup before the play.
+Landing, gallery, marketplace, studio, pricing: the night wall / festival lineup before the play.
 _Avoid_: Dashboard, marketing SaaS layout, quiet beige brochure
+
+**Marketplace**:
+The public, unauthenticated bill of first-party players — the company plus coming-soon posters — organized by category. Browse is open; talking requires sign-in.
+_Avoid_: Agent store, App Store for bots, community marketplace, listing of user-owned custom agents
+
+**Coming-soon player**:
+A first-party character announced on the marketplace who is not a chat-able `agents` row. Stamped Next bill. No Talk thread.
+_Avoid_: Draft agent, unpublished bot, disabled custom agent
 
 **Playbill**:
 A costume-flood poster for an agent: linocut portrait, Fraunces name, tagline, optional Plus sticker. Tilted, overlapping.
@@ -71,3 +103,7 @@ _Avoid_: Theme, skin, brand color per app chrome
 **Voice**:
 In the UI, the model the agent speaks through (`Voice through grok-fast`). Not speech audio (that is v1.1).
 _Avoid_: Provider badge, “powered by Claude”
+
+**Wristband copy**:
+The member’s global profile: name, preferred language, and bio. Every player is told this. It is not a costume and not a custom agent.
+_Avoid_: Account page, custom instructions, user persona, settings panel as the product name

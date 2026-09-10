@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { COSTUME_CLASS } from "@/lib/company";
 import { NIGHTS } from "@/lib/landing";
 import { SectionKicker } from "@/components/landing/section-kicker";
@@ -14,19 +13,11 @@ export function Nights() {
         do not share a voice.
       </SectionKicker>
       <ul className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
-        {NIGHTS.map((scene, index) => (
-          <li
-            key={scene.id}
-            className={index === 1 ? "md:translate-y-8" : ""}
-          >
+        {NIGHTS.map((scene) => (
+          <li key={scene.id}>
             <article
               className={`poster relative flex h-full flex-col gap-3 p-5 text-cream ${COSTUME_CLASS[scene.costume]}`}
-              style={
-                {
-                  borderRadius: 10,
-                  "--tilt": `${scene.tilt}deg`,
-                } as CSSProperties
-              }
+              style={{ borderRadius: 10 }}
             >
               <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
                 {scene.kicker} · {scene.player}

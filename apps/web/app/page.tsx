@@ -8,13 +8,21 @@ import { Notes } from "@/components/landing/notes";
 import { Seats } from "@/components/landing/seats";
 import { SectionKicker } from "@/components/landing/section-kicker";
 import { StudioSheet } from "@/components/landing/studio-sheet";
+import { getSessionUser } from "@/lib/auth/session";
 import { COMPANY_KICKER } from "@/lib/landing";
 
-export default function Home() {
+export default async function Home() {
+  let signedIn = false;
+  try {
+    signedIn = Boolean(await getSessionUser());
+  } catch {
+    signedIn = false;
+  }
+
   return (
-    <div className="min-h-screen bg-night text-cream">
-      <LobbyHeader />
-      <Hero />
+    <div className="min-h-screen overflow-x-hidden bg-night text-cream">
+      <LobbyHeader signedIn={signedIn} />
+      <Hero signedIn={signedIn} />
 
       <section
         id="company"

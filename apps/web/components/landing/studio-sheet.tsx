@@ -16,7 +16,6 @@ export function StudioSheet() {
         style={
           {
             borderRadius: 10,
-            "--tilt": "-1deg",
             "--ticket-shadow": "8px 8px 0 #FF4D2E",
             "--ticket-shadow-hover": "11px 11px 0 #FF4D2E",
           } as CSSProperties

@@ -35,7 +35,7 @@ This document **locks** the stack for Maya Chat. Handover: [`PROJECT_DESCRIPTION
 | App server | Next.js Route Handlers, **Node.js runtime** for chat | pgvector, embeddings, tools, and entitlement checks do not belong on Edge. |
 | Auth + DB | **Supabase** Postgres + Auth (Google, Apple) + **RLS** | Company default. No custom user table as source of truth. |
 | Vectors | Supabase **pgvector** | Agent-private episodic memory without a second database. |
-| LLM | **Vercel AI Gateway** via Vercel AI SDK (`ai`) — one key, many labs | `streamText({ model: 'anthropic/claude-sonnet-4.5' })`. No per-provider SDK. OpenRouter only if the catalog needs a model Vercel does not list (then OpenRouter is the **only** gateway). |
+| LLM | **OpenRouter** (`@openrouter/sdk`) — one key, many labs | Sole gateway. Catalog stores OpenRouter slugs. Chat (PR2) still uses Vercel AI SDK `streamText` via `@openrouter/ai-sdk-provider`. No `@ai-sdk/openai` / anthropic / xai. |
 | Model catalog | Postgres `models` + `plans` + `plan_models` | Free / Plus / Pro allowlists are **data**. Chat never hardcodes Grok vs Claude. |
 | Embeddings | Gateway embedding model **or** xAI `/v1/embeddings` | One embedding vendor, dim **pinned at scaffold**. Independent of chat-model switching. |
 | Validation | **Zod** on every route, webhook, and tool input | Company verification gate. |
@@ -44,9 +44,9 @@ This document **locks** the stack for Maya Chat. Handover: [`PROJECT_DESCRIPTION
 | Search tool | One thin vendor (**Tavily**, or xAI live search if enabled) | Timeout + cap. No LangChain agent graph. |
 | Hosting | **Vercel** (web + API), **Supabase Cloud**, **EAS** (mobile) | Solo-ops. No k8s, no self-hosted LLM. |
 | Observability | Vercel logs + **Sentry** + `messages.tokens_used` | Enough to debug a streaming chat without a full APM suite. |
-| Tests | **Vitest** for shared packages; Playwright later for web smoke | Prompt compiler and quota logic must be unit-tested from day 1. |
+| Tests | **Vitest** for `@maya/shared` and `apps/web/lib`; Playwright later for web smoke | Prompt compiler, quota logic, and gateway catalog must be unit-tested from day 1. |
 
-Version policy: pin current stable at scaffold (`package.json`). Do not chase majors mid-sprint. Confirm **gateway model ids** against the live Vercel AI Gateway (or OpenRouter) catalog on Day 0 and write them into `models.gateway_id` — names change.
+Version policy: pin current stable at scaffold (`package.json`). Do not chase majors mid-sprint. Confirm **gateway model ids** against the live OpenRouter catalog on Day 0 and write them into `models.gateway_id` — names change. See [`adr/0001-openrouter-sole-gateway.md`](adr/0001-openrouter-sole-gateway.md).
 
 ---
 
@@ -87,7 +87,7 @@ Routes that matter:
 | Auth | Supabase Auth PKCE; Google + Apple |
 | Push / Voice | **v1.1**, not MVP |
 
-Mobile does not embed `AI_GATEWAY_API_KEY` or Stripe secret. It is a client of the Next.js API + Supabase (RLS).
+Mobile does not embed `OPENROUTER_API_KEY` or Stripe secret. It is a client of the Next.js API + Supabase (RLS).
 
 ---
 
@@ -102,7 +102,7 @@ There is **one** backend: Next.js.
 | Chat route runtime | `export const runtime = 'nodejs'` |
 | Chat duration | `maxDuration = 60` |
 | Input validation | Zod schemas in `@maya/shared` |
-| LLM calls | `streamText` from `ai` with a **gateway model string** from `models.gateway_id` |
+| LLM calls | OpenRouter via `@openrouter/sdk`. Chat (PR2): `streamText` from `ai` with `@openrouter/ai-sdk-provider` wrapping `models.gateway_id` |
 | Tools | `tool({ inputSchema, execute })` + `stopWhen: stepCountIs(n)` |
 | Persistence | Supabase server client (user JWT). Service role **only** for webhooks / embedding backfill. |
 
@@ -137,19 +137,22 @@ Canonical tables (see [`architecture.md`](architecture.md) §3): `profiles`, `ag
 
 | Role | Policy |
 | :--- | :--- |
-| Chat | Vercel AI Gateway. `streamText({ model: row.gateway_id })` where `row` comes from `models`. |
+| Chat | OpenRouter. PR2: `streamText({ model: openrouter(row.gateway_id) })` where `row` comes from `models`. |
 | Which models a user may pick | `plan_models` ∩ `models.is_enabled` for `entitlements.plan` |
 | Default model | `plans.default_model_id` |
-| Key | `AI_GATEWAY_API_KEY` (local). Production on Vercel may use OIDC (`VERCEL_OIDC_TOKEN`). |
-| Fallback gateway | **OpenRouter only** if a seed model (Kimi, Qwen, …) is missing from Vercel — then OpenRouter is the sole gateway (`OPENROUTER_API_KEY`), not a second path. |
-| Embeddings | One vendor, dim pinned at scaffold. Switching chat models must **not** change embedding dim. |
-| SDK | `ai` + `@ai-sdk/react` (`useChat`) |
+| Key | `OPENROUTER_API_KEY` (server only). |
+| Typed client | `@openrouter/sdk` in `apps/web/lib/openrouter` (`getOpenRouter()`). Never imported from a Client Component. |
+| Chat UI SDK (PR2) | `ai` + `@ai-sdk/react` (`useChat`) + `@openrouter/ai-sdk-provider` |
+| Embeddings | OpenRouter embeddings API, dim pinned at scaffold (`vector(1024)`). Switching chat models must **not** change embedding dim. |
 
 ```ts
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText, tool, stepCountIs } from 'ai';
 
+const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+
 const result = streamText({
-  model: modelRow.gateway_id, // e.g. 'anthropic/claude-sonnet-4.5'
+  model: openrouter(modelRow.gateway_id), // e.g. 'anthropic/claude-sonnet-4.5'
   system: compiledPrompt,
   messages,
   tools: { /* intersection of agent tools and plan.tools_allowed */ },
@@ -157,13 +160,13 @@ const result = streamText({
 });
 ```
 
-Seed aliases and plan allowlists: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md) §3. Gateway ids are confirmed on Day 0 and stored in `models.gateway_id`.
+Seed aliases and plan allowlists: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md) §3. Gateway ids are OpenRouter slugs, pinned in `apps/web/lib/openrouter/catalog.ts`.
 
 ### Embeddings — do not copy `vector(1536)` blindly
 
 [`architecture.md`](architecture.md) assumed OpenAI `text-embedding-3-small` at 1536 dims. That is **superseded**.
 
-At Day 0 pick **one** embedding model (gateway or xAI `/v1/embeddings`), pin `dimensions` if the API allows (prefer 1024), bake `vector(N)` into the migration. Never mix dims in one column.
+At Day 0 pick **one** embedding model on OpenRouter, pin `dimensions` if the API allows (prefer 1024), bake `vector(N)` into the migration. Never mix dims in one column. Migration currently has `vector(1024)`; confirm the embedding model in the memory PR.
 
 If the embedding vendor documents query/passage prefixes, the writer and retriever must both use them.
 
@@ -238,7 +241,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 **Secret (server only — never `NEXT_PUBLIC_`):**
 
 ```
-AI_GATEWAY_API_KEY=             # or OPENROUTER_API_KEY if that is the sole gateway
+OPENROUTER_API_KEY=             # sole LLM gateway; never NEXT_PUBLIC_
 SUPABASE_SERVICE_ROLE_KEY=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
@@ -258,7 +261,8 @@ Mobile additionally uses the same `NEXT_PUBLIC_SUPABASE_*` (or Expo `EXPO_PUBLIC
 | Custom FastAPI / Nest “AI gateway” | Second deploy, second auth story, slower MVP. Next.js is the gateway. |
 | LangChain / LlamaIndex as the app layer | Heavy graph, poor streaming fit with `useChat`. Retrieval is ~40 lines of SQL + embed. |
 | Edge runtime for `/api/chat` | Breaks pgvector/tools/timeouts. |
-| One SDK per lab (`@ai-sdk/openai` + anthropic + google + xai + …) | Defeats the gateway. Catalog stores gateway strings. |
+| One SDK per lab (`@ai-sdk/openai` + anthropic + google + xai + …) | Defeats the gateway. Catalog stores OpenRouter slugs. |
+| Vercel AI Gateway **and** OpenRouter | Two secrets, two slug dialects. OpenRouter is the sole gateway ([ADR 0001](adr/0001-openrouter-sole-gateway.md)). |
 | Hardcoded `if (isPro) grok-4.5` | Plans and models are rows. |
 | Dual-writing `plan` / `is_pro` from the client | Entitlement fraud. Webhooks only. |
 | Firebase / Mongo | RLS + pgvector + SQL are the company data primitive. |

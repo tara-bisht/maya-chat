@@ -1,8 +1,5 @@
-import type { CSSProperties } from "react";
 import { HOUSE_STEPS } from "@/lib/landing";
 import { SectionKicker } from "@/components/landing/section-kicker";
-
-const TILTS = [-1.6, 1.4, -0.9];
 
 export function HouseSteps() {
   return (
@@ -15,16 +12,11 @@ export function HouseSteps() {
         speak through.
       </SectionKicker>
       <ol className="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {HOUSE_STEPS.map((step, index) => (
-          <li key={step.n} className={index === 1 ? "md:translate-y-6" : ""}>
+        {HOUSE_STEPS.map((step) => (
+          <li key={step.n}>
             <article
               className="ticket flex h-full flex-col gap-3 bg-cream p-5 text-night"
-              style={
-                {
-                  borderRadius: 10,
-                  "--tilt": `${TILTS[index] ?? 0}deg`,
-                } as CSSProperties
-              }
+              style={{ borderRadius: 10 }}
             >
               <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
                 {step.n}

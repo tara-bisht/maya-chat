@@ -1,10 +1,17 @@
 # Supabase
 
-Phase 1 writes migrations here. Do not paste `architecture.md` blindly: chat is Node, embeddings dim is pinned at scaffold (prefer 1024), authorize on `entitlements.plan`, and curated access uses `agents.free_tier`.
+Phase 1 schema lives in `migrations/`. Seed curated agents from `seed.sql` (copy of `docs/seed-agents.sql`). Catalog rows (`models`, `plans`, `plan_models`) are in the first migration.
 
-Seed agents: [`../docs/seed-agents.sql`](../docs/seed-agents.sql). Catalog SQL: [`../docs/technical-plan.md`](../docs/technical-plan.md) §6.
+Do not paste `architecture.md` blindly: chat is Node, embeddings dim is 1024, authorize on `entitlements.plan`, curated access uses `agents.free_tier`.
+
+| Env | Project | API URL |
+| :--- | :--- | :--- |
+| **dev** | `supabase start` (Docker) | `http://127.0.0.1:54321` |
+| **stage** | `maya-chat-stage` (`mhuxzwbdqyuksjcfdyqj`) | `https://mhuxzwbdqyuksjcfdyqj.supabase.co` |
+| **prod** | existing project (`fheihguzmvhciotkziew`) — rename to `maya-chat-prod` in the dashboard | `https://fheihguzmvhciotkziew.supabase.co` |
 
 ```bash
-pnpm dlx supabase init   # if config.toml is missing
-pnpm dlx supabase start  # local Postgres + Auth + Studio
+pnpm dlx supabase start   # local Postgres + Auth + Studio
 ```
+
+Google OAuth is enabled in `config.toml` for local. Set `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET` in the environment. Cloud projects need the same client pasted under Auth → Providers → Google.

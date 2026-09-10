@@ -23,6 +23,10 @@
   --maya-costume-barnaby: #8a3f16;
   --maya-costume-ren: #3a4a58;
   --maya-costume-custom: #5c4636;
+  --maya-costume-jules: #4a1638;
+  --maya-costume-meera: #1a3f3a;
+  --maya-costume-kenji: #2e2450;
+  --maya-costume-sofia: #7a4a12;
 
   --background: var(--maya-night);
   --foreground: var(--maya-cream);
@@ -68,6 +72,10 @@
   --color-costume-barnaby: var(--maya-costume-barnaby);
   --color-costume-ren: var(--maya-costume-ren);
   --color-costume-custom: var(--maya-costume-custom);
+  --color-costume-jules: var(--maya-costume-jules);
+  --color-costume-meera: var(--maya-costume-meera);
+  --color-costume-kenji: var(--maya-costume-kenji);
+  --color-costume-sofia: var(--maya-costume-sofia);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -114,20 +122,19 @@ body::before {
 }
 
 .poster {
-  transform: rotate(var(--tilt, 0deg));
   box-shadow: 6px 6px 0 var(--maya-cream);
+  transform: rotate(var(--tilt, 0deg));
   transition:
     transform 180ms cubic-bezier(0.2, 0, 0, 1),
     box-shadow 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .poster:hover {
-  transform: rotate(var(--tilt, 0deg)) translate(-3px, -3px);
+  transform: translate(-3px, -3px) rotate(var(--tilt, 0deg));
   box-shadow: 9px 9px 0 var(--maya-cream);
 }
 
 .ticket {
-  transform: rotate(var(--tilt, 0deg));
   box-shadow: var(--ticket-shadow, 6px 6px 0 var(--maya-acid));
   transition:
     transform 180ms cubic-bezier(0.2, 0, 0, 1),
@@ -135,7 +142,7 @@ body::before {
 }
 
 .ticket:hover {
-  transform: rotate(var(--tilt, 0deg)) translate(-3px, -3px);
+  transform: translate(-3px, -3px);
   box-shadow: var(--ticket-shadow-hover, 9px 9px 0 var(--maya-acid));
 }
 
@@ -146,5 +153,29 @@ body::before {
   .ticket:hover {
     transition: none;
     transform: none;
+  }
+}
+
+@keyframes maya-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.maya-caret {
+  width: 6px;
+  height: 6px;
+  background: var(--maya-acid);
+  animation: maya-caret 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maya-caret {
+    animation: none;
   }
 }

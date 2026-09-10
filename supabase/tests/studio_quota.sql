@@ -1,0 +1,14 @@
+-- Manual SQL checks for Studio quota and privacy.
+-- Requires a JWT so auth.uid() is set. Do not run as postgres without
+-- `select set_config('request.jwt.claim.sub', '<user-uuid>', true);`
+-- and `set role authenticated;`.
+--
+-- Expected:
+-- 1. Free user: 3 public inserts succeed; 4th raises studio_cap.
+-- 2. Free user: insert with is_public = false raises studio_private_forbidden.
+-- 3. Other authenticated user: can select public playbill columns, cannot
+--    select system_prompt, cannot select a private row.
+-- 4. Plus user: private insert succeeds. After entitlements.plan = 'free',
+--    updating the private row's name succeeds; flipping a public row private
+--    raises studio_private_forbidden.
+-- 5. own_custom_agent_sheet(other_id) returns no row.

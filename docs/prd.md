@@ -157,7 +157,7 @@ Seed prices and limits are **row defaults** in `public.plans`. Changing a row ch
 | Price | $0 | **$9 / month** or **$90 / year** | **$19 / month** or **$190 / year** |
 | Daily messages | 50 | 200 | Unlimited |
 | Curated agents | 2 (Marcus + Dr. Priya) | All 8 | All 8 |
-| Custom agents | 0 | 5 | Unlimited |
+| Custom agents | 3, public only | 10, public or private | Unlimited, public or private |
 | Vector memory | No | Yes | Yes |
 | Tools | — | Memory saver, math solver | + Web search (code sandbox remains stub in MVP) |
 | Models (seed) | Gemini Flash, Grok Fast | + DeepSeek, Qwen, Grok, GPT | + Claude, Kimi (all enabled models) |
@@ -165,4 +165,5 @@ Seed prices and limits are **row defaults** in `public.plans`. Changing a row ch
 
 - Web: Stripe Checkout + Customer Portal. Two paid products (Plus, Pro).
 - Mobile IAP: RevenueCat in v1.1, writing the same `entitlements.plan`.
-- Upgrade prompts: locked agent, daily cap, or locked model (403 with the plan’s allowed list — never silently run a higher-tier model).
+- Upgrade prompts: locked agent, daily cap, locked model (403 with the plan’s allowed list — never silently run a higher-tier model), Studio over `max_custom_agents`, or a Free attempt to create a private role.
+- Public custom agents are a house listing, not a marketplace. Conversations stay per user. See [`adr/0002-public-custom-agents-are-a-house-listing.md`](adr/0002-public-custom-agents-are-a-house-listing.md).

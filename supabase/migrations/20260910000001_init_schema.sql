@@ -44,7 +44,7 @@ create table public.agent_memories (
   user_id uuid not null references auth.users (id) on delete cascade,
   agent_id uuid not null references public.agents (id) on delete cascade,
   content text not null,
-  embedding extensions.vector(1024),
+  embedding extensions.vector(1024), -- dim pinned; OpenRouter embedding model chosen in the memory PR
   metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );
@@ -134,6 +134,8 @@ create index messages_conversation_created_idx
   on public.messages (conversation_id, created_at);
 create index usage_events_user_day on public.usage_events (user_id, created_at);
 create index entitlements_plan_idx on public.entitlements (plan);
+create index plan_models_model_id_idx on public.plan_models (model_id);
+create index plans_default_model_id_idx on public.plans (default_model_id);
 
 -- ---------------------------------------------------------------------------
 -- updated_at helper
@@ -404,13 +406,15 @@ grant select, insert, update, delete on table public.usage_events to service_rol
 -- Catalog seed (config data; required before the signup trigger)
 -- ---------------------------------------------------------------------------
 
+-- OpenRouter slugs, pinned 2026-09-10. Keep in sync with apps/web/lib/openrouter/catalog.ts.
+-- grok-fast: xai/grok-4-1-fast is not on OpenRouter; x-ai/grok-4.20 is the current cheap/fast Grok.
 insert into public.models (id, gateway_id, display_name, provider, supports_tools, is_enabled, sort_order)
 values
   ('gemini-flash', 'google/gemini-2.5-flash', 'Gemini Flash', 'google', true, true, 10),
-  ('grok-fast', 'xai/grok-4-1-fast', 'Grok Fast', 'xai', true, true, 20),
+  ('grok-fast', 'x-ai/grok-4.20', 'Grok Fast', 'xai', true, true, 20),
   ('deepseek', 'deepseek/deepseek-chat', 'DeepSeek', 'deepseek', true, true, 30),
   ('qwen', 'qwen/qwen3-235b-a22b', 'Qwen', 'qwen', true, true, 40),
-  ('grok', 'xai/grok-4.5', 'Grok', 'xai', true, true, 50),
+  ('grok', 'x-ai/grok-4.5', 'Grok', 'xai', true, true, 50),
   ('gpt', 'openai/gpt-5.4', 'GPT', 'openai', true, true, 60),
   ('claude', 'anthropic/claude-sonnet-4.5', 'Claude', 'anthropic', true, true, 70),
   ('kimi', 'moonshotai/kimi-k2.5', 'Kimi', 'moonshot', true, true, 80)

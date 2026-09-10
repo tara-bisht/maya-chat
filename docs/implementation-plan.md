@@ -27,13 +27,13 @@ Repo root is this folder (`maya-chat/`), not `projects/implementation/maya-chat/
 | Decision | Lock |
 | :--- | :--- |
 | Curated company | **8** agents. Seed: [`seed-agents.sql`](seed-agents.sql). |
-| Free gate | `agents.free_tier` on Marcus + Dr. Priya only. Plus/Pro see all eight. Not “first N rows.” |
+| Free gate | `agents.free_tier` on Marcus + Dr. Priya only. Plus/Pro see all eight. Not “first N rows.” Free may also cast 3 public custom agents. |
 | Categories | `learning`, `philosophy`, `productivity`, `wellbeing`, `lifestyle`, `custom`. Nonna = `wellbeing`. Barnaby = `lifestyle`. |
 | Tone sliders | Locked on curated agents. Compiler overlays sliders for **custom** agents only. |
 | Tools vs plan | Register `agents.tools_enabled ∩ plans.tools_allowed`. Strip tool-policy text when a tool is not allowed. |
 | Catalog | `plans` / `models` / `plan_models` are the source of truth. No `if (plan === 'pro')` for quotas or model names. |
 | Chat runtime | Next.js Route Handler, **Node**, `maxDuration = 60`. Not Edge. |
-| Gateway | One: Vercel AI Gateway. OpenRouter only if it becomes the **sole** gateway. |
+| Gateway | One: **OpenRouter** (`OPENROUTER_API_KEY`). Chat UI still uses Vercel AI SDK + `@openrouter/ai-sdk-provider`. |
 | Embeddings | One vendor, dim pinned in the first memory migration (prefer 1024). Independent of chat-model switching. |
 | Billing | Stripe Checkout + Portal for Plus and Pro. RevenueCat is v1.1. |
 | Mobile | Phase 6 client of the same API. Do not start Expo until Web MVP is live. |
@@ -98,13 +98,25 @@ Each PR should be independently reviewable. Do not merge a slice that lacks Zod 
 
 **Cut:** KaTeX, auto-title.
 
+### PR2b — Wristband copy (settings)
+
+**Title:** Profile fields, column grants, `/settings`
+
+**Touches:** `profiles` grants + checks, `@maya/shared` language catalog, `(app)/settings`
+
+**Does:** Display name, preferred language, bio. Seat from `entitlements ⨯ plans`. Authenticated cannot write `profiles.plan`. Sign out lives on this page. Header ghost **Wristband**.
+
+**Does not:** Stripe Customer Portal (`POST /api/billing/portal` stays PR4). Account deletion. Compiler `<user_profile>` block.
+
+**Exit:** Signed-in user edits name/language/bio, refreshes, values persist. `update profiles set plan = 'pro'` as `authenticated` is denied.
+
 ### PR3 — Prompt compiler + tools + Studio (Phase 3)
 
 **Title:** `compilePrompt()`, tool hub, Casting notes
 
 **Touches:** `packages/shared` (compiler + Vitest), chat route, `(app)/studio`, tool factory
 
-**Does:** Merge order from technical-plan §5. `memory_saver` (write; embed can no-op until PR4), thin `math_solver`, thin `web_search` behind plan tools, `code_sandbox` stub. Studio gated in PR4.
+**Does:** Merge order from technical-plan §5. `memory_saver` (write; embed can no-op until PR4), thin `math_solver`, thin `web_search` behind plan tools, `code_sandbox` stub. Studio on Free (3 public), Plus (10), Pro (unlimited); private roles are Plus/Pro.
 
 **Exit:** Dr. Priya returns LaTeX. Compiler tests cover merge order, slider extremes (custom), and “no tool policy on Free.”
 
@@ -171,7 +183,7 @@ If the calendar slips, cut Studio preview, yearly billing, KaTeX polish, and con
 
 Record in `.env.example` and a one-line comment on the embedding column when known:
 
-1. Live `models.gateway_id` strings (Vercel AI Gateway catalog, Day 0).
+1. Live `models.gateway_id` strings (OpenRouter catalog, pinned in `apps/web/lib/openrouter/catalog.ts`).
 2. Embedding model id + dimension N.
 3. Search vendor (Tavily vs gateway live search) — pick on the tools PR, one wrapper.
 4. Free-tier memory: **none** (last ~20 messages in the window only).

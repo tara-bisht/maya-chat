@@ -1,7 +1,26 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { safeNextPath } from "@/lib/auth/next";
+import { getSessionUser } from "@/lib/auth/session";
 import { GoogleSignInButton } from "./google-button";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next: rawNext } = await searchParams;
+  const next = safeNextPath(rawNext);
+  const supabaseConfigured = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  );
+  if (supabaseConfigured) {
+    const user = await getSessionUser();
+    if (user) {
+      redirect(next);
+    }
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-night px-4">
       <div
@@ -16,7 +35,7 @@ export default function LoginPage() {
           Continue with Google. Apple lands later.
         </p>
         <div className="mt-6 flex flex-col gap-3">
-          <GoogleSignInButton />
+          <GoogleSignInButton next={next} />
           <button
             type="button"
             disabled

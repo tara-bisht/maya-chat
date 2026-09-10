@@ -62,7 +62,7 @@ graph TB
     end
 
     subgraph Vendors
-        GW["Vercel AI Gateway (or OpenRouter)"]
+        GW["OpenRouter"]
         Stripe["Stripe Billing — Plus + Pro"]
         Search["Tavily or gateway live search"]
     end
@@ -85,7 +85,7 @@ graph TB
     Web --> Auth
 ```
 
-Mobile never holds `AI_GATEWAY_API_KEY`. Both clients send a Supabase JWT; the chat route uses that JWT for RLS reads/writes.
+Mobile never holds `OPENROUTER_API_KEY`. Both clients send a Supabase JWT; the chat route uses that JWT for RLS reads/writes.
 
 ---
 
@@ -135,7 +135,7 @@ sequenceDiagram
     C->>DB: match_agent_memories(user, agent, query_embedding, k)
     C->>P: compile(system, tone, lang, profile, memories, tools)
     C->>DB: insert user message
-    C->>M: streamText(gateway_id, system, messages, tools)
+    C->>M: streamText(openrouter(gateway_id), system, messages, tools)
     loop tool calls
         M->>T: memory_saver / web_search / math_solver
         T->>DB: writes (memory) or HTTP (search)
@@ -177,7 +177,7 @@ Auth: Supabase session from cookies (web) or `Authorization: Bearer <access_toke
 1. Load `entitlements.plan` → `plans` + `plan_models` + `models` where `models.is_enabled`.
 2. If `modelId` omitted → `plans.default_model_id`.
 3. If `modelId` not in that set → **403** with `{ allowedModelIds }`. Never silently upgrade.
-4. `streamText({ model: models.gateway_id })`.
+4. `streamText({ model: openrouter(models.gateway_id) })`.
 5. Tools registered = intersection of `agents.tools_enabled` and `plans.tools_allowed`.
 6. Daily cap = `plans.daily_message_limit` (`null` = unlimited). Count **before** the gateway call.
 
@@ -226,7 +226,7 @@ This is how **Free / Plus / Pro** stay configurable. Seed aliases: [`PROJECT_DES
 ```sql
 create table public.models (
   id text primary key,                  -- alias: 'grok-fast', 'claude'
-  gateway_id text not null,             -- 'xai/grok-4-1-fast'
+  gateway_id text not null,             -- OpenRouter slug: 'x-ai/grok-4.20'
   display_name text not null,
   provider text not null,               -- openai, anthropic, google, xai, moonshot, qwen, deepseek
   supports_tools boolean not null default true,
@@ -269,7 +269,7 @@ create policy "Authenticated read plan_models"
 -- writes: service role / founder only
 ```
 
-Seed `plans` rows: `free` (0¢, 50/day, 0 custom, 2 curated via `agents.free_tier`, no vector, default `gemini-flash`), `plus` (900¢ / 9000¢ yr, 200/day, 5 custom, all 8 curated, vector, tools memory+math, default `grok`), `pro` (1900¢ / 19000¢ yr, unlimited, unlimited custom, all 8 curated, vector, tools + search, default `claude`).
+Seed `plans` rows: `free` (0¢, 50/day, 3 public custom, 2 curated via `agents.free_tier`, no vector, default `gemini-flash`), `plus` (900¢ / 9000¢ yr, 200/day, 10 custom, all 8 curated, vector, tools memory+math, default `grok`), `pro` (1900¢ / 19000¢ yr, unlimited, unlimited custom, all 8 curated, vector, tools + search, default `claude`).
 
 ### 6.2 Entitlements
 
@@ -367,7 +367,7 @@ Seed values below; **runtime reads the table**.
 | :--- | :--- | :--- | :--- |
 | Daily messages | 50 | 200 | Unlimited |
 | Curated agents | 2 (Marcus + Priya) | All 8 | All 8 |
-| Custom agents | 0 | 5 | Unlimited |
+| Custom agents | 3, public only | 10, public or private | Unlimited |
 | Vector memory | No | Yes | Yes |
 | Tools | `{}` | memory, math | + `web_search` |
 | Models | `plan_models` for `free` | `plan_models` for `plus` | `plan_models` for `pro` |
@@ -375,7 +375,9 @@ Seed values below; **runtime reads the table**.
 
 Starter pair for free: **Marcus + Dr. Priya**. Runtime rule: a curated agent is reachable if `entitlements.plan` is `plus`/`pro` **or** `agents.free_tier` is true. Do not hardcode names in the route. `plans.curated_agent_limit` is documentation only; `agents.free_tier` is the gate. Curated tone sliders are locked (prompts already encode voice).
 
-Studio POST is allowed when `plans.max_custom_agents` is null or the user’s custom count is below it — **Plus and Pro**, not Free. Not CSS-only.
+Studio writes are allowed when `plans.max_custom_agents` is null or the user’s live custom count is below it. Seed: Free 3, Plus 10, Pro unlimited. Free may only create **public** custom agents. Plus and Pro may create private ones. Quota and the private gate live in `evaluateStudioWrite` (`@maya/shared`) and in `private.enforce_custom_agent_quota`. Not CSS-only.
+
+`canUseAgent` is the chat authorization seam: curated via `free_tier` / plan, custom via owner or (`is_public` and not archived). Chat loads `system_prompt` with the service role **after** that check. Authenticated clients never `SELECT system_prompt`.
 
 ---
 
@@ -403,7 +405,7 @@ Prefer **Server Actions** for CRUD that is web-only (studio save, profile). Keep
 | `POST /api/chat` | Node | Web + mobile; `modelId` vs `plan_models` |
 | `GET /api/models` | Node | Web + mobile — enabled models on the caller’s plan + `defaultModelId` |
 | `GET /api/agents` | Node | Web + mobile — curated metadata + user's custom |
-| `POST /api/agents` | Node | Studio (Plus/Pro, under `max_custom_agents`) |
+| `POST /api/agents` | Node | Later mobile wrap of the Studio server action. Web MVP uses server actions. |
 | `PATCH /api/agents/:id` | Node | Studio, owner only |
 | `GET /api/conversations` | Node | Sidebar / mobile inbox |
 | `POST /api/conversations` | Node | New thread |
@@ -438,7 +440,7 @@ JWT is the RLS key. Chat route creates a Supabase client **with the user token**
 | Entitlement bypass | Server reads `entitlements.plan` + `plans` + `plan_models`; ignore client `plan` / `model`. |
 | Model upgrade | 403 if `modelId` not on the plan. Client cannot send `gateway_id`. |
 | Quota bypass | Insert `usage_events` when the model is invoked; check against `plans.daily_message_limit`. |
-| Secret exfil | No `AI_GATEWAY_*` / OpenRouter / Stripe secret / service role in `NEXT_PUBLIC_` or Expo public env. |
+| Secret exfil | No `OPENROUTER_*` / Stripe secret / service role in `NEXT_PUBLIC_` or Expo public env. |
 | Tool injection | Zod on tool inputs; memory content length cap; search URL allow-list not required if we only return snippets. |
 | Code execution | Stubbed in MVP. |
 | Stripe replay | Signature + processed event ids. |
@@ -458,6 +460,7 @@ Company checklist before calling a slice done: RLS enabled, `tsc --noEmit` clean
 | Over daily cap | 429 with reset time | — |
 | `modelId` not on plan | 403 + allowed list | — |
 | Studio over `max_custom_agents` | 402 | Checkout URL for Plus/Pro on web |
+| Free private custom agent | 402 | Private roles are Plus |
 | Gateway timeout / 5xx | Stream error part | User message already saved; no assistant row |
 | Tool timeout | Model continues without tool | Log |
 | Stripe webhook bad sig | 400 | No entitlement change |
@@ -511,7 +514,7 @@ Cost knobs: `plan_models` + `daily_message_limit`, embed-on-write, search only o
 ## 16. Open items (scaffold-time, not blockers for these docs)
 
 1. Exact embedding **model id** and **dimension N** (one vendor).
-2. Exact **gateway_id** strings for the seed aliases (Vercel catalog vs OpenRouter fallback).
+2. Exact **gateway_id** strings for the seed aliases — OpenRouter slugs, pinned in `apps/web/lib/openrouter/catalog.ts`.
 3. Search vendor: Tavily vs gateway live search — pick on Day 8, one wrapper interface.
 4. Whether free tier gets last-N **text** memory (no vectors) or no memory at all. Default: **no vector memory on free**; last 20 messages in the window still give short-term recall.
 

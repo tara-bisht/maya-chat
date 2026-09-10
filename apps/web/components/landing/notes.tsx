@@ -19,13 +19,13 @@ export function Notes() {
                 {note.q}
                 <span
                   aria-hidden
-                  className="mt-1 shrink-0 font-sans text-sm font-semibold text-stub group-open:hidden"
+                  className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub shadow-[2px_2px_0_#FF4D2E] group-open:hidden"
                 >
                   +
                 </span>
                 <span
                   aria-hidden
-                  className="mt-1 hidden shrink-0 font-sans text-sm font-semibold text-stub group-open:inline"
+                  className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub shadow-[2px_2px_0_#FF4D2E] group-open:inline-flex"
                 >
                   −
                 </span>

@@ -1,21 +1,25 @@
-function required(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable ${name}`);
-  }
-  return value;
-}
-
 export function publicSupabaseConfig() {
-  return {
-    url: required("NEXT_PUBLIC_SUPABASE_URL"),
-    publishableKey: required("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
-  };
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url) {
+    throw new Error("Missing required environment variable NEXT_PUBLIC_SUPABASE_URL");
+  }
+  if (!publishableKey) {
+    throw new Error(
+      "Missing required environment variable NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    );
+  }
+  return { url, publishableKey };
 }
 
 export function serviceSupabaseConfig() {
-  return {
-    url: required("NEXT_PUBLIC_SUPABASE_URL"),
-    serviceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
-  };
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url) {
+    throw new Error("Missing required environment variable NEXT_PUBLIC_SUPABASE_URL");
+  }
+  if (!serviceRoleKey) {
+    throw new Error("Missing required environment variable SUPABASE_SERVICE_ROLE_KEY");
+  }
+  return { url, serviceRoleKey };
 }

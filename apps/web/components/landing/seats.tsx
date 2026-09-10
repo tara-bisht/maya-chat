@@ -15,14 +15,13 @@ function SeatTicket({ seat }: { seat: Seat }) {
       style={
         {
           borderRadius: 14,
-          "--tilt": `${seat.tilt}deg`,
           "--ticket-shadow": "8px 8px 0 #FF4D2E",
           "--ticket-shadow-hover": "11px 11px 0 #FF4D2E",
         } as CSSProperties
       }
     >
       <span
-        className={`absolute -top-2 -right-2 z-10 rotate-[-8deg] px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase ${stampClass}`}
+        className={`absolute -top-2 -right-2 z-10 px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase ${stampClass}`}
       >
         {seat.stamp}
       </span>
@@ -83,8 +82,8 @@ export function Seats() {
         voice on the catalog.
       </SectionKicker>
       <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-        {SEATS.map((seat, index) => (
-          <li key={seat.id} className={index === 1 ? "md:translate-y-6" : ""}>
+        {SEATS.map((seat) => (
+          <li key={seat.id}>
             <SeatTicket seat={seat} />
           </li>
         ))}

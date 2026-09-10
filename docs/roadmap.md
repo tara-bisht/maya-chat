@@ -47,7 +47,8 @@ Roles below are Team Freedom pod labels. One founder + agents may wear all of th
 - [x] `apps/web` via Next.js 15 (App Router, Tailwind 4, Maya Street Cast tokens; shadcn components in a later PR)
 - [x] `.env.example` from [`tech-stack.md`](tech-stack.md) §8
 - [ ] Supabase project + `supabase/config.toml` + local `supabase start`
-- [ ] Confirm live **AI Gateway** (or OpenRouter) model ids for the seed catalog; pin embedding **dimension N**
+- [x] Confirm live **OpenRouter** model ids for the seed catalog (`apps/web/lib/openrouter/catalog.ts`)
+- [ ] Pin embedding **model id** (dim is `vector(1024)` in the first migration)
 - [x] CI: `lint`, `typecheck`, empty `test` pipeline
 - [ ] Vercel project wired to the web app (preview deploys)
 

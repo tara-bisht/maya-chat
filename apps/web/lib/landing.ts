@@ -2,10 +2,10 @@ import type { CostumeId } from "@/lib/company";
 
 /** Jump links shared by the lobby header and footer. */
 export const LOBBY_NAV = [
-  { href: "#company", label: "Company" },
-  { href: "#house", label: "The house" },
-  { href: "#studio", label: "Studio" },
-  { href: "#seats", label: "Seats" },
+  { href: "/marketplace", label: "Marketplace" },
+  { href: "/#house", label: "The house" },
+  { href: "/#studio", label: "Studio" },
+  { href: "/#seats", label: "Seats" },
 ] as const;
 
 export const HERO = {
@@ -28,7 +28,6 @@ export type NightScene = {
   kicker: string;
   title: string;
   body: string;
-  tilt: number;
 };
 
 export const NIGHTS: NightScene[] = [
@@ -39,7 +38,6 @@ export const NIGHTS: NightScene[] = [
     kicker: "Learning",
     title: "When you are learning maths",
     body: "You need pedagogical rigor, an interactive breakdown, and a little banter — not a cold formula dump.",
-    tilt: -2.4,
   },
   {
     id: "advice",
@@ -48,7 +46,6 @@ export const NIGHTS: NightScene[] = [
     kicker: "Wellbeing",
     title: "When you need advice",
     body: "You need fierce care or a stoic roast — not a canned corporate disclaimer.",
-    tilt: 2.2,
   },
   {
     id: "code",
@@ -57,7 +54,6 @@ export const NIGHTS: NightScene[] = [
     kicker: "Productivity",
     title: "When the PR is on fire",
     body: "You need production edge cases from someone who has been on call too long — not a cheerful autocomplete.",
-    tilt: -1.7,
   },
 ];
 
@@ -75,7 +71,7 @@ export const HOUSE_STEPS = [
   {
     n: "03",
     title: "They remember",
-    body: "Plus and Pro keep private memory per player. Free is the last stretch of the thread. Pick the instrument with “Voice through {alias}.”",
+    body: "Plus and Pro keep private memory per player. Free is the last stretch of the thread. Pick the instrument with “Voice through grok-fast.”",
   },
 ] as const;
 
@@ -83,7 +79,7 @@ export const STUDIO = {
   kicker: "Casting notes",
   title: "Cast your own",
   body: "Name, tagline, costume, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari, not a costume.",
-  cap: "Plus: 5 · Pro: unlimited · Free: none",
+  cap: "Free: 3 public · Plus: 10 · Pro: unlimited",
   fields: [
     { label: "Name", value: "Yours" },
     { label: "Tagline", value: "One line they would actually say" },
@@ -108,7 +104,6 @@ export type Seat = {
   cta: { href: "/login"; label: string; kind: SeatCtaKind };
   bullets: string[];
   models: string[];
-  tilt: number;
 };
 
 export const SEATS: Seat[] = [
@@ -123,12 +118,11 @@ export const SEATS: Seat[] = [
     bullets: [
       "50 messages a day",
       "Marcus + Dr. Priya",
-      "No custom players",
+      "3 public custom players",
       "No vector memory",
       "No tools",
     ],
     models: ["gemini-flash", "grok-fast"],
-    tilt: -1.4,
   },
   {
     id: "plus",
@@ -141,12 +135,11 @@ export const SEATS: Seat[] = [
     bullets: [
       "200 messages a day",
       "All eight players",
-      "5 custom players",
+      "10 custom players, public or private",
       "Private per-agent memory",
       "Memory saver, math solver",
     ],
     models: ["gemini-flash", "grok-fast", "deepseek", "qwen", "grok", "gpt"],
-    tilt: 1.2,
   },
   {
     id: "pro",
@@ -159,7 +152,7 @@ export const SEATS: Seat[] = [
     bullets: [
       "Unlimited messages",
       "All eight players",
-      "Unlimited custom players",
+      "Unlimited custom players, public or private",
       "Private per-agent memory",
       "Plus tools, and web search",
     ],
@@ -173,7 +166,6 @@ export const SEATS: Seat[] = [
       "claude",
       "kimi",
     ],
-    tilt: -0.8,
   },
 ];
 
@@ -183,7 +175,7 @@ export const SEATS_FOOTNOTE =
 export const NOTES = [
   {
     q: "What can I do on Free?",
-    a: "Marcus and Dr. Priya. Fifty lines a day. Voices: gemini-flash and grok-fast. No memory, no custom players, no tools. Daily curtain, then a better seat or tomorrow.",
+    a: "Marcus and Dr. Priya. Fifty lines a day. Voices: gemini-flash and grok-fast. Three public custom players. No memory, no private roles, no tools. Daily curtain, then a better seat or tomorrow.",
   },
   {
     q: "Do they remember me?",
@@ -191,7 +183,7 @@ export const NOTES = [
   },
   {
     q: "Can I make my own player?",
-    a: "Studio is on Plus (five roles) and Pro (unlimited). Free stays with the company. Tone sliders overlay custom players only — curated prompts stay locked.",
+    a: "Free can cast three public roles. Plus gets ten, public or private. Pro does not count. Tone sliders overlay custom players only — curated prompts stay locked.",
   },
   {
     q: "Hindi and Hinglish?",

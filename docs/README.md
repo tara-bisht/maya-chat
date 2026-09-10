@@ -25,7 +25,7 @@ monetization: "Free / Plus $9/mo / Pro $19/mo — configurable model allowlists 
 | :--- | :--- | :--- |
 | 🚀 **[Project Description](PROJECT_DESCRIPTION.md)** | **Handover brief**:<br>• Product, Free / Plus / Pro packaging<br>• Configurable model catalog via one LLM gateway<br>• Architecture snapshot and doc map | Founder, CTO, Engineering |
 | 📄 **[Product Requirements Document (PRD)](prd.md)** | **The "What" & "Why"**:<br>• Executive summary & multi-agent persona vision<br>• Core product pillars, scope boundaries & 3-tier monetization | Product Manager, Marketing, Founder |
-| 🧱 **[Tech Stack](tech-stack.md)** | **Locked engineering defaults**:<br>• Next.js 15 + Expo + Supabase + Vercel AI Gateway (one key, many labs)<br>• Node runtime for chat (not Edge), Stripe Plus/Pro, RevenueCat later<br>• Rejected alternatives and env inventory | CTO, Engineering Pod |
+| 🧱 **[Tech Stack](tech-stack.md)** | **Locked engineering defaults**:<br>• Next.js 15 + Expo + Supabase + OpenRouter (one key, many labs)<br>• Node runtime for chat (not Edge), Stripe Plus/Pro, RevenueCat later<br>• Rejected alternatives and env inventory | CTO, Engineering Pod |
 | 🗺️ **[High-Level Technical Plan](technical-plan.md)** | **System design for build**:<br>• Chat lifecycle, prompt compiler, `plans` / `models` / `plan_models`<br>• API surface, auth, security, failure modes | CTO, Engineering Pod |
 | 📅 **[Roadmap](roadmap.md)** | **Phased delivery**:<br>• Days 1–14 Web MVP, Days 15–21 Mobile v1<br>• Phase exits, cuts, v1.1 deferrals (voice, IAP, sandbox) | Founder, CTO, Pod Leads |
 | 🎭 **[Curated Agents Catalog & Prompt Specs](curated-agents.md)** | **Out-of-the-Box Interesting Personas**:<br>• 8 curated agents (Marcus + Dr. Priya free; six more on Plus/Pro)<br>• Production system prompts, tone slider matrices, behavioral loops & few-shot dialogues | Prompt Engineers, Fullstack Pod, QA |
@@ -35,6 +35,7 @@ monetization: "Free / Plus $9/mo / Pro $19/mo — configurable model allowlists 
 | 🛠️ **[Technical Architecture Blueprint](architecture.md)** | **Original schema & monorepo sketch**:<br>• Turborepo layout, Postgres + pgvector + RLS SQL<br>• §4 14-day dual-track checklist is **superseded by [roadmap.md](roadmap.md)** | CTO, Engineering Pod |
 | 📐 **[Implementation Plan](implementation-plan.md)** | **PR-level build sequence**:<br>• Locked decisions, vertical slices, ordered PRs<br>• Phase 0 scaffold through Web MVP | Founder, Engineering |
 | 📖 **[Domain glossary (`CONTEXT.md`)](../CONTEXT.md)** | **Words**: agent, company, plan, entitlement, house, playbill, costume | Everyone |
+| ⚖️ **[ADR 0001](adr/0001-openrouter-sole-gateway.md)** | OpenRouter is the sole LLM gateway; AI SDK stays for chat UI | Engineering |
 
 ---
 
