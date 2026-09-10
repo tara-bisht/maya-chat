@@ -24,6 +24,7 @@ import {
   retitleConversation,
 } from "@/lib/chat/persist";
 import { getOpenRouterModel } from "@/lib/openrouter/ai";
+import { logDropped } from "@/lib/supabase/dropped";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -85,6 +86,15 @@ export async function POST(request: Request) {
     );
   }
 
+  const inserted = await insertUserMessage(supabase, {
+    conversationId: conversationLoad.conversation.id,
+    content: parsed.text,
+  });
+  if (!inserted.ok) {
+    logDropped("insertUserMessage", { insert: inserted.error });
+    return chatError("dropped", 500);
+  }
+
   const quota = await supabase.rpc("consume_chat_turn");
   if (quota.error) {
     return chatError("dropped", 500);
@@ -93,10 +103,6 @@ export async function POST(request: Request) {
     return chatError("quota", 429);
   }
 
-  await insertUserMessage(supabase, {
-    conversationId: conversationLoad.conversation.id,
-    content: parsed.text,
-  });
   await retitleConversation(supabase, {
     conversationId: conversationLoad.conversation.id,
     currentTitle: conversationLoad.conversation.title,
@@ -136,14 +142,13 @@ export async function POST(request: Request) {
     },
     onEnd: async ({ text, usage }) => {
       const tokens = usage.totalTokens ?? 0;
-      try {
-        await insertAssistantMessage(supabase, {
-          conversationId: conversationLoad.conversation.id,
-          content: text,
-          tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
-        });
-      } catch {
-        // Stream already reached the client.
+      const saved = await insertAssistantMessage(supabase, {
+        conversationId: conversationLoad.conversation.id,
+        content: text,
+        tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
+      });
+      if (!saved.ok) {
+        logDropped("insertAssistantMessage", { insert: saved.error });
       }
     },
   });
