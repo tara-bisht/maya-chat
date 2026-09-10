@@ -58,6 +58,13 @@ export type {
 } from "./profile";
 
 export {
+  compilePrompt,
+  compileToneDirectives,
+  type CompilePromptInput,
+  type CompilePromptMemory,
+} from "./prompt";
+
+export {
   CONVERSATION_TITLE_MAX,
   HISTORY_WINDOW,
   OPEN_NIGHT_TITLE,
