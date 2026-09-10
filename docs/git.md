@@ -63,7 +63,7 @@ Stage the files that belong to this slice. Leave unrelated dirty files unstaged.
 
 - Base: `main`. Title matches the squash commit (`feat(auth): …`).
 - Fill the template: summary, plan id (`PR1` or `n/a`), test plan.
-- Independently reviewable: `pnpm turbo lint typecheck test` green. Zod if the PR adds a route. RLS if it adds a table.
+- Independently reviewable: `pnpm turbo lint typecheck test build` green. Zod if the PR adds a route. RLS if it adds a table.
 - Request review from the other person. During the sprint, squash-merge after CI is green even with zero approvals **if** a PR still exists (preview + bisect). After the sprint, prefer one approval.
 - Delete the branch on merge.
 
@@ -85,7 +85,7 @@ Never committed: `.env`, `.env.local`, service-role keys, Stripe secrets, gatewa
 ## Local checks (same as CI)
 
 ```bash
-pnpm turbo lint typecheck test
+pnpm turbo lint typecheck test build
 ```
 
 CI is `.github/workflows/ci.yml`. pnpm version comes from `package.json` `packageManager`. Node 22.
