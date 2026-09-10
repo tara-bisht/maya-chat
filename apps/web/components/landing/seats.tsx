@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { PageInner } from "@/components/app/page-frame";
-import { SEATS, SEATS_FOOTNOTE, type Seat } from "@/lib/landing";
+import { SEATS, SEATS_FOOTNOTE, SEATS_KICKER, type Seat } from "@/lib/landing";
 import { SectionKicker } from "@/components/landing/section-kicker";
 
 function SeatTicket({ seat }: { seat: Seat }) {
@@ -76,12 +76,11 @@ export function Seats() {
   return (
     <section
       id="seats"
-      className="relative z-10 scroll-mt-8 py-10 md:py-14"
+      className="relative z-10 scroll-mt-28 py-10 md:py-14"
     >
       <PageInner>
-        <SectionKicker kicker="Pricing" title="Plans">
-          Free includes Marcus and Dr. Priya. Plus unlocks the rest. Pro unlocks
-          every model on the catalog.
+        <SectionKicker kicker={SEATS_KICKER.kicker} title={SEATS_KICKER.title}>
+          {SEATS_KICKER.body}
         </SectionKicker>
         <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
           {SEATS.map((seat) => (

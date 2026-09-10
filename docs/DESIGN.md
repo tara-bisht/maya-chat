@@ -312,7 +312,7 @@ Poster tilts (index 0–7, degrees): `-2.8, 2.4, -1.6, 3.2, -2.2, 1.8, -3.1, 2.1
 
 **Studio.** Single column character sheet on night, cream fields, costume floods as the picker. Max 40rem.
 
-**Mobile.** Bottom tabs on night. Acid only on the active label. Composer above the home indicator. 44px minimum. Landing chrome stays one row (wordmark, ghost Sign in, acid CTA); program jump links wrap onto the next row. No hamburger.
+**Mobile.** Bottom tabs on night. Acid only on the active label. Composer above the home indicator. 44px minimum. Landing chrome stays one row (wordmark, ghost Sign in, acid CTA). Jump links live in the footer, not under the bar. No hamburger.
 
 **Composer.** Anchored, cream-dim fill, 1px rule, acid send square. Not a floating glass pill.
 
@@ -431,15 +431,16 @@ The visual language stays theatrical (night wall, posters, tickets). Chrome copy
 **Allowed register (chrome)**
 
 - "Home." / "Explore." / "Create agent." / "Profile."
-- "Meet the agents."
+- "Meet the agents." / "Create an agent."
 - "Sign in." / "Get started."
+- "Start with a voice. Or write yours."
 - "Marcus is listening."
 - "Alex is on Plus. Marcus and Dr. Priya are free."
 - "Daily limit reached. Fifty messages. Come back tomorrow, or upgrade."
 - "You have not created an agent yet."
 - "Continue chatting."
 - "Coming soon."
-- "Opinionated AI characters. Not a helpdesk. Not a copilot."
+- "Opinionated AI — yours, or one we already wrote. Not a helpdesk. Not a copilot."
 - "Loading…"
 
 **Forbidden register**
@@ -531,19 +532,19 @@ These are generation rules for MVP surfaces. If a control is not named here, inh
 
 ### Landing — `(marketing)` lobby wall
 
-Night, full bleed, grain on. The eight posters remain the visual center. Sections after the wall are **wall artifacts** (scene posters, cream tickets, stub notes) — not a SaaS features essay, not a blog column.
+Night, full bleed, grain on. Featured posters are a start, not a closed roster — Studio is the product. Sections after the wall are **wall artifacts** (scene posters, cream tickets, stub notes) — not a SaaS features essay, not a blog column. Do not lead marketing with “eight agents.”
 
-1. Top: cream Fraunces italic wordmark left, jump links (Marketplace, How it works, Create an agent, Plans) optically centered, ghost “Sign in” + acid “Meet the agents.” (cream offset) right. Jump links wrap under the action row on small screens and stay centered. No hamburger. One acid fill in the chrome.
-2. Hero: stacked. `{typography.display}` italic — “Give your AI a personality.” — spans the stage width, then one `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast, a stub die-cut “Marcus + Priya on Free”, ghost “Sign in”, then “Choose an agent, or create your own.” Under the copy: a wheatpaste quote fan — three overlapping costume-flood posters (Marcus, Dr. Priya, Alex). Featured poster is square and on top; the others sit behind at a tilt. Each poster is a linocut, a Fraunces pull-quote, and a cream “You — …” stub. Not a chat replica, not a device mockup, not a three-column icon row. Click a poster to feature that voice; Alex carries Plus. Mobile shows one poster plus portrait chips. No second acid fill in the copy block.
-3. `#company`: kicker (“Meet the lineup”) + the eight posters on the staggered wall. This is the product, not a mockup frame. No three-column icon row.
-4. `#nights`: three costume-flood scene posters (maths / advice / code). Context picks the character.
-5. `#house`: three cream tickets — pick a player, talk, they remember. Acid hard offset.
-6. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Ghost “Sign in.”
-7. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get started”). Plus/Pro are ghost. Seed copy until `plans` is live.
-8. `#notes`: native `<details>` FAQ on night paper. Fraunces questions, Bricolage answers.
-9. Footer: `{components.ticket-footer}` with jump links. Copy: “A touring company for opinionated AI. Not a helpdesk. Not a copilot.”
+1. Sticky header. Desktop: floating night ticket (`sticky top-3`), cream 2px edge, 6px acid offset — wordmark left, jump links optically centered, ghost “Sign in” + acid “Create an agent.” right (`#studio`). Sign in and the CTA stay on screen while the wall scrolls. Mobile: sticky top, night fill, hairline rule; one row — wordmark, ghost Sign in, acid CTA. Jump links are not in the mobile bar (they stay in the footer). No hamburger. One acid fill in the chrome. No second Sign in in the hero.
+2. Hero: stacked. `{typography.display}` italic — “Give your AI a personality.” — spans the stage width. *personality* carries a stub marker underline (stroke, not a second acid fill). Then one `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast and tells you to cast a character or write one. Stub die-cut “Write yours in Studio”, then “Start with a voice. Or write yours.” Under the copy: a House window — night fill, cream 2px edge, 8px acid offset. Desktop: three-voice rail (Marcus, Dr. Priya, Alex) + You ticket + costume-wash reply + dummy composer. Click a rail row to switch the voice. Mobile: same window, portrait chips instead of the rail. Not a wheatpaste quote fan, not Apple laptop chrome, not a three-column icon row. No model alias. No live chat. No second Sign in in the copy block. No “eight agents.”
+3. `#company`: kicker (“Start with a voice”) + featured posters on the staggered wall. Examples, not the whole product. No three-column icon row.
+4. `#nights`: three costume-flood scene posters (maths / advice / code). The moment picks the personality; if none fit, you write one.
+5. `#house`: three cream tickets — pick or create, talk, they remember. Acid hard offset.
+6. `#studio`: one cream character sheet, 8px acid offset, rotate −1°. Title: “Write the personality.” Ghost “Sign in.” This is the platform, not a side door.
+7. `#seats`: three cream tickets (Free / Plus / Pro). Acid CTA only on Free (“Get started”). Plus/Pro are ghost. Seed copy until `plans` is live. Do not sell “all eight agents.”
+8. `#notes`: native `<details>` FAQ on night paper. Fraunces questions, Bricolage answers. Lead with “Can I make my own agent?”
+9. Footer: `{components.ticket-footer}` with jump links. Copy: “Opinionated AI — yours, or one we already wrote. Not a helpdesk. Not a copilot.”
 
-Primary CTA: “Meet the agents.” Secondary: “Sign in.” Free plan: “Get started.”
+Primary CTA: “Create an agent.” Secondary: “Sign in.” Free plan: “Get started.”
 
 ### Auth — `/login`
 

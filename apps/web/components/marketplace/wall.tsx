@@ -122,7 +122,7 @@ export function MarketplaceBill({
         <section
           key={section.id}
           id={section.id}
-          className="relative z-10 scroll-mt-8 py-6 md:py-10"
+          className="relative z-10 scroll-mt-28 py-6 md:py-10"
         >
           <PageInner>
             <SectionKicker kicker="Category" title={section.label}>
