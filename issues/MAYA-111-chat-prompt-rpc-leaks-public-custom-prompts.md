@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-111 |
 | **Issue Type** | 🔴 Security / Prompt-IP Leak |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | Critical (IP theft, trust breach) |
 | **Component** | Database (RLS / RPC) & API (Chat Prompt) |
@@ -86,10 +86,10 @@ grant execute on function public.chat_agent_prompt(uuid) to service_role;
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] Stranger `rpc("chat_agent_prompt", {public custom id})` as `authenticated` is denied / returns NULL.
-- [ ] Owner `own_custom_agent_sheet` still returns own prompt for Studio edit.
-- [ ] Curated + owned + public chat streaming still works via server path.
-- [ ] RLS regression test covers stranger/owner/curated matrix.
+- [x] Stranger `rpc("chat_agent_prompt", {public custom id})` as `authenticated` is denied / returns NULL.
+- [x] Owner `own_custom_agent_sheet` still returns own prompt for Studio edit.
+- [x] Curated + owned + public chat streaming still works via server path.
+- [ ] RLS regression test covers stranger/owner/curated matrix. (Manual: `supabase/tests/grants_prompt_quota.sql`; not in CI.)
 
 ---
 
@@ -98,10 +98,11 @@ grant execute on function public.chat_agent_prompt(uuid) to service_role;
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid security bug |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P0 (unchanged) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#15](https://github.com/tara-bisht/maya-chat/pull/15) on `main` |
 
 **Comment:** Confirmed. `chat_agent_prompt` is `security definer`, granted to `authenticated`, and the predicate includes `is_public = true`. Any signed-in JWT can read any live public custom `system_prompt`. House UI nulls `backstory` unless `canEdit` — cosmetic. CONTEXT: “The backstory stays server-side for non-owners.” Curated prompts leak on the same grant (Trap 2); the public-custom repro is the subset CONTEXT names.
 

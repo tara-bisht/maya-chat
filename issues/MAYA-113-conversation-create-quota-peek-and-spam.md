@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-113 |
 | **Issue Type** | 🐛 Bug / Concurrency & Abuse |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | High (quota bypass vector, storage exhaustion) |
 | **Component** | Backend (Conversations API) |
@@ -72,10 +72,10 @@ Also: exclude empties server-side (`WHERE EXISTS messages`) once spam is capped;
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] 10 parallel creates at boundary do not all succeed.
-- [ ] Over-cap create returns 429 with no row inserted.
-- [ ] 1k-create spam loop is throttled / bounded.
-- [ ] Single source of day-window truth (DB).
+- [x] 10 parallel creates at boundary do not all succeed.
+- [ ] Over-cap create returns 429 with no row inserted. (Rejected: do not consume a chat turn on create.)
+- [x] 1k-create spam loop is throttled / bounded.
+- [x] Single source of day-window truth (DB).
 
 ---
 
@@ -84,10 +84,11 @@ Also: exclude empties server-side (`WHERE EXISTS messages`) once spam is capped;
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid abuse / spam hole — not a chat-quota bypass |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P1 (QA P0 overstates OpenRouter leak) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#15](https://github.com/tara-bisht/maya-chat/pull/15) on `main` |
 
 **Comment:** Confirmed: `POST /api/conversations` peeks `countTurnsToday` in Node then inserts `title=""`. Parallel creates at the boundary all pass. Creation never consumes. Direct Data API `INSERT` on `conversations` is the same hole. Chat turns are still gated by `consume_chat_turn` — this does **not** extra-hit OpenRouter.
 

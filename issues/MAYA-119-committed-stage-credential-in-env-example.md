@@ -61,9 +61,9 @@ Developer copied a working local `.env.local` into `.env.example` for convenienc
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] `apps/web/.env.example` + root `.env.example` contain zero live hosts/keys (grep clean).
+- [x] `apps/web/.env.example` + root `.env.example` contain zero live hosts/keys (grep clean).
 - [ ] Stage key rotated if live (confirm in Supabase dashboard).
-- [ ] Single source for examples (no drift between root/app).
+- [x] Single source for examples (no drift between root/app).
 - [ ] CI secret-scan guard added.
 
 ---

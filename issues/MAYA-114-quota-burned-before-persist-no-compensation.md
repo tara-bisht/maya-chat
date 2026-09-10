@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-114 |
 | **Issue Type** | 🐛 Bug / Billing Correctness |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | High (user charged, no stream, maybe no message) |
 | **Component** | Backend (Chat Route / Persistence) |
@@ -63,9 +63,9 @@ Ordering (consume → insert → stream) is right for gateway-abort accounting, 
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] Insert failure before stream does not permanently burn a turn (or refunds).
-- [ ] Retitle failure never 500s the turn.
-- [ ] All persist failures return typed `chatError("dropped",500)`, never HTML 500.
+- [x] Insert failure before stream does not permanently burn a turn (or refunds).
+- [x] Retitle failure never 500s the turn.
+- [x] All persist failures return typed `chatError("dropped",500)`, never HTML 500.
 
 ---
 
@@ -74,10 +74,11 @@ Ordering (consume → insert → stream) is right for gateway-abort accounting, 
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid bug |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P1 (rare persist failure, not a race) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#18](https://github.com/tara-bisht/maya-chat/pull/18) on `main` |
 
 **Comment:** Confirmed. Route consumes at `:88`, then `insertUserMessage` / `retitleConversation` throw with no catch → generic 500, turn burned, maybe no user row. Trap 8 is about **gateway** aborts counting; pre-gateway write failures should not.
 

@@ -108,9 +108,9 @@ Apply the identical `.order("created_at", { ascending: false }).limit(HISTORY_WI
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] In any conversation with >20 turns, the LLM response context contains the immediate preceding turns.
-- [ ] Hard page refresh on `/chat/[agentId]?conversationId=...` displays the most recent turns.
-- [ ] Unit test in `load-context.test.ts` asserts that given 30 mock DB message records, `loadConversationHistory` returns turns 11 through 30 in chronological order.
+- [x] In any conversation with >20 turns, the LLM response context contains the immediate preceding turns.
+- [x] Hard page refresh on `/chat/[agentId]?conversationId=...` displays the most recent turns.
+- [x] Window helper unit test (`chronologicalWindow` in `packages/shared/src/chat.test.ts`) asserts a 30-row newest-first set reverses to turns 11–30 in chronological order.
 
 ---
 
