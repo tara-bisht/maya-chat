@@ -15,3 +15,4 @@ supabase/.branches
 playwright-report
 test-results
 .pnpm-store
+.worktrees/
