@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-108 |
 | **Issue Type** | 📉 Spec Drift / Data Integrity |
-| **Status** | Open / Ready for Review |
+| **Status** | Backlog |
 | **Priority** | 🟡 P2 (Medium) |
 | **Severity** | Moderate |
 | **Component** | Frontend (Landing Seats) & Data Catalog |
@@ -117,3 +117,21 @@ Render `Seats` as an async React Server Component on the landing page, with a fa
 ## 7. Acceptance Criteria (AC)
 - [ ] Changing `monthly_price_cents` or adding a model to `plan_models` updates the landing page display.
 - [ ] The landing page loads with zero layout shift and sub-100ms response time using Next.js caching/ISR.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid spec drift; explicitly deferred to PR4 |
+| **Status** | Backlog |
+| **Engineering priority** | P2 |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed. `SEATS` in `apps/web/lib/landing.ts` is a static TypeScript object. The file already says so: seed copy, runtime source of truth is `public.plans` / `public.plan_models` **(PR4)**. DESIGN.md forbids hardcoding `$9` / Claude / GPT in marketing components. PR4’s exit includes “Pricing copy reads catalog.”
+
+The seats footnote *“Plans follow the catalog. Prices and models can move without a deploy.”* currently overclaims. A one-line copy fix can ride a landing PR if we want to stop lying before PR4. Wiring `Seats` to Postgres is PR4, not a hotfix.
+
+When that loader lands: unauthenticated `/` has no user JWT. Use a public/anon catalog read or a cached server fetch — not the authenticated Supabase client. ISR/`cache()` as QA suggests is the right shape. Do not block Web chat on this.

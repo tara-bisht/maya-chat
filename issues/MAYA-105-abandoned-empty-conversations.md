@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-105 |
 | **Issue Type** | 🐛 Bug / UX & Data Hygiene |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🟡 P2 (Medium) |
 | **Severity** | Moderate |
 | **Component** | Frontend (House View) & Backend (Conversations API) |
@@ -107,3 +107,21 @@ WHERE c.user_id = auth.uid()
 - [ ] Attempting to chat while offline or over quota does not create an empty conversation row.
 - [ ] Conversations with 0 messages do not appear in the sidebar/thread list.
 - [ ] No ghost threads appear upon page reload.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid UX / data-hygiene bug |
+| **Status** | Todo |
+| **Engineering priority** | P2 |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed. `HouseView.onSend` `POST`s `/api/conversations` (blank `title: ""`) then `sendMessage`. Daily cap, OpenRouter failure, or a closed tab after step 1 leaves a row with zero messages. The rail lists every conversation; empty ones show as “New chat”. `POST /api/conversations` does not check the daily quota, so the ghost is created even when the turn will 429.
+
+Creating the row before the first turn is a reasonable constraint for the current contract (`conversationId` is required on `POST /api/chat`). **Do not take Option A (lazy create inside `/api/chat`) as the hotfix** — that is an API change.
+
+Pragmatic fix for this slice: hide conversations with 0 messages from the thread list, and/or delete the empty row when `/api/chat` fails before persist. Optionally check quota on conversation create so we do not insert when the day is already spent. Lazy-create belongs with a later API cleanup, not this hotfix.

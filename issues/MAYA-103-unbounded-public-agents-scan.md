@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-103 |
 | **Issue Type** | ⚡ Performance & Scalability |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🟠 P1 (High) |
 | **Severity** | Major |
 | **Component** | Backend / House SSR Loader |
@@ -117,3 +117,23 @@ This ensures PostgreSQL uses existing indexes (`agents_user_id_idx`, primary key
 ## 8. Acceptance Criteria (AC)
 - [ ] `loadHouse()` query response on `agents` never returns unowned public third-party agents other than the currently active agent.
 - [ ] Query execution time and network transfer remain constant regardless of the total count of public custom agents in `public.agents`.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid performance issue; severity overstated for current scale |
+| **Status** | Todo |
+| **Engineering priority** | P2 (QA filed P1) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed. `loadHouse` selects `HOUSE_AGENT_COLUMNS` from `agents` with no predicate. RLS for authenticated users is curated **or** live public **or** own, so every public custom agent on the platform is deserialized in Node, then `buildCast()` keeps only curated, owned, and the active id. Gallery already splits this correctly: curated, own live custom, house listing `.limit(24)`.
+
+This is not a DBA-grade sequential scan of the whole table — it is an RLS-filtered unbounded select. With eight curated rows and a handful of Studio characters it is not a user-visible incident. It *will* rot TTFB as public custom agents grow, and the filter is one query change, so we fix it now rather than wait for scale.
+
+Cast rail only needs: the eight curated agents, the viewer’s live custom agents, and the active agent if it is someone else’s public character. Take the `.or(is_curated.eq.true,user_id.eq.…,id.eq.…)` idea; also keep archived rows out. Indexes `agents_user_id_idx` and PK `id` cover it.
+
+Do not treat this as a production blocker. Ride the 101/102 hotfix.

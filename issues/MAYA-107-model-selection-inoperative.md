@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-107 |
 | **Issue Type** | 🏗️ Architecture & Feature Incompleteness |
-| **Status** | Open / Ready for Review |
+| **Status** | Backlog |
 | **Priority** | 🟠 P1 (High) |
 | **Severity** | Major (Paid Feature Blocker) |
 | **Component** | API (Model Routing) & Frontend (House Model Picker) |
@@ -138,3 +138,21 @@ Transform `{house.defaultModelId}` into a model selector dropdown populated with
 - [ ] Plus and Pro users can switch between their plan's allowed models in the chat UI.
 - [ ] Requesting a model not allowed on the user's plan (e.g. Free user requesting Claude) returns HTTP 403.
 - [ ] Omitted `modelId` gracefully defaults to the plan's `default_model_id`.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Incomplete planned work — current behavior is the PR2/PR3 interim |
+| **Status** | Backlog |
+| **Engineering priority** | P1 as Web MVP remaining work, not a hotfix |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** The observations are factually right: `chatRequestSchema` has no `modelId`, `loadPlanModel` reads `plans.default_model_id`, the House header renders that alias as static text. Extra JSON such as `"modelId": "deepseek"` is dropped by Zod, so a hand-rolled payload cannot switch models.
+
+This is **not a defect of the current slice.** PR2: “Does not: model picker (unless cheap).” PR4: `GET /api/models`, `modelId` checked against `plan_models`, picker in the chat header, 403 with allowlist. Today we already do better than a hardcoded Grok string: we resolve the plan’s catalog default and its `gateway_id`. CONTEXT says chrome shows the model id; DESIGN’s picker is the PR4 surface.
+
+Do **not** add `modelId` to the schema without a `plan_models` check — that is Trap 5 (silent model upgrade). Track this as remaining Web MVP / PR4. The static alias in the header is intentional until the picker ships.

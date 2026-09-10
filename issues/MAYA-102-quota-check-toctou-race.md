@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-102 |
 | **Issue Type** | 🐛 Bug / Concurrency & Security |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | High (Revenue Leakage & Cost Risk) |
 | **Component** | Backend (API Chat Rate Limiting) |
@@ -133,3 +133,23 @@ if (error || !allowed) {
 - [ ] Concurrency test with 10 parallel requests at limit boundary permits only the remaining allowance through to OpenRouter.
 - [ ] No race conditions exist between counting turns and recording usage.
 - [ ] Quota check execution is a single atomic database operation.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid bug |
+| **Status** | Todo |
+| **Engineering priority** | P0 (unchanged) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed. `POST /api/chat` calls `countTurnsToday`, then `loadConversationHistory`, then `insertUsageEvent`. Two round-trips with history I/O in between. Concurrent requests at the cap all read `used < limit` and all hit OpenRouter. This is Trap 3 in `docs/implementation-plan.md` (“count + insert `usage_events` in one transaction (or advisory lock) **before** `streamText`”). Studio custom-agent quota already serializes with `pg_catalog.pg_advisory_xact_lock`; chat quota does not.
+
+Stamping usage *before* `streamText` is correct (Trap 8: aborted streams that already hit the gateway still count). The bug is that the check and the insert are not atomic. Pro (`daily_message_limit` null) is unaffected. Free 50 / Plus 200 can be overshot with a parallel burst — P0 for production cost is fair.
+
+**Do not take QA’s RPC as written.** `consume_chat_turn(p_user_id, p_limit)` must not accept an arbitrary uid from `authenticated` (a caller could burn someone else’s day). Bind to `auth.uid()` for user JWTs; only `service_role` may pass an explicit user. Follow the Studio trigger lock pattern. Call the RPC before `streamText`. Include a concurrency test at the boundary.
+
+Ship with MAYA-101.

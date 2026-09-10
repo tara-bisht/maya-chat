@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-106 |
 | **Issue Type** | 🏗️ Architecture & Feature Incompleteness |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🟠 P1 (High) |
 | **Severity** | Major (Core Value Proposition Undermined) |
 | **Component** | Shared Domain (`@maya/shared`) & API (`POST /api/chat`) |
@@ -145,3 +145,21 @@ Then in `apps/web/lib/chat/load-context.ts`, load the user's profile (`display_n
 - [ ] User's bio from `/settings` is reflected in conversation context across all agents.
 - [ ] Curated agents do not have tone sliders overlaid (as their prompts are already baked).
 - [ ] Unit tests in `@maya/shared` assert prompt merge order and slider handling.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid product gap — incomplete PR3, not a PR2 regression |
+| **Status** | Todo |
+| **Engineering priority** | P1 (unchanged; next feature slice, not the P0 hotfix) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed. `POST /api/chat` builds the system string with `systemPromptWithLanguage(agent.system_prompt, language_preset)` only. There is no `compilePrompt()`. Language overlay **does** work. Tone sliders and the profile bio do not.
+
+This is not a silent break of a shipped compiler — the compiler was never written. PR2b explicitly left the `<user_profile>` block out. PR3’s exit is compiler tests plus “custom agent from Studio chats with its slider tone.” Studio already persists `tone_settings`; `/settings` already persists `display_name` and `global_bio`. The UI shipped ahead of the compiler, so sliders and bio look broken. That is a real product lie for anyone who uses Studio.
+
+**Not the P0 hotfix.** Next feature slice after 101–105. Merge order stays technical-plan §5: identity → tone overlay (**custom agents only**; curated prompts are pre-tuned) → language → `<user_profile>` → memories (empty until PR4) → tool policy (omit tools the plan does not allow). Put it in `@maya/shared` with Vitest, not a one-off concat in the route. Do not implement QA’s sketch as the final compiler — use it as a starting outline, including the curated-vs-custom split they already have.

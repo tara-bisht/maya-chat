@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-101 |
 | **Issue Type** | 🐛 Bug |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🔴 P0 (Blocker) |
 | **Severity** | Critical |
 | **Component** | Backend (Chat Context Loader) & Frontend (House SSR) |
@@ -111,3 +111,23 @@ Apply the identical `.order("created_at", { ascending: false }).limit(HISTORY_WI
 - [ ] In any conversation with >20 turns, the LLM response context contains the immediate preceding turns.
 - [ ] Hard page refresh on `/chat/[agentId]?conversationId=...` displays the most recent turns.
 - [ ] Unit test in `load-context.test.ts` asserts that given 30 mock DB message records, `loadConversationHistory` returns turns 11 through 30 in chronological order.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid bug |
+| **Status** | Todo |
+| **Engineering priority** | P0 (unchanged) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Confirmed in both loaders. `loadConversationHistory` (`apps/web/lib/chat/load-context.ts`) and House SSR (`apps/web/lib/house/load.ts`) do `.order("created_at", { ascending: true }).limit(HISTORY_WINDOW)` with `HISTORY_WINDOW = 20`. Postgres applies the limit after ASC order, so threads longer than 20 messages hydrate the *oldest* twenty. After refresh the transcript is wrong, and the model is asked to continue from the opening of the chat, not the last turn.
+
+The window itself is intentional — Free has no vector memory; we only send the last stretch. The defect is *which* 20. `POST /api/chat` also `.slice(-HISTORY_WINDOW)` after SQL already limited the set; that slice is redundant once the query is correct.
+
+Index `messages_conversation_created_idx (conversation_id, created_at)` already supports `DESC` + `LIMIT 20`. Take QA’s patch: order descending, reverse in JS so the model and UI still see chronological order. Same change in both files. Add the 30-row unit test they sketched.
+
+Ship in the next hotfix, before any other chat work.

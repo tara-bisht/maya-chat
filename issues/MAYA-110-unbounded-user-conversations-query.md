@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-110 |
 | **Issue Type** | ⚡ Performance & Scalability |
-| **Status** | Open / Ready for Review |
+| **Status** | Backlog |
 | **Priority** | 🟢 P3 (Low) |
 | **Severity** | Minor |
 | **Component** | Backend / House & Conversations API |
@@ -90,3 +90,21 @@ const before = searchParams.get("before"); // ISO timestamp or cursor
 ## 7. Acceptance Criteria (AC)
 - [ ] Conversation listings are capped with a sensible upper bound on initial page render.
 - [ ] Query latency remains constant under heavy account usage.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid at tenure scale; not a current incident |
+| **Status** | Backlog |
+| **Engineering priority** | P3 (unchanged) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** The unbounded selects are real. `loadHouse` and gallery load every conversation for the user — that list feeds both the agent’s thread rail **and** `latestByAgent` titles on the cast. `GET /api/conversations` is per-agent and **is not called by the web client** (only `POST` is). Index `conversations_user_agent_updated_idx (user_id, agent_id, updated_at desc)` already exists.
+
+**Reject `.limit(50)` on `loadHouse`.** A user with 50 Marcus threads would drop Priya’s latest title from the rail. The later shape is: one latest row per agent (`DISTINCT ON (agent_id)` / equivalent) **plus** a bounded list for the active agent. Cursor pagination on GET is fine when mobile needs an inbox.
+
+Leave it. Revisit when power users have tens of threads per agent, not as part of the first hotfix.

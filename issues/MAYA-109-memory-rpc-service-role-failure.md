@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-109 |
 | **Issue Type** | 🐛 Bug & Database Architecture |
-| **Status** | Open / Ready for Review |
+| **Status** | Backlog |
 | **Priority** | 🟡 P2 (Medium) |
 | **Severity** | Moderate |
 | **Component** | Database (pgvector / Memory RPC) |
@@ -143,3 +143,23 @@ For indexing: For high-volume multi-tenancy in pgvector, ensure `hnsw.iterative_
 ## 7. Acceptance Criteria (AC)
 - [ ] Calling `match_agent_memories` via `service_role` with an explicit `p_user_id` successfully returns nearest neighbor memories.
 - [ ] Calling `match_agent_memories` as `authenticated` with someone else's `p_user_id` ignores the parameter and uses `auth.uid()`.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Split — service-role gap is real for a future worker; HNSW claim is not an MVP defect |
+| **Status** | Backlog |
+| **Engineering priority** | P3 (QA filed P2) |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** Two claims, two answers.
+
+1. **`auth.uid()` is NULL under `service_role`.** True, and it matches technical-plan §6.4. Chat uses the user JWT (`createClient()`), so the RPC would work on the request path. Nothing in the app calls `match_agent_memories` yet — retrieve is PR4, and `agent_memories` is empty. Granting `EXECUTE` to `service_role` on a function that filters by `auth.uid()` is unused until a worker exists.
+
+2. **Global HNSW + tenant filter.** Matches the approved schema. Isolation is `user_id + agent_id` in SQL (plus RLS). Iterative scan / partitioning is a later scale project. Do not rebuild indexes for an empty table.
+
+**Do not apply QA’s `security definer` + free `p_user_id` as written.** A definer function that trusts a client-supplied uid is a tenant-isolation bug. When the memory PR adds a worker: `authenticated` always uses `auth.uid()`; `service_role` may take `p_user_id`; a user JWT must never select another tenant. Keep this ticket on the memory slice, not the hotfix.

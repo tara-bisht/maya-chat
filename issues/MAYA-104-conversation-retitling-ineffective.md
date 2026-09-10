@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-104 |
 | **Issue Type** | 🐛 Bug |
-| **Status** | Open / Ready for Review |
+| **Status** | Todo |
 | **Priority** | 🟡 P2 (Medium) |
 | **Severity** | Minor (UX Friction) |
 | **Component** | Backend / Conversation Persistence |
@@ -122,3 +122,27 @@ export async function retitleConversation(
 - [ ] A new conversation initialized with `""`, `"New Chat"`, or `"New chat"` is renamed based on the first user message.
 - [ ] An existing conversation with a user-edited title (e.g., `"Physics Homework"`) is not overwritten on subsequent messages.
 - [ ] Added unit test for `isDefaultConversationTitle` covering case-insensitivity and empty strings.
+
+---
+
+## 9. Tech Lead Review
+
+| Field | Value |
+| :--- | :--- |
+| **Verdict** | Valid latent bug; not reproducible on the current web path |
+| **Status** | Todo |
+| **Engineering priority** | P2 |
+| **Reviewer** | Engineering Tech Lead |
+| **Date** | 2026-09-10 |
+
+**Comment:** The analysis of `retitleConversation` is right, but the web client does not hit it today. `POST /api/conversations` inserts `title: ""`. Empty trim is falsy, so `titleFromFirstMessage` runs on the first send. QA’s repro (“any pathway where title defaults to `'New Chat'`”) is SQL default, a future mobile omit, or any client that stores the placeholder.
+
+Three strings are in play and they do not match:
+
+- Column default: `'New Chat'`
+- UI constant `OPEN_NIGHT_TITLE`: `"New chat"`
+- API insert: `""`
+
+Treat `""` / `"New chat"` / `"New Chat"` as untitled (case-insensitive). Do not overwrite a user-edited title such as `"Physics Homework"`. Optional follow-up: change the column default to `''` so API and DB agree.
+
+Tiny hardening. Ship with the hotfix so PR6 (mobile) does not inherit the footgun. The current signed-in web journey is fine.
