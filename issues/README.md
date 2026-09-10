@@ -3,7 +3,7 @@
 **Audit Date**: September 10, 2026  
 **QA Lead**: Antigravity Staff QA Engineer  
 **Target Release**: Web MVP (Phase 2–4 Verification)  
-**Status**: 6 Done on `main` (#7, #9), 7 Todo, 9 Backlog — 2026-09-10  
+**Status**: 12 Done on `main` (#7, #9, #14–#18), 1 Todo, 9 Backlog — 2026-09-10  
 
 ---
 
@@ -29,16 +29,16 @@ While the foundation demonstrates sound multi-tenant security principles (RLS, P
 | **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift | **P2** | **Backlog** | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
 | **[MAYA-109](./MAYA-109-memory-rpc-service-role-failure.md)** | Bug / Database | **P2** | **Backlog** | Database / pgvector | `match_agent_memories` RPC fails for service role & lacks tenant index isolation |
 | **[MAYA-110](./MAYA-110-unbounded-user-conversations-query.md)** | Performance | **P3** | **Backlog** | House / Threads | Unbounded, unpaginated conversation query degrades with user tenure |
-| **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | Security | **P0** | **Todo** | Database / RPC | `chat_agent_prompt` leaks any public custom system prompt to any authenticated user |
-| **[MAYA-112](./MAYA-112-usage-events-direct-insert-bypasses-quota.md)** | Security | **P0** | **Todo** | Database / Quota | Direct `usage_events` INSERT bypasses atomic quota API, allows forgery and flooding |
-| **[MAYA-113](./MAYA-113-conversation-create-quota-peek-and-spam.md)** | Bug / Race | **P0** | **Todo** | API / Conversations | Create-route quota peek TOCTOU plus unbounded empty-row spam |
-| **[MAYA-114](./MAYA-114-quota-burned-before-persist-no-compensation.md)** | Bug | **P0** | **Todo** | API / Persistence | Quota burned before user-message persist, no compensation on DB failure |
+| **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | Security | **P0** | **Done** (#15) | Database / RPC | `chat_agent_prompt` leaks any public custom system prompt to any authenticated user |
+| **[MAYA-112](./MAYA-112-usage-events-direct-insert-bypasses-quota.md)** | Security | **P0** | **Done** (#15) | Database / Quota | Direct `usage_events` INSERT bypasses atomic quota API, allows forgery and flooding |
+| **[MAYA-113](./MAYA-113-conversation-create-quota-peek-and-spam.md)** | Bug / Race | **P0** | **Done** (#15) | API / Conversations | Create-route quota peek TOCTOU plus unbounded empty-row spam |
+| **[MAYA-114](./MAYA-114-quota-burned-before-persist-no-compensation.md)** | Bug | **P0** | **Done** (#18) | API / Persistence | Quota burned before user-message persist, no compensation on DB failure |
 | **[MAYA-115](./MAYA-115-dual-plan-truth-profiles-vs-entitlements.md)** | Architecture | **P1** | **Backlog** | Database / Catalog | Dual plan truth `profiles.plan` vs `entitlements.plan` drifts with no sync |
 | **[MAYA-116](./MAYA-116-no-model-attribution-plan-models-unenforced.md)** | Architecture | **P1** | **Backlog** | Database / Billing | No `model_id` attribution, `plan_models` allowlist unenforced in DB |
 | **[MAYA-117](./MAYA-117-assistant-persist-best-effort-history-divergence.md)** | Bug | **P1** | **Backlog** | API / Streaming | Assistant persist best-effort swallow diverges stream from DB, abort orphans |
-| **[MAYA-118](./MAYA-118-ci-never-builds.md)** | CI/CD | **P0** | **Todo** | CI / Build | CI never builds, broken production ships green |
+| **[MAYA-118](./MAYA-118-ci-never-builds.md)** | CI/CD | **P0** | **Done** (#17) | CI / Build | CI never builds, broken production ships green |
 | **[MAYA-119](./MAYA-119-committed-stage-credential-in-env-example.md)** | Hygiene | **P0** | **Todo** | Repo / Secrets | Live stage credential material committed in `.env.example` |
-| **[MAYA-120](./MAYA-120-persist-throws-escape-typed-errors-unvalidated-agentid.md)** | Bug | **P1** | **Todo** | API / Validation | Persist throws escape typed errors, `agentId` unvalidated, field errors lost |
+| **[MAYA-120](./MAYA-120-persist-throws-escape-typed-errors-unvalidated-agentid.md)** | Bug | **P1** | **Done** (#18) | API / Validation | Persist throws escape typed errors, `agentId` unvalidated, field errors lost |
 | **[MAYA-121](./MAYA-121-agents-delete-dead-signup-not-idempotent-missing-guards.md)** | Database | **P1** | **Backlog** | Database / Migrations | Dead delete, non-idempotent signup, missing CHECK/UNIQUE guards |
 | **[MAYA-122](./MAYA-122-env-validation-sentry-ratelimit-service-role-hygiene.md)** | Ops | **P2** | **Backlog** | Platform / Observability | Env unvalidated, cache poisonable, no Sentry, no burst limit, key reachable |
 
@@ -109,14 +109,14 @@ Product code for 101–105 landed in [#7](https://github.com/tara-bisht/maya-cha
 
 Reviewed against the current tree (`chat_agent_prompt`, `usage_events` grants, `POST /api/chat` + `/api/conversations`, persist throws, `profiles.plan` vs `entitlements`, CI, `.env.example`, Studio archive, CONTEXT, implementation-plan traps).
 
-**None of the twelve tickets are invalid. None need more information.** Seven are **Todo**. Five are **Backlog** (plus 107–110 already Backlog).
+**None of the twelve tickets are invalid. None need more information.** Six Wave 0 tickets are **Done** on `main`. **119** stays **Todo** until the stage publishable key is rotated. Five are **Backlog** (plus 107–110 already Backlog).
 
 ### Status counts (all 22)
 
 | Status | Count | Meaning |
 | :--- | :---: | :--- |
-| **Done** | 6 | On `main` (#7, #9). |
-| **Todo** | 7 | 111, 112, 113, 114, 118, 119, 120. |
+| **Done** | 12 | On `main` (#7, #9, #14–#18). |
+| **Todo** | 1 | 119 — rotate the exposed stage publishable key. |
 | **Backlog** | 9 | 107–110, 115–117, 121–122. |
 | **More info** | 0 | — |
 
@@ -124,25 +124,23 @@ Reviewed against the current tree (`chat_agent_prompt`, `usage_events` grants, `
 
 | Ticket | QA pri | Eng pri | Status | Verdict |
 | :--- | :---: | :---: | :--- | :--- |
-| **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | P0 | P0 | Todo | Valid prompt-IP leak. RPC is executable by any authed JWT. Do **not** take Option B (still leaks curated prompts). |
-| **[MAYA-112](./MAYA-112-usage-events-direct-insert-bypasses-quota.md)** | P0 | P0 | Todo | Valid. MAYA-102 added atomic consume but never revoked `GRANT INSERT` on `usage_events`. |
-| **[MAYA-113](./MAYA-113-conversation-create-quota-peek-and-spam.md)** | P0 | P1 | Todo | Valid empty-row spam + peek TOCTOU. Does **not** bypass chat quota. Do not consume on create. Do not lazy-create in `/api/chat`. |
-| **[MAYA-114](./MAYA-114-quota-burned-before-persist-no-compensation.md)** | P0 | P1 | Todo | Valid pre-gateway burn on persist throw. Insert-then-consume; no `refund_chat_turn`. |
+| **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | P0 | P0 | Done (#15) | Valid prompt-IP leak. RPC is executable by any authed JWT. Do **not** take Option B (still leaks curated prompts). |
+| **[MAYA-112](./MAYA-112-usage-events-direct-insert-bypasses-quota.md)** | P0 | P0 | Done (#15) | Valid. MAYA-102 added atomic consume but never revoked `GRANT INSERT` on `usage_events`. |
+| **[MAYA-113](./MAYA-113-conversation-create-quota-peek-and-spam.md)** | P0 | P1 | Done (#15) | Valid empty-row spam + peek TOCTOU. Does **not** bypass chat quota. Do not consume on create. Do not lazy-create in `/api/chat`. |
+| **[MAYA-114](./MAYA-114-quota-burned-before-persist-no-compensation.md)** | P0 | P1 | Done (#18) | Valid pre-gateway burn on persist throw. Insert-then-consume; no `refund_chat_turn`. |
 | **[MAYA-115](./MAYA-115-dual-plan-truth-profiles-vs-entitlements.md)** | P1 | P1 | Backlog | Dual column is real. App already reads `entitlements.plan`. Drop `profiles.plan` with the Stripe webhook (PR4). |
 | **[MAYA-116](./MAYA-116-no-model-attribution-plan-models-unenforced.md)** | P1 | P1 | Backlog | Same slice as **107**. Do not add `modelId` / `consume_chat_turn(p_model_id)` without the picker (Trap 5). |
 | **[MAYA-117](./MAYA-117-assistant-persist-best-effort-history-divergence.md)** | P1 | P1 | Backlog | Valid stream/DB divergence. Full ACs are PR5. Optional `logDropped` can hitch on 114. |
-| **[MAYA-118](./MAYA-118-ci-never-builds.md)** | P0 | P0 | Todo | Valid. `check` is `lint typecheck test` only. `docs/git.md` enshrines it. |
-| **[MAYA-119](./MAYA-119-committed-stage-credential-in-env-example.md)** | P0 | P0 | Todo | Valid policy break. Live stage URL + `sb_publishable_` in `apps/web/.env.example`. |
-| **[MAYA-120](./MAYA-120-persist-throws-escape-typed-errors-unvalidated-agentid.md)** | P1 | P1 | Todo | Persist throws land with **114**. GET `isUuid` is a one-liner. Reject `fieldErrors` / multimodal redesign. |
+| **[MAYA-118](./MAYA-118-ci-never-builds.md)** | P0 | P0 | Done (#17) | Valid. `check` is `lint typecheck test` only. `docs/git.md` enshrines it. |
+| **[MAYA-119](./MAYA-119-committed-stage-credential-in-env-example.md)** | P0 | P0 | Todo | Valid policy break. Placeholders shipped in #14; rotate the exposed stage publishable key in the dashboard. |
+| **[MAYA-120](./MAYA-120-persist-throws-escape-typed-errors-unvalidated-agentid.md)** | P1 | P1 | Done (#18) | Persist throws land with **114**. GET `isUuid` is a one-liner. Reject `fieldErrors` / multimodal redesign. |
 | **[MAYA-121](./MAYA-121-agents-delete-dead-signup-not-idempotent-missing-guards.md)** | P1 | P2 | Backlog | Dead DELETE is **working as designed** (CONTEXT Archive). Do not restore DELETE. Do not squash applied migrations. |
-| **[MAYA-122](./MAYA-122-env-validation-sentry-ratelimit-service-role-hygiene.md)** | P2 | P2 | Backlog | Six PR5/v1.1 ops items. Hitch `server-only` + `turbo.json globalEnv` onto **118** if cheap. |
+| **[MAYA-122](./MAYA-122-env-validation-sentry-ratelimit-service-role-hygiene.md)** | P2 | P2 | Backlog | Six PR5/v1.1 ops items. `server-only` + `turbo.json globalEnv` hitched on #15/#17. |
 
 ### Engineering order (111–122)
 
-1. **Security + secrets** — **111**, **112**, **119**. **113** empty-cap can share a grants/trigger migration with 112.
-2. **Chat persist contract** — **114** + **120**.
-3. **CI** — **118** (+ hitch `server-only` / `globalEnv` from 122).
-4. **Stay on the implementation plan** — **115** + **116** with PR4; **117** + **122** with PR5; **121** as later schema hardening.
+1. **Shipped** — **111**, **112**, **113** in #15; **118** in #17; **114**, **120** in #18. Placeholders for **119** in #14 (rotate the stage key).
+2. **Stay on the implementation plan** — **115** + **116** with PR4; **117** + **122** with PR5; **121** as later schema hardening.
 
 ### Notes for implementers (111–122)
 

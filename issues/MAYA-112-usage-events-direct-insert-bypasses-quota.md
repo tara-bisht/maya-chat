@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-112 |
 | **Issue Type** | 🔴 Security / Quota Integrity |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | Critical (quota bypass, analytics poisoning, storage DoS) |
 | **Component** | Database (RLS / Grants on `usage_events`) |
@@ -66,10 +66,10 @@ Alternative if direct INSERT must stay: column grants excluding `created_at` + `
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] Authenticated `INSERT INTO usage_events` returns `42501` / RLS deny.
-- [ ] `rpc("consume_chat_turn")` still mints exactly one row per allowed turn with server timestamp.
-- [ ] Backdated/future `created_at` can no longer shift daily COUNT.
-- [ ] pgTAP test asserts revoke + RPC-only write.
+- [x] Authenticated `INSERT INTO usage_events` returns `42501` / RLS deny.
+- [x] `rpc("consume_chat_turn")` still mints exactly one row per allowed turn with server timestamp.
+- [x] Backdated/future `created_at` can no longer shift daily COUNT.
+- [ ] pgTAP test asserts revoke + RPC-only write. (Manual: `supabase/tests/grants_prompt_quota.sql`; not in CI.)
 
 ---
 
@@ -78,10 +78,11 @@ Alternative if direct INSERT must stay: column grants excluding `created_at` + `
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid security bug |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P0 (unchanged) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#15](https://github.com/tara-bisht/maya-chat/pull/15) on `main` |
 
 **Comment:** Confirmed. MAYA-102 added `consume_chat_turn()` but left `GRANT SELECT, INSERT ON usage_events TO authenticated` and `WITH CHECK (user_id = auth.uid())`. The atomic path counts `created_at >= today`; a client INSERT with a chosen timestamp poisons that window, and unthrottled inserts are a self-DoS. Two writers, one table.
 

@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-118 |
 | **Issue Type** | 🔧 CI/CD Gap |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🔴 P0 (Critical) |
 | **Severity** | High (broken prod deploys pass checks) |
 | **Component** | CI (.github/workflows) / Build |
@@ -61,9 +61,9 @@ Plus: pin `pnpm/action-setup version: 9` (currently implicit via `packageManager
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] PR breaking `next build` fails required status, cannot squash-merge.
-- [ ] `main` push runs `build` (or Vercel preview check is wired as required status and documented).
-- [ ] `docs/git.md` documents `lint typecheck test build`.
+- [x] PR breaking `next build` fails required status, cannot squash-merge.
+- [x] `main` push runs `build` (or Vercel preview check is wired as required status and documented).
+- [x] `docs/git.md` documents `lint typecheck test build`.
 
 ---
 
@@ -72,10 +72,11 @@ Plus: pin `pnpm/action-setup version: 9` (currently implicit via `packageManager
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid CI gap |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P0 (unchanged — `check` is the merge gate) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#17](https://github.com/tara-bisht/maya-chat/pull/17) on `main` |
 
 **Comment:** Confirmed. `.github/workflows/ci.yml` runs `pnpm turbo lint typecheck test` only. `turbo.json` defines `build`; `docs/git.md` documents the same short loop. Squash-merge after green `check` can land a Next config / RSC break on `main` (= prod) before Vercel fails.
 

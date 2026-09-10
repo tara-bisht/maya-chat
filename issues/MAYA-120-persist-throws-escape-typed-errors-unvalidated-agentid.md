@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-120 |
 | **Issue Type** | 🐛 Bug / API Contract & Validation |
-| **Status** | Todo |
+| **Status** | Done |
 | **Priority** | 🟠 P1 (High) |
 | **Severity** | Major (500 HTML vs typed errors, DB hit on garbage, undebuggable clients) |
 | **Component** | Backend (Chat/Conversations API) & `@maya/shared` |
@@ -60,10 +60,10 @@ Three contract breaks share one theme — validation doesn't reach the client in
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] No `throw` crosses an API route boundary; every failure is typed `chatError`.
-- [ ] Garbage `agentId` returns `invalid:400` with zero DB reads.
-- [ ] Schema failures return field-level reasons; multimodal truncation is explicit.
-- [ ] Route + loader tests cover invalid-UUID / oversize / non-text matrix.
+- [x] No `throw` crosses an API route boundary; every failure is typed `chatError`.
+- [x] Garbage `agentId` returns `invalid:400` with zero DB reads.
+- [ ] Schema failures return field-level reasons; multimodal truncation is explicit. (Rejected for this slice.)
+- [x] Persist Result tests cover insert failure / non-throwing retitle. Oversize / non-text matrix out of scope.
 
 ---
 
@@ -72,10 +72,11 @@ Three contract breaks share one theme — validation doesn't reach the client in
 | Field | Value |
 | :--- | :--- |
 | **Verdict** | Valid contract bugs — scoped; do not redesign schemas |
-| **Status** | Todo |
+| **Status** | Done |
 | **Engineering priority** | P1 (unchanged) |
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
+| **Shipped** | [#18](https://github.com/tara-bisht/maya-chat/pull/18) on `main` |
 
 **Comment:** Three items, not one design.
 
