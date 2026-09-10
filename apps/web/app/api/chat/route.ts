@@ -5,11 +5,16 @@ import {
   toUIMessageStream,
   type UIMessage,
 } from "ai";
-import { parseChatRequest, systemPromptWithLanguage } from "@maya/shared";
+import {
+  compilePrompt,
+  parseChatRequest,
+  toneSettingsSchema,
+} from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
 import {
   loadChatAgent,
+  loadChatProfile,
   loadConversationHistory,
   loadPlanModel,
 } from "@/lib/chat/load-context";
@@ -64,11 +69,14 @@ export async function POST(request: Request) {
     return chatError("dropped", 500);
   }
 
-  const conversationLoad = await loadConversationHistory(supabase, {
-    userId: user.id,
-    agentId: parsed.data.agentId,
-    conversationId: parsed.data.conversationId,
-  });
+  const [conversationLoad, profile] = await Promise.all([
+    loadConversationHistory(supabase, {
+      userId: user.id,
+      agentId: parsed.data.agentId,
+      conversationId: parsed.data.conversationId,
+    }),
+    loadChatProfile(supabase, user.id),
+  ]);
 
   if (!conversationLoad.ok) {
     return chatError(
@@ -112,10 +120,16 @@ export async function POST(request: Request) {
   const result = streamText({
     model: getOpenRouterModel(planLoad.gatewayId),
     maxOutputTokens: 2048,
-    system: systemPromptWithLanguage(
-      agentLoad.agent.system_prompt,
-      agentLoad.agent.language_preset,
-    ),
+    system: compilePrompt({
+      isCurated: agentLoad.agent.is_curated,
+      basePrompt: agentLoad.agent.system_prompt,
+      languagePreset: agentLoad.agent.language_preset,
+      tone: toneSettingsSchema.safeParse(agentLoad.agent.tone_settings).data,
+      userProfile: profile,
+      memories: [],
+      toolsEnabled: agentLoad.agent.tools_enabled,
+      toolsAllowed: planLoad.toolsAllowed,
+    }),
     messages: await convertToModelMessages(nextMessages),
     onError: ({ error }) => {
       console.error("[streamText error]", error);
