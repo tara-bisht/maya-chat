@@ -27,6 +27,10 @@ pnpm dev
 
 Then open [http://localhost:3000](http://localhost:3000). Paper, Fraunces wordmark, eight playbills. Auth, chat, and Stripe are later PRs.
 
+## Git
+
+GitHub Flow. Branch, PR, squash-merge to `main`. Rules: [`docs/git.md`](docs/git.md). How to contribute: [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## Commands
 
 | Command | What |
