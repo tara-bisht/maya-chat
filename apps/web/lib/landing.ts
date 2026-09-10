@@ -122,7 +122,7 @@ export const SEATS: Seat[] = [
       "No vector memory",
       "No tools",
     ],
-    models: ["gemini-flash", "grok-fast"],
+    models: ["qwen-flash", "gemini-flash", "grok-fast"],
   },
   {
     id: "plus",
@@ -139,7 +139,7 @@ export const SEATS: Seat[] = [
       "Private per-agent memory",
       "Memory saver, math solver",
     ],
-    models: ["gemini-flash", "grok-fast", "deepseek", "qwen", "grok", "gpt"],
+    models: ["qwen-flash", "gemini-flash", "grok-fast", "deepseek", "qwen", "grok", "gpt"],
   },
   {
     id: "pro",
@@ -157,6 +157,7 @@ export const SEATS: Seat[] = [
       "Plus tools, and web search",
     ],
     models: [
+      "qwen-flash",
       "gemini-flash",
       "grok-fast",
       "deepseek",
@@ -175,7 +176,7 @@ export const SEATS_FOOTNOTE =
 export const NOTES = [
   {
     q: "What can I do on Free?",
-    a: "Marcus and Dr. Priya. Fifty lines a day. Voices: gemini-flash and grok-fast. Three public custom players. No memory, no private roles, no tools. Daily curtain, then a better seat or tomorrow.",
+    a: "Marcus and Dr. Priya. Fifty lines a day. Voices: qwen-flash, gemini-flash, and grok-fast. Three public custom players. No memory, no private roles, no tools. Daily curtain, then a better seat or tomorrow.",
   },
   {
     q: "Do they remember me?",

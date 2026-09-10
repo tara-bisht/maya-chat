@@ -1,3 +1,4 @@
+import { PageInner } from "@/components/app/page-frame";
 import { CompanyWall } from "@/components/playbill-card";
 import { Hero } from "@/components/landing/hero";
 import { HouseSteps } from "@/components/landing/house-steps";
@@ -26,12 +27,14 @@ export default async function Home() {
 
       <section
         id="company"
-        className="relative z-10 scroll-mt-8 px-4 py-10 md:px-8 md:py-14"
+        className="relative z-10 scroll-mt-8 py-10 md:py-14"
       >
-        <SectionKicker kicker={COMPANY_KICKER.kicker} title={COMPANY_KICKER.title}>
-          {COMPANY_KICKER.body}
-        </SectionKicker>
-        <CompanyWall />
+        <PageInner>
+          <SectionKicker kicker={COMPANY_KICKER.kicker} title={COMPANY_KICKER.title}>
+            {COMPANY_KICKER.body}
+          </SectionKicker>
+          <CompanyWall />
+        </PageInner>
       </section>
 
       <Nights />

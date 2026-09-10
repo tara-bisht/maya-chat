@@ -89,6 +89,7 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --max-width-measure: 42rem;
+  --max-width-stage: 80rem;
 }
 
 html,

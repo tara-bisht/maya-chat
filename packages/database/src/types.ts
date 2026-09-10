@@ -396,6 +396,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      chat_agent_prompt: {
+        Args: { p_agent_id: string };
+        Returns: string;
+      };
       match_agent_memories: {
         Args: { p_agent_id: string; p_match_count?: number; p_query: string };
         Returns: {

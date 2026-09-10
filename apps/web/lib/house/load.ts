@@ -3,6 +3,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
 import { HISTORY_WINDOW, isUuid, parseMayaPlan } from "@maya/shared";
+import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
 import { toHouseAgent } from "./public-agent";
 import { buildCast, displayThreadTitle, threadsForAgent } from "./threads";
@@ -72,6 +73,11 @@ export async function loadHouse(
     ]);
 
   if (agentResult.error || conversationResult.error || agentsResult.error) {
+    logDropped("house", {
+      agent: agentResult.error,
+      conversations: conversationResult.error,
+      company: agentsResult.error,
+    });
     return { ok: false, reason: "dropped" };
   }
 
@@ -88,20 +94,20 @@ export async function loadHouse(
     .maybeSingle();
 
   if (planResult.error) {
+    logDropped("house", { plan: planResult.error });
     return { ok: false, reason: "dropped" };
   }
 
   let backstory: string | null = null;
   if (row.user_id === input.userId && !row.is_curated) {
-    const promptResult = await supabase
-      .from("agents")
-      .select("system_prompt")
-      .eq("id", row.id)
-      .maybeSingle();
+    const promptResult = await supabase.rpc("chat_agent_prompt", {
+      p_agent_id: row.id,
+    });
     if (promptResult.error) {
+      logDropped("house", { prompt: promptResult.error });
       return { ok: false, reason: "dropped" };
     }
-    backstory = promptResult.data?.system_prompt ?? null;
+    backstory = promptResult.data ?? null;
   }
 
   const agent = toHouseAgent({
@@ -147,7 +153,7 @@ export async function loadHouse(
     house: {
       agent,
       plan: planId,
-      defaultModelId: planResult.data?.default_model_id ?? "gemini-flash",
+      defaultModelId: planResult.data?.default_model_id ?? "qwen-flash",
       dailyLimit: planResult.data?.daily_message_limit ?? null,
       threads,
       cast: buildCast({

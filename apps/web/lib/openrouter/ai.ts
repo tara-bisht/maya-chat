@@ -10,13 +10,9 @@ export function getOpenRouterModel(gatewayId: string) {
     const config = openRouterConfigFromEnv();
     provider = createOpenRouter({
       apiKey: config.apiKey,
-      extraBody: {
-        // Attribution; OpenRouter also reads HTTP-Referer / X-Title via headers.
-      },
-      headers: {
-        "HTTP-Referer": config.httpReferer,
-        "X-Title": config.appTitle,
-      },
+      appName: config.appTitle,
+      appUrl: config.httpReferer,
+      compatibility: "strict",
     });
   }
 

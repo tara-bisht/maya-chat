@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { PageInner } from "@/components/app/page-frame";
 import { SEATS, SEATS_FOOTNOTE, type Seat } from "@/lib/landing";
 import { SectionKicker } from "@/components/landing/section-kicker";
 
@@ -75,22 +76,24 @@ export function Seats() {
   return (
     <section
       id="seats"
-      className="relative z-10 scroll-mt-8 px-4 py-10 md:px-8 md:py-14"
+      className="relative z-10 scroll-mt-8 py-10 md:py-14"
     >
-      <SectionKicker kicker="The bill" title="Seats">
-        Free is already in. Plus takes the rest of the company. Pro takes every
-        voice on the catalog.
-      </SectionKicker>
-      <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-        {SEATS.map((seat) => (
-          <li key={seat.id}>
-            <SeatTicket seat={seat} />
-          </li>
-        ))}
-      </ul>
-      <p className="mt-8 max-w-xl font-sans text-sm text-ink-soft">
-        {SEATS_FOOTNOTE}
-      </p>
+      <PageInner>
+        <SectionKicker kicker="The bill" title="Seats">
+          Free is already in. Plus takes the rest of the company. Pro takes every
+          voice on the catalog.
+        </SectionKicker>
+        <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+          {SEATS.map((seat) => (
+            <li key={seat.id} className="min-w-0 pt-3 pr-3">
+              <SeatTicket seat={seat} />
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8 max-w-xl font-sans text-sm text-ink-soft">
+          {SEATS_FOOTNOTE}
+        </p>
+      </PageInner>
     </section>
   );
 }

@@ -1,10 +1,15 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { COMPANY, COSTUME_CLASS } from "@/lib/company";
 import { AgentPortrait } from "@/components/app/agent-portrait";
 import type { Playbill, PlaybillStamp } from "@/lib/gallery/playbill";
 
 const POSTER_TILTS = [-2.4, 1.6, -1.1, 2.8, -3, 1.2, 2.2, -1.8] as const;
+
+export const PLAYBILL_GRID_CLASS =
+  "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:gap-x-10 md:gap-y-14 lg:grid-cols-3 xl:grid-cols-4";
+
+export const PLAYBILL_CELL_CLASS = "min-w-0 pt-4 pr-4 pb-2";
 
 const STAMP_LABEL: Record<PlaybillStamp, string> = {
   free: "Free",
@@ -24,7 +29,13 @@ function stampClass(stamp: PlaybillStamp): string {
   return "bg-cream text-night shadow-[3px_3px_0_#FF4D2E] rotate-[-6deg]";
 }
 
-export function PlaybillCard({ player }: { player: Playbill }) {
+export function PlaybillCard({
+  player,
+  footer,
+}: {
+  player: Playbill;
+  footer?: ReactNode;
+}) {
   const stamp = player.stamp ?? (player.freeTier ? "free" : "plus");
   const card = (
     <article
@@ -52,6 +63,9 @@ export function PlaybillCard({ player }: { player: Playbill }) {
       <p className="font-sans text-sm leading-snug text-cream/90">
         {player.tagline}
       </p>
+      {footer ? (
+        <div className="mt-auto border-t border-cream/20 pt-3">{footer}</div>
+      ) : null}
     </article>
   );
 
@@ -60,7 +74,7 @@ export function PlaybillCard({ player }: { player: Playbill }) {
   }
 
   return (
-    <Link href={player.href} className="block h-full">
+    <Link href={player.href} className="group block h-full">
       {card}
     </Link>
   );
@@ -74,14 +88,14 @@ export function PlaybillWall({
   tilt?: boolean;
 }) {
   return (
-    <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <ul className={PLAYBILL_GRID_CLASS}>
       {players.map((player, index) => {
         const deg = POSTER_TILTS[index % POSTER_TILTS.length];
         const style = tilt
           ? ({ "--tilt": `${deg}deg` } as CSSProperties)
           : undefined;
         return (
-          <li key={player.id} style={style}>
+          <li key={player.id} className={PLAYBILL_CELL_CLASS} style={style}>
             <PlaybillCard player={player} />
           </li>
         );

@@ -440,8 +440,8 @@ insert into public.plans (
   is_active
 )
 values
-  ('free', 'Free', 0, null, 50, 0, 2, false, '{}', 'gemini-flash', true),
-  ('plus', 'Plus', 900, 9000, 200, 5, null, true, '{memory_saver,math_solver}', 'grok', true),
+  ('free', 'Free', 0, null, 50, 3, 2, false, '{}', 'gemini-flash', true),
+  ('plus', 'Plus', 900, 9000, 200, 10, null, true, '{memory_saver,math_solver}', 'grok', true),
   ('pro', 'Pro', 1900, 19000, null, null, null, true, '{memory_saver,math_solver,web_search}', 'claude', true)
 on conflict (id) do update set
   display_name = excluded.display_name,

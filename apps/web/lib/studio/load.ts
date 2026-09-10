@@ -14,6 +14,7 @@ import {
   type StudioTool,
   type ToneSettings,
 } from "@maya/shared";
+import { logDropped } from "@/lib/supabase/dropped";
 import { createClient } from "@/lib/supabase/server";
 import {
   GALLERY_AGENT_COLUMNS,
@@ -95,6 +96,7 @@ export async function loadOwnRoles(
     .order("created_at", { ascending: false });
 
   if (error) {
+    logDropped("studio", { roles: error });
     return { ok: false };
   }
 

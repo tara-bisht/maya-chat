@@ -13,21 +13,6 @@ import type { HouseAgentRow } from "@/lib/house/columns";
 
 export type ChatAgentRow = HouseAgentRow & { system_prompt: string };
 
-export type ChatContext = {
-  userId: string;
-  planId: MayaPlan;
-  dailyLimit: number | null;
-  defaultModelId: string;
-  gatewayId: string;
-  agent: ChatAgentRow;
-  conversation: {
-    id: string;
-    title: string;
-    agent_id: string;
-  };
-  history: Array<{ role: "user" | "assistant"; content: string }>;
-};
-
 export async function loadChatAgent(
   supabase: SupabaseClient<Database>,
   input: { userId: string; agentId: string },
@@ -35,11 +20,11 @@ export async function loadChatAgent(
   | { ok: true; agent: ChatAgentRow; planId: MayaPlan; canChat: boolean }
   | { ok: false; reason: "not_found" | "dropped" }
 > {
-  const [agentResult, entitlementResult] = await Promise.all([
+  const [agentResult, entitlementResult, promptResult] = await Promise.all([
     supabase
       .from("agents")
       .select(
-        "id, user_id, name, tagline, avatar_url, category, is_curated, is_public, free_tier, language_preset, tone_settings, tools_enabled, costume_id, archived_at, system_prompt",
+        "id, user_id, name, tagline, avatar_url, category, is_curated, is_public, free_tier, language_preset, tone_settings, tools_enabled, costume_id, archived_at",
       )
       .eq("id", input.agentId)
       .maybeSingle(),
@@ -48,16 +33,22 @@ export async function loadChatAgent(
       .select("plan")
       .eq("user_id", input.userId)
       .maybeSingle(),
+    supabase.rpc("chat_agent_prompt", { p_agent_id: input.agentId }),
   ]);
 
-  if (agentResult.error) {
+  if (agentResult.error || promptResult.error) {
     return { ok: false, reason: "dropped" };
   }
 
-  const agent = agentResult.data as ChatAgentRow | null;
-  if (!agent || agent.archived_at) {
+  const row = agentResult.data as HouseAgentRow | null;
+  if (!row || row.archived_at || !promptResult.data) {
     return { ok: false, reason: "not_found" };
   }
+
+  const agent: ChatAgentRow = {
+    ...row,
+    system_prompt: promptResult.data,
+  };
 
   const planId = parseMayaPlan(entitlementResult.data?.plan);
   return {

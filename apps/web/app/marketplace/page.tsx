@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageInner } from "@/components/app/page-frame";
 import { LobbyFooter } from "@/components/landing/lobby-footer";
 import { LobbyHeader } from "@/components/landing/lobby-header";
 import { SectionKicker } from "@/components/landing/section-kicker";
@@ -39,26 +40,30 @@ export default async function MarketplacePage() {
         }
       />
       <main>
-        <section className="relative z-10 px-4 pt-6 pb-4 md:px-8 md:pt-10">
-          <SectionKicker
-            kicker={MARKETPLACE_COPY.kicker}
-            title={MARKETPLACE_COPY.title}
-          >
-            {MARKETPLACE_COPY.body}
-          </SectionKicker>
-          <CategoryChips categories={sections} />
+        <section className="relative z-10 pt-6 pb-4 md:pt-10">
+          <PageInner>
+            <SectionKicker
+              kicker={MARKETPLACE_COPY.kicker}
+              title={MARKETPLACE_COPY.title}
+            >
+              {MARKETPLACE_COPY.body}
+            </SectionKicker>
+            <CategoryChips categories={sections} />
+          </PageInner>
         </section>
 
         {sections.map((section) => (
           <section
             key={section.id}
             id={section.id}
-            className="relative z-10 scroll-mt-8 px-4 py-6 md:px-8 md:py-10"
+            className="relative z-10 scroll-mt-8 py-6 md:py-10"
           >
-            <SectionKicker kicker="Category" title={section.label}>
-              {section.body}
-            </SectionKicker>
-            <MarketplaceWall players={section.players} signedIn={signedIn} />
+            <PageInner>
+              <SectionKicker kicker="Category" title={section.label}>
+                {section.body}
+              </SectionKicker>
+              <MarketplaceWall players={section.players} signedIn={signedIn} />
+            </PageInner>
           </section>
         ))}
       </main>

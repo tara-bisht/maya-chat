@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageInner } from "@/components/app/page-frame";
 import { LOBBY_NAV } from "@/lib/landing";
 
 export function LobbyHeader({
@@ -9,12 +10,9 @@ export function LobbyHeader({
   cta?: { href: string; label: string };
 }) {
   return (
-    <header className="relative z-20 px-4 py-5 md:px-8">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-        <Link
-          href="/"
-          className="font-display text-3xl text-cream italic"
-        >
+    <header className="relative z-20 py-5">
+      <PageInner className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <Link href="/" className="font-display text-3xl text-cream italic">
           Maya
         </Link>
         <nav
@@ -31,7 +29,7 @@ export function LobbyHeader({
             </Link>
           ))}
         </nav>
-        <nav className="ml-auto flex items-center gap-3">
+        <nav className="ml-auto flex flex-wrap items-center gap-3">
           {signedIn ? (
             <Link
               href="/gallery"
@@ -54,7 +52,7 @@ export function LobbyHeader({
             {cta.label}
           </Link>
         </nav>
-      </div>
+      </PageInner>
     </header>
   );
 }
