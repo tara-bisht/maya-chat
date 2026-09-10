@@ -17,18 +17,18 @@ While the foundation demonstrates sound multi-tenant security principles (RLS, P
 
 ## Ticket Index
 
-| Ticket | Type | Priority | Component | Summary |
-| :--- | :--- | :---: | :--- | :--- |
-| **[MAYA-101](./MAYA-101-inverted-history-limit.md)** | Bug | **P0 (Blocker)** | API / Chat History | Inverted conversation history limit loads oldest turns instead of newest |
-| **[MAYA-102](./MAYA-102-quota-check-toctou-race.md)** | Bug / Race Condition | **P0 (Critical)** | API / Rate Limiting | TOCTOU race condition in daily quota enforcement allows cap bypass |
-| **[MAYA-103](./MAYA-103-unbounded-public-agents-scan.md)** | Performance | **P1 (High)** | House / SSR Loader | Unbounded public agents query in `loadHouse` causes full table scan |
-| **[MAYA-104](./MAYA-104-conversation-retitling-ineffective.md)** | Bug | **P2 (Medium)** | API / Persistence | Auto-retitling logic fails when conversation title defaults to `'New Chat'` |
-| **[MAYA-105](./MAYA-105-abandoned-empty-conversations.md)** | Bug / UX | **P2 (Medium)** | Client / House View | Premature conversation creation leaves orphaned empty threads in DB & UI |
-| **[MAYA-106](./MAYA-106-prompt-compiler-bio-tone-ignored.md)** | Architecture / Feature | **P1 (High)** | AI / Prompt Engine | Custom tone sliders & user bio ignored during prompt construction |
-| **[MAYA-107](./MAYA-107-model-selection-inoperative.md)** | Architecture / Feature | **P1 (High)** | API / Model Routing | Model selection per plan is inoperative; chat hardcoded to default model |
-| **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift / Integrity | **P2 (Medium)** | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
-| **[MAYA-109](./MAYA-109-memory-rpc-service-role-failure.md)** | Bug / Database | **P2 (Medium)** | Database / pgvector | `match_agent_memories` RPC fails for service role & lacks tenant index isolation |
-| **[MAYA-110](./MAYA-110-unbounded-user-conversations-query.md)** | Performance | **P3 (Low)** | House / Threads | Unbounded, unpaginated conversation query degrades with user tenure |
+| Ticket | Type | Priority | Status | Component | Summary |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| **[MAYA-101](./MAYA-101-inverted-history-limit.md)** | Bug | **P0** | **Done** (#7) | API / Chat History | Inverted conversation history limit loads oldest turns instead of newest |
+| **[MAYA-102](./MAYA-102-quota-check-toctou-race.md)** | Bug / Race | **P0** | **Done** (#7) | API / Rate Limiting | TOCTOU race condition in daily quota enforcement allows cap bypass |
+| **[MAYA-103](./MAYA-103-unbounded-public-agents-scan.md)** | Performance | **P1** | **Done** (#7) | House / SSR Loader | Unbounded public agents query in `loadHouse` causes full table scan |
+| **[MAYA-104](./MAYA-104-conversation-retitling-ineffective.md)** | Bug | **P2** | **Done** (#7) | API / Persistence | Auto-retitling logic fails when conversation title defaults to `'New Chat'` |
+| **[MAYA-105](./MAYA-105-abandoned-empty-conversations.md)** | Bug / UX | **P2** | **Done** (#7) | Client / House View | Premature conversation creation leaves orphaned empty threads in DB & UI |
+| **[MAYA-106](./MAYA-106-prompt-compiler-bio-tone-ignored.md)** | Architecture | **P1** | **Done** (#9) | AI / Prompt Engine | Custom tone sliders & user bio ignored during prompt construction |
+| **[MAYA-107](./MAYA-107-model-selection-inoperative.md)** | Architecture | **P1** | **Backlog** | API / Model Routing | Model selection per plan is inoperative; chat hardcoded to default model |
+| **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift | **P2** | **Backlog** | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
+| **[MAYA-109](./MAYA-109-memory-rpc-service-role-failure.md)** | Bug / Database | **P2** | **Backlog** | Database / pgvector | `match_agent_memories` RPC fails for service role & lacks tenant index isolation |
+| **[MAYA-110](./MAYA-110-unbounded-user-conversations-query.md)** | Performance | **P3** | **Backlog** | House / Threads | Unbounded, unpaginated conversation query degrades with user tenure |
 
 ---
 

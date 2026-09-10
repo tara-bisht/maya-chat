@@ -104,9 +104,9 @@ WHERE c.user_id = auth.uid()
 ---
 
 ## 7. Acceptance Criteria (AC)
-- [ ] Attempting to chat while offline or over quota does not create an empty conversation row.
-- [ ] Conversations with 0 messages do not appear in the sidebar/thread list.
-- [ ] No ghost threads appear upon page reload.
+- [x] Attempting to chat while over quota does not create an empty conversation row (`POST /api/conversations` peeks the cap). Offline after create is still possible; empty rows are hidden from lists.
+- [x] Conversations with 0 messages do not appear in the sidebar/thread list.
+- [x] No ghost threads appear upon page reload.
 
 ---
 

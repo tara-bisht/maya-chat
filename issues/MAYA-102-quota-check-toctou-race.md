@@ -130,9 +130,9 @@ if (error || !allowed) {
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] Concurrency test with 10 parallel requests at limit boundary permits only the remaining allowance through to OpenRouter.
-- [ ] No race conditions exist between counting turns and recording usage.
-- [ ] Quota check execution is a single atomic database operation.
+- [ ] Concurrency test with 10 parallel requests at limit boundary permits only the remaining allowance through to OpenRouter. (Manual: `supabase/tests/consume_chat_turn.sql`; not in CI.)
+- [x] No race conditions exist between counting turns and recording usage.
+- [x] Quota check execution is a single atomic database operation.
 
 ---
 

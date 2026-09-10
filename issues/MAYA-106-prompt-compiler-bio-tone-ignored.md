@@ -141,10 +141,10 @@ Then in `apps/web/lib/chat/load-context.ts`, load the user's profile (`display_n
 ---
 
 ## 7. Acceptance Criteria (AC)
-- [ ] Custom agent chat prompts reflect user-adjusted tone sliders.
-- [ ] User's bio from `/settings` is reflected in conversation context across all agents.
-- [ ] Curated agents do not have tone sliders overlaid (as their prompts are already baked).
-- [ ] Unit tests in `@maya/shared` assert prompt merge order and slider handling.
+- [x] Custom agent chat prompts reflect user-adjusted tone sliders.
+- [x] User's bio from `/settings` is reflected in conversation context across all agents.
+- [x] Curated agents do not have tone sliders overlaid (as their prompts are already baked).
+- [x] Unit tests in `@maya/shared` assert prompt merge order and slider handling.
 
 ---
 

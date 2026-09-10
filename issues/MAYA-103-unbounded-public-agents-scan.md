@@ -115,8 +115,8 @@ This ensures PostgreSQL uses existing indexes (`agents_user_id_idx`, primary key
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] `loadHouse()` query response on `agents` never returns unowned public third-party agents other than the currently active agent.
-- [ ] Query execution time and network transfer remain constant regardless of the total count of public custom agents in `public.agents`.
+- [x] `loadHouse()` query response on `agents` never returns unowned public third-party agents other than the currently active agent.
+- [x] Query execution time and network transfer remain constant regardless of the total count of public custom agents in `public.agents`.
 
 ---
 

@@ -119,9 +119,9 @@ export async function retitleConversation(
 ---
 
 ## 8. Acceptance Criteria (AC)
-- [ ] A new conversation initialized with `""`, `"New Chat"`, or `"New chat"` is renamed based on the first user message.
-- [ ] An existing conversation with a user-edited title (e.g., `"Physics Homework"`) is not overwritten on subsequent messages.
-- [ ] Added unit test for `isDefaultConversationTitle` covering case-insensitivity and empty strings.
+- [x] A new conversation initialized with `""`, `"New Chat"`, or `"New chat"` is renamed based on the first user message.
+- [x] An existing conversation with a user-edited title (e.g., `"Physics Homework"`) is not overwritten on subsequent messages.
+- [x] Added unit test for `isDefaultConversationTitle` covering case-insensitivity and empty strings.
 
 ---
 
