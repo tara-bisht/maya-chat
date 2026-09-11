@@ -35,7 +35,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Maya Chat",
   description:
-    "Don't talk to a boring AI chatbot. Give your AI personality and character.",
+    "Don't talk to a boring AI chatbot. Chat with opinionated AI characters with real personality, or create your own in Studio.",
 };
 
 export default function RootLayout({

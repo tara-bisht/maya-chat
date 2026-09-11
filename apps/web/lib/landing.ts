@@ -8,14 +8,14 @@ export const LOBBY_NAV = [
   { href: "/#seats", label: "Plans" },
 ] as const;
 
-const TITLE_LEAD = "Give your AI a ";
+const TITLE_LEAD = "AI with a ";
 const TITLE_MARK = "personality.";
 
 export const HERO = {
   titleLead: TITLE_LEAD,
   titleMark: TITLE_MARK,
   title: `${TITLE_LEAD}${TITLE_MARK}`,
-  body: "Not a sterile chatbot. Cast a character with a point of view — or write one. Name, backstory, tone. Built for the job in front of you.",
+  body: "Not another sterile chatbot. Talk to our resident cast of opinionated AI characters — or write your own in the Studio with custom backstory, tone, and tools.",
 } as const;
 
 export type HeroScene = {
@@ -343,7 +343,7 @@ export const HOUSE_OPEN = {
 export const STUDIO = {
   kicker: "Create an agent",
   title: "Write the personality",
-  body: "Name, tagline, costume, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari. This is the platform, not a side door.",
+  body: "Name, tagline, costume, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari. Create characters with genuine point of view, right on the platform.",
   cap: "Free: 3 public · Plus: 10 · Pro: unlimited",
   fields: [
     { label: "Name", value: "Yours" },
@@ -376,7 +376,7 @@ export const NOTES = [
   },
   {
     q: "What can I do on Free?",
-    a: "Talk to a starter voice, then write three public characters of your own. Credits reset 00:00 UTC. Models follow the catalog on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
+    a: "Talk to our featured starter characters (Marcus and Dr. Priya), then write three public characters of your own in Studio. Credits reset 00:00 UTC. Models follow the catalog on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
   },
   {
     q: "Do they remember me?",

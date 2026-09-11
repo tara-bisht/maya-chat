@@ -1,6 +1,6 @@
 # Maya Chat
 
-Don't talk to a boring AI chatbot. Give your AI personality and character.
+Don't talk to a boring AI chatbot. AI with real personality and character.
 
 Web + later mobile product: eight curated agents, custom Studio characters, plan-gated models through one LLM gateway, Stripe Plus/Pro.
 
