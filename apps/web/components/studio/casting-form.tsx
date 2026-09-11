@@ -117,7 +117,7 @@ export function CastingForm({
       <PaywallTicket
         title="Agent limit reached."
         body={studioCapCopy(maxCustomAgents, planDisplayName)}
-        href="/#seats"
+        href="/plan?reason=studio-cap"
         cta="Upgrade"
       />
     );
@@ -128,7 +128,7 @@ export function CastingForm({
       <PaywallTicket
         title="Private agents are Plus."
         body="Upgrade to Plus to make this agent private."
-        href="/#seats"
+        href="/plan?reason=studio-private"
         cta="Upgrade"
       />
     );

@@ -36,7 +36,7 @@ export function AccountMenu({
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
-  const href = planHref(plan);
+  const href = planHref();
   const chipLabel = plan === "free" ? COPY.upgrade : planLabel(plan);
   const planItemLabel = plan === "free" ? COPY.upgrade : COPY.plan;
 

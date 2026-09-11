@@ -95,9 +95,7 @@ export function parseEntitlementStatus(
   return "active";
 }
 
-export type SettingsBill =
-  | { kind: "seats"; href: "/#seats" }
-  | { kind: "portal-disabled" };
+export type SettingsBill = { kind: "plan"; href: "/plan" };
 
 export type SettingsView = {
   email: string | null;
@@ -151,10 +149,7 @@ export function toSettingsView(input: SettingsViewInput): SettingsView {
       displayName,
       status: parseEntitlementStatus(input.entitlement?.status),
     },
-    bill:
-      planId === "free"
-        ? { kind: "seats", href: "/#seats" }
-        : { kind: "portal-disabled" },
+    bill: { kind: "plan", href: "/plan" },
   };
 }
 

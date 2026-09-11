@@ -146,27 +146,13 @@ export function SettingsForm({ view }: { view: SettingsView }) {
           {view.seat.displayName} · {seatStatusLabel(view.seat.status)}
         </p>
         <p className="mt-3">
-          {view.bill.kind === "seats" ? (
-            <Link
-              href={view.bill.href}
-              className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-            >
-              Upgrade
-            </Link>
-          ) : (
-            <span
-              className="font-sans text-sm font-semibold text-cream/40"
-              title="Billing portal is not open yet."
-            >
-              Manage plan
-            </span>
-          )}
+          <Link
+            href={view.bill.href}
+            className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
+          >
+            {view.seat.planId === "free" ? "Upgrade" : "Manage plan"}
+          </Link>
         </p>
-        {view.bill.kind === "portal-disabled" ? (
-          <p className="mt-2 font-sans text-sm text-ink-soft">
-            Billing portal is not open yet.
-          </p>
-        ) : null}
       </section>
     </form>
   );

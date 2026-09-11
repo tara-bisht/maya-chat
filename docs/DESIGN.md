@@ -556,7 +556,7 @@ Primary CTA: “Create an agent.” Secondary: “Sign in.” Free plan: “Get 
 
 Signed-in home. Left sidebar (icon + label nav, recents, your agents) + header (greeting, acid Create agent, plan chip, profile menu). Mobile: top bar (wordmark, plan, avatar, menu), bottom nav (Home / Explore / Create / Profile) with icons, menu drawer. Main column: Continue chatting, Featured agents, Your agents, From other people. Jump chips skip empty sections. Locked curated posters keep the Plus sticker and stay fully readable. Opening a card opens **that agent's** latest thread — not a global chat. Signed-in posters sit on a straight grid like the landing company wall (no wheatpaste tilt). Public `/marketplace` still tilts.
 
-Profile menu: avatar initial, dropdown with Profile, Your agents, Upgrade/Plan, Sign out. Free shows **Upgrade** → `/#seats`; Plus/Pro show the plan name → Profile.
+Profile menu: avatar initial, dropdown with Profile, Your agents, Upgrade/Plan, Sign out. Free shows **Upgrade**, Plus/Pro show the plan name — both → in-app `/plan`. Authenticated paywalls never link the landing `/#seats`.
 
 ### Explore — `(app)/explore`
 
@@ -580,7 +580,7 @@ Three cream tickets on night, acid offset only on the plan the user can buy (Plu
 
 ### Settings — Profile `/settings`
 
-Night, cream fields. Display name, preferred language, bio, plan, **Your agents** (Chat + Edit). Upgrade ghost (pricing) or “Billing portal is not open yet.” Sign out ghost. No hero.
+Night, cream fields. Display name, preferred language, bio, plan, **Your agents** (Chat + Edit). Upgrade ghost (Free) or Manage plan (paid) → `/plan`. Sign out ghost. No hero.
 
 ### Empty, error, loading
 

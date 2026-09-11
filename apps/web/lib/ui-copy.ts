@@ -119,8 +119,8 @@ export function planLabel(plan: "free" | "plus" | "pro"): string {
   return "Free";
 }
 
-export function planHref(plan: "free" | "plus" | "pro"): string {
-  return plan === "free" ? "/#seats" : "/settings";
+export function planHref(): string {
+  return "/plan";
 }
 
 export function profileInitial(displayName: string): string {

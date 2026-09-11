@@ -177,7 +177,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
               <PaywallTicket
                 title={`${house.agent.shortName} is on Plus`}
                 body={lockedAgentCopy(house.agent.shortName)}
-                href="/#seats"
+                href="/plan?reason=locked-agent"
                 cta="Upgrade"
               />
             </div>
@@ -188,7 +188,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
                   showMonth ? "Monthly limit reached" : "Daily limit reached"
                 }
                 body={showMonth ? monthlyQuotaCopy() : quotaCopy()}
-                href="/#seats"
+                href="/plan?reason=quota"
                 cta="Upgrade"
               />
             </div>
