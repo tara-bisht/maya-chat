@@ -16,3 +16,5 @@ playwright-report
 test-results
 .pnpm-store
 .worktrees/
+marketing/promo/muse/out/
+marketing/promo/muse/package-lock.json
