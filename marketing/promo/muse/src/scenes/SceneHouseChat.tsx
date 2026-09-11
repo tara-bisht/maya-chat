@@ -32,7 +32,7 @@ export const SceneHouseChat: React.FC = () => {
   );
 
   const caretOn = Math.floor(frame / 15) % 2 === 0;
-  const composerOn = interpolate(frame, [300, 320], [0, 1], {
+  const composerOn = interpolate(frame, [200, 220], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -50,7 +50,7 @@ export const SceneHouseChat: React.FC = () => {
         style={{
           opacity: winOpacity,
           width: 1480,
-          height: 800,
+          height: 720,
           backgroundColor: COLORS.night,
           border: `2px solid ${COLORS.cream}`,
           borderRadius: 14,
@@ -132,12 +132,41 @@ export const SceneHouseChat: React.FC = () => {
         <div
           style={{
             flex: 1,
-            padding: '36px 44px',
+            padding: '30px 44px',
             display: 'flex',
             flexDirection: 'column',
-            gap: 22,
+            gap: 18,
           }}
         >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: 16,
+              paddingBottom: 14,
+              borderBottom: `1px solid ${COLORS.rule}`,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: FONTS.display,
+                fontStyle: 'italic',
+                fontSize: 30,
+                color: COLORS.cream,
+              }}
+            >
+              Marcus
+            </span>
+            <span
+              style={{
+                fontFamily: FONTS.mono,
+                fontSize: 15,
+                color: COLORS.inkSoft,
+              }}
+            >
+              Voice through grok-fast · About
+            </span>
+          </div>
           <div>
             <div
               style={{
@@ -190,7 +219,7 @@ export const SceneHouseChat: React.FC = () => {
                 fontSize: 23,
                 lineHeight: 1.5,
                 color: COLORS.cream,
-                minHeight: 200,
+                minHeight: 160,
               }}
             >
               {FULL_REPLY.slice(0, shown)}
