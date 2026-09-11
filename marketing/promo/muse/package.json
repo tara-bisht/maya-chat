@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "render": "remotion render src/index.ts LaunchMuse ../grok/launch-muse.mp4 --overwrite",
+    "render:v2": "remotion render src/index.ts LaunchMuseV2 ../grok/launch-muse-v2.mp4 --overwrite",
     "still": "remotion still src/index.ts LaunchMuse out/still.png",
+    "still:v2": "remotion still src/index.ts LaunchMuseV2 out/still-v2.png",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
