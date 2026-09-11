@@ -1,0 +1,22 @@
+{
+  "name": "@maya/marketing-promo-muse",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render src/index.ts LaunchMuse ../grok/launch-muse.mp4 --overwrite",
+    "still": "remotion still src/index.ts LaunchMuse out/still.png",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.400",
+    "@remotion/google-fonts": "4.0.400"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.400",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.8.3"
+  }
+}
