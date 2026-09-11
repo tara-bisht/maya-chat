@@ -16,6 +16,19 @@ describe("SEED_MODELS", () => {
     ]);
   });
 
+  it("pins reserve rates used by the credit formula", () => {
+    expect(
+      SEED_MODELS.find((model) => model.alias === "qwen-flash"),
+    ).toMatchObject({
+      inputUsdPerMillion: 0.15,
+      outputUsdPerMillion: 0.47,
+    });
+    expect(SEED_MODELS.find((model) => model.alias === "claude")).toMatchObject({
+      inputUsdPerMillion: 3,
+      outputUsdPerMillion: 15,
+    });
+  });
+
   it("stores OpenRouter slugs, not Vercel xai/ prefixes", () => {
     for (const model of SEED_MODELS) {
       expect(model.gatewayId).toContain("/");

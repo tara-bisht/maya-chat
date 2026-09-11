@@ -7,7 +7,7 @@ import { DefaultChatTransport, type UIMessage } from "ai";
 import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
-import { lockedAgentCopy, quotaCopy } from "@/lib/house/copy";
+import { lockedAgentCopy, monthlyQuotaCopy, quotaCopy } from "@/lib/house/copy";
 import { houseHref } from "@/lib/house/href";
 import type { HouseView as HouseViewData } from "@/lib/house/types";
 import { CastRail } from "./cast-rail";
@@ -33,7 +33,7 @@ function textFromMessage(message: UIMessage): string {
     .trim();
 }
 
-type WellError = "locked_agent" | "quota" | "dropped" | null;
+type WellError = "locked_agent" | "quota" | "quota_month" | "dropped" | null;
 
 export function HouseView({ house }: { house: HouseViewData }) {
   const conversationIdRef = useRef(house.conversation?.id ?? null);
@@ -55,6 +55,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
             message: pending[pending.length - 1],
             conversationId: conversationIdRef.current,
             agentId: house.agent.id,
+            modelId: house.selectedModelId,
           },
         };
       },
@@ -104,10 +105,13 @@ export function HouseView({ house }: { house: HouseViewData }) {
 
   const listening = `${house.agent.shortName} is listening.`;
   const errorText = `${error?.message ?? ""} ${wellError ?? ""}`;
+  const showMonth =
+    wellError === "quota_month" || errorText.includes("quota_month");
   const showQuota =
-    wellError === "quota" ||
-    errorText.includes("quota") ||
-    errorText.includes("429");
+    !showMonth &&
+    (wellError === "quota" ||
+      errorText.includes("quota") ||
+      errorText.includes("429"));
   const showLocked =
     !house.agent.canChat || wellError === "locked_agent";
   const showDropped =
@@ -140,7 +144,10 @@ export function HouseView({ house }: { house: HouseViewData }) {
               {house.agent.shortName}
             </p>
             <p className="font-mono text-xs text-ink-soft">
-              {house.defaultModelId}
+              Voice through {house.selectedModelId}
+              {house.credits
+                ? ` · ${house.credits.dailyRemaining.toLocaleString("en-US")} left`
+                : null}
             </p>
           </div>
           <button
@@ -174,11 +181,13 @@ export function HouseView({ house }: { house: HouseViewData }) {
                 cta="Upgrade"
               />
             </div>
-          ) : showQuota ? (
+          ) : showQuota || showMonth ? (
             <div className="flex flex-1 items-center justify-center px-4 py-10">
               <PaywallTicket
-                title="Daily limit reached"
-                body={quotaCopy(house.dailyLimit ?? 50)}
+                title={
+                  showMonth ? "Monthly limit reached" : "Daily limit reached"
+                }
+                body={showMonth ? monthlyQuotaCopy() : quotaCopy()}
                 href="/#seats"
                 cta="Upgrade"
               />

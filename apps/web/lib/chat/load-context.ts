@@ -4,10 +4,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
 import { createServiceSupabaseClient } from "@maya/database/service";
 import {
+  CREDIT_SCALE_DEFAULT,
   HISTORY_WINDOW,
   canUseAgent,
   chronologicalWindow,
   parseMayaPlan,
+  resolveModelId,
   type MayaPlan,
 } from "@maya/shared";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "@/lib/house/columns";
@@ -86,6 +88,7 @@ export async function loadChatAgent(
 export type ChatUserProfile = {
   displayName: string;
   bio: string;
+  preferredModelId: string | null;
 };
 
 export async function loadChatProfile(
@@ -94,59 +97,134 @@ export async function loadChatProfile(
 ): Promise<ChatUserProfile> {
   const result = await supabase
     .from("profiles")
-    .select("display_name, global_bio")
+    .select("display_name, global_bio, preferred_model_id")
     .eq("id", userId)
     .maybeSingle();
 
   if (result.error || !result.data) {
-    return { displayName: "", bio: "" };
+    return { displayName: "", bio: "", preferredModelId: null };
   }
 
   return {
     displayName: result.data.display_name?.trim() ?? "",
     bio: result.data.global_bio?.trim() ?? "",
+    preferredModelId: result.data.preferred_model_id,
   };
 }
+
+export type PlanModelRow = {
+  id: string;
+  gatewayId: string;
+  displayName: string;
+  provider: string;
+  inputUsdPerMillion: number;
+  outputUsdPerMillion: number;
+  minTurnCredits: number;
+  maxOutputTokens: number;
+};
+
+export type LoadPlanModelResult =
+  | {
+      ok: true;
+      defaultModelId: string;
+      modelId: string;
+      model: PlanModelRow;
+      toolsAllowed: string[];
+      allowedModelIds: string[];
+      creditScale: number;
+    }
+  | { ok: false; reason: "dropped" }
+  | { ok: false; reason: "forbidden_model"; allowedModelIds: string[] };
 
 export async function loadPlanModel(
   supabase: SupabaseClient<Database>,
   planId: MayaPlan,
-): Promise<
-  | {
-      ok: true;
-      dailyLimit: number | null;
-      defaultModelId: string;
-      gatewayId: string;
-      toolsAllowed: string[];
-    }
-  | { ok: false }
-> {
-  const planResult = await supabase
-    .from("plans")
-    .select("default_model_id, daily_message_limit, tools_allowed")
-    .eq("id", planId)
-    .maybeSingle();
+  input: {
+    requestedModelId?: string;
+    conversationModelId?: string | null;
+    preferredModelId?: string | null;
+  } = {},
+): Promise<LoadPlanModelResult> {
+  const [planResult, allowResult, modelsResult, settingsResult] = await Promise.all([
+    supabase
+      .from("plans")
+      .select("default_model_id, tools_allowed")
+      .eq("id", planId)
+      .maybeSingle(),
+    supabase.from("plan_models").select("model_id").eq("plan_id", planId),
+    supabase
+      .from("models")
+      .select(
+        "id, gateway_id, display_name, provider, is_enabled, input_usd_per_million, output_usd_per_million, min_turn_credits, max_output_tokens",
+      )
+      .eq("is_enabled", true)
+      .order("sort_order", { ascending: true }),
+    supabase.from("catalog_settings").select("credit_scale").eq("id", 1).maybeSingle(),
+  ]);
 
   if (planResult.error || !planResult.data) {
-    return { ok: false };
+    logDropped("loadPlanModel", { plan: planResult.error });
+    return { ok: false, reason: "dropped" };
+  }
+  if (allowResult.error || modelsResult.error) {
+    logDropped("loadPlanModel", {
+      allow: allowResult.error,
+      models: modelsResult.error,
+    });
+    return { ok: false, reason: "dropped" };
+  }
+  if (settingsResult.error) {
+    logDropped("loadPlanModel", { settings: settingsResult.error });
   }
 
-  const modelResult = await supabase
-    .from("models")
-    .select("id, gateway_id, is_enabled")
-    .eq("id", planResult.data.default_model_id)
-    .maybeSingle();
-
-  if (modelResult.error || !modelResult.data?.is_enabled) {
-    return { ok: false };
+  const allowedIdsOnPlan = new Set(
+    (allowResult.data ?? []).map((row) => row.model_id),
+  );
+  const allowedRows: PlanModelRow[] = [];
+  for (const model of modelsResult.data ?? []) {
+    if (!allowedIdsOnPlan.has(model.id)) {
+      continue;
+    }
+    allowedRows.push({
+      id: model.id,
+      gatewayId: model.gateway_id,
+      displayName: model.display_name,
+      provider: model.provider,
+      inputUsdPerMillion: Number(model.input_usd_per_million),
+      outputUsdPerMillion: Number(model.output_usd_per_million),
+      minTurnCredits: model.min_turn_credits,
+      maxOutputTokens: model.max_output_tokens,
+    });
   }
+
+  const allowedIds = allowedRows.map((row) => row.id);
+  const resolved = resolveModelId({
+    requested: input.requestedModelId,
+    conversationModelId: input.conversationModelId,
+    preferredModelId: input.preferredModelId,
+    defaultModelId: planResult.data.default_model_id,
+    allowed: new Set(allowedIds),
+  });
+
+  if (!resolved.ok) {
+    return { ok: false, reason: "forbidden_model", allowedModelIds: allowedIds };
+  }
+
+  const model = allowedRows.find((row) => row.id === resolved.modelId);
+  if (!model) {
+    return { ok: false, reason: "forbidden_model", allowedModelIds: allowedIds };
+  }
+
+  const creditScale = settingsResult.data?.credit_scale ?? CREDIT_SCALE_DEFAULT;
 
   return {
     ok: true,
-    dailyLimit: planResult.data.daily_message_limit,
     defaultModelId: planResult.data.default_model_id,
-    gatewayId: modelResult.data.gateway_id,
+    modelId: model.id,
+    model,
     toolsAllowed: planResult.data.tools_allowed ?? [],
+    allowedModelIds: allowedIds,
+    creditScale: creditScale > 0 ? creditScale : CREDIT_SCALE_DEFAULT,
   };
 }
 
@@ -156,14 +234,19 @@ export async function loadConversationHistory(
 ): Promise<
   | {
       ok: true;
-      conversation: { id: string; title: string; agent_id: string };
+      conversation: {
+        id: string;
+        title: string;
+        agent_id: string;
+        modelId: string | null;
+      };
       history: Array<{ role: "user" | "assistant"; content: string }>;
     }
   | { ok: false; reason: "not_found" | "dropped" }
 > {
   const conversationResult = await supabase
     .from("conversations")
-    .select("id, title, agent_id, user_id")
+    .select("id, title, agent_id, user_id, model_id")
     .eq("id", input.conversationId)
     .maybeSingle();
 
@@ -205,6 +288,7 @@ export async function loadConversationHistory(
       id: conversation.id,
       title: conversation.title,
       agent_id: conversation.agent_id,
+      modelId: conversation.model_id,
     },
     history,
   };

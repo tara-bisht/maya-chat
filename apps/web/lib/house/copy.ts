@@ -1,1 +1,1 @@
-export { lockedAgentCopy, quotaCopy } from "@/lib/ui-copy";
+export { lockedAgentCopy, monthlyQuotaCopy, quotaCopy } from "@/lib/ui-copy";

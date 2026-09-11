@@ -138,7 +138,7 @@ The starter repertory company shipping in the gallery:
 - Essential tools integration: Web Search, Math Solver, and Autonomous Memory Saver.
 - Cross-platform authentication (Google + Apple OAuth).
 - Stripe Web checkout for **Plus and Pro** & Customer Portal.
-- Model picker filtered by the signed-in user’s plan (catalog-driven).
+- Model picker from the catalog: allowed Voices selectable, higher-plan Voices locked with upgrade. Daily AI credits, not message counts.
 
 ### Out-of-Scope (Deferred to v1.1+)
 - Multi-agent group chats (conversible rooms with multiple AI personas).

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   OPEN_NIGHT_TITLE,
   chronologicalWindow,
-  isDailyCapReached,
   isDefaultConversationTitle,
   isUuid,
   parseChatRequest,
@@ -56,6 +55,38 @@ describe("parseChatRequest", () => {
         agentId: AGENT_ID,
       }),
     });
+    if (parsed.ok) {
+      expect(parsed.data.modelId).toBeUndefined();
+    }
+  });
+
+  it("accepts a catalog model alias and drops gateway slugs", () => {
+    const parsed = parseChatRequest({
+      conversationId: CONVERSATION_ID,
+      agentId: AGENT_ID,
+      modelId: "grok-fast",
+      message: {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "Hi" }],
+      },
+    });
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.data.modelId).toBe("grok-fast");
+    }
+    expect(
+      parseChatRequest({
+        conversationId: CONVERSATION_ID,
+        agentId: AGENT_ID,
+        modelId: "openai/gpt-5.4",
+        message: {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text", text: "Hi" }],
+        },
+      }).ok,
+    ).toBe(false);
   });
 
   it("rejects missing ids and empty text", () => {
@@ -120,14 +151,6 @@ describe("isDefaultConversationTitle", () => {
     expect(isDefaultConversationTitle("New Chat")).toBe(true);
     expect(isDefaultConversationTitle("NEW CHAT")).toBe(true);
     expect(isDefaultConversationTitle("Physics Homework")).toBe(false);
-  });
-});
-
-describe("isDailyCapReached", () => {
-  it("treats null as unlimited", () => {
-    expect(isDailyCapReached(null, 10_000)).toBe(false);
-    expect(isDailyCapReached(50, 50)).toBe(true);
-    expect(isDailyCapReached(50, 49)).toBe(false);
   });
 });
 

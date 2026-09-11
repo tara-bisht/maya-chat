@@ -1,7 +1,12 @@
 import "server-only";
 
 import { cache } from "react";
-import { parseMayaPlan, type MayaPlan } from "@maya/shared";
+import {
+  parseCreditBalance,
+  parseMayaPlan,
+  type CreditBalance,
+  type MayaPlan,
+} from "@maya/shared";
 import { houseHref } from "@/lib/house/href";
 import {
   messageCountFromEmbed,
@@ -58,6 +63,7 @@ type GalleryBundle = {
   conversations: ConversationRow[];
   plan: MayaPlan;
   displayName: string;
+  credits: CreditBalance | null;
 };
 
 const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> => {
@@ -69,6 +75,7 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
     entitlementResult,
     conversationsResult,
     profileResult,
+    creditResult,
   ] = await Promise.all([
     supabase.from("agents").select(GALLERY_AGENT_COLUMNS).eq("is_curated", true),
     supabase
@@ -102,6 +109,7 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
       .select("display_name")
       .eq("id", userId)
       .maybeSingle(),
+    supabase.rpc("credit_balance"),
   ]);
 
   if (curatedResult.error) {
@@ -161,6 +169,10 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
     }
   }
 
+  if (creditResult.error) {
+    logDropped("gallery", { credits: creditResult.error });
+  }
+
   return {
     curatedError: Boolean(curatedResult.error),
     curatedRows,
@@ -170,6 +182,7 @@ const loadGalleryBundle = cache(async (userId: string): Promise<GalleryBundle> =
     conversations,
     plan: parseMayaPlan(entitlementResult.data?.plan),
     displayName: profileResult.data?.display_name?.trim() ?? "",
+    credits: parseCreditBalance(creditResult.data),
   };
 });
 
@@ -209,6 +222,7 @@ function assemble(userId: string, bundle: GalleryBundle) {
   const viewer: GalleryViewer = {
     displayName: bundle.displayName,
     plan: bundle.plan,
+    credits: bundle.credits,
   };
 
   return { curated, custom, house, recents, viewer, plan: bundle.plan };

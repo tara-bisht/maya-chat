@@ -45,8 +45,16 @@ The character sheet where a user creates or edits a custom agent (name, tagline,
 _Avoid_: Agent builder IDE, prompt playground
 
 **Plan**:
-A catalog row in `plans`: `free`, `plus`, or `pro`. Quotas, tools, prices, and default model live here, not in application `if` branches.
+A catalog row in `plans`: `free`, `plus`, or `pro`. Credit allowances, tools, prices, and default model live here, not in application `if` branches.
 _Avoid_: Tier hardcoded in code, `isPro`
+
+**AI credit**:
+Integer unit of model usage. Derived from OpenRouter `usage.cost`. Chrome label: **credits**. Users never see dollars.
+_Avoid_: Points, tokens-as-currency, coins, wallet, compute points, API cost
+
+**Allowance**:
+The plan’s daily credit grant. Resets 00:00 UTC. Unused credits do not roll over. A silent monthly cap is the whale fuse.
+_Avoid_: Message cap, daily_message_limit
 
 **Entitlement**:
 This user’s current plan, written by Stripe (or later RevenueCat) into `entitlements`. Chat authorization reads this row.
@@ -101,8 +109,12 @@ The agent’s flood color. Owns the poster and the chat wash. Never the page bac
 _Avoid_: Theme, skin, brand color per app chrome
 
 **Voice**:
-The model the agent speaks through. Chat chrome shows the model id (`grok-fast`), not “Voice through.” Not speech audio (that is v1.1).
+The model the agent speaks through. Chat chrome shows **Voice through {alias}**. Not speech audio (that is v1.1).
 _Avoid_: Provider badge, “powered by Claude”
+
+**Model picker**:
+House chrome control listing catalog aliases. Locked rows stamp the plan that unlocks them. Clients send `modelId`, never a gateway slug.
+_Avoid_: Provider dropdown, raw OpenRouter id on the wire
 
 **Profile**:
 The member’s global profile at `/settings`: name, preferred language, bio, plan, and **Your agents**. Every agent is told the bio. It is not a costume.

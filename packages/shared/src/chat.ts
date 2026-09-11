@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { modelIdSchema } from "./credits";
 import {
   LANGUAGE_PRESETS,
   parseLanguagePreset,
@@ -42,6 +43,10 @@ const userMessageSchema = z.object({
 export const chatRequestSchema = z.object({
   conversationId: uuidSchema,
   agentId: uuidSchema,
+  modelId: z.preprocess(
+    (value) => (value === null || value === "" ? undefined : value),
+    modelIdSchema.optional(),
+  ),
   message: userMessageSchema,
 });
 
@@ -105,16 +110,6 @@ export function titleFromFirstMessage(text: string): string {
   const lastSpace = sliced.lastIndexOf(" ");
   const trimmed = (lastSpace >= 24 ? sliced.slice(0, lastSpace) : sliced).trim();
   return trimmed || OPEN_NIGHT_TITLE;
-}
-
-export function isDailyCapReached(
-  limit: number | null,
-  usedToday: number,
-): boolean {
-  if (limit === null) {
-    return false;
-  }
-  return usedToday >= limit;
 }
 
 export function systemPromptWithLanguage(

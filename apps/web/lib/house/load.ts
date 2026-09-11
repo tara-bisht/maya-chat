@@ -6,7 +6,9 @@ import {
   HISTORY_WINDOW,
   chronologicalWindow,
   isUuid,
+  parseCreditBalance,
   parseMayaPlan,
+  resolveModelId,
 } from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
@@ -68,6 +70,7 @@ export async function loadHouse(
     conversationResult,
     agentsResult,
     profileResult,
+    creditResult,
   ] = await Promise.all([
     supabase
       .from("agents")
@@ -81,7 +84,7 @@ export async function loadHouse(
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, title, updated_at, messages(count)")
+      .select("id, agent_id, title, updated_at, model_id, messages(count)")
       .eq("user_id", input.userId)
       .order("updated_at", { ascending: false }),
     supabase
@@ -92,9 +95,10 @@ export async function loadHouse(
       ),
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, preferred_model_id")
       .eq("id", input.userId)
       .maybeSingle(),
+    supabase.rpc("credit_balance"),
   ]);
 
   if (agentResult.error || conversationResult.error || agentsResult.error) {
@@ -112,14 +116,21 @@ export async function loadHouse(
   }
 
   const planId = parseMayaPlan(entitlementResult.data?.plan);
-  const planResult = await supabase
-    .from("plans")
-    .select("default_model_id, daily_message_limit")
-    .eq("id", planId)
-    .maybeSingle();
+  const [planResult, allowResult] = await Promise.all([
+    supabase
+      .from("plans")
+      .select("default_model_id")
+      .eq("id", planId)
+      .maybeSingle(),
+    supabase.from("plan_models").select("model_id").eq("plan_id", planId),
+  ]);
 
   if (planResult.error) {
     logDropped("house", { plan: planResult.error });
+    return { ok: false, reason: "dropped" };
+  }
+  if (allowResult.error) {
+    logDropped("house", { planModels: allowResult.error });
     return { ok: false, reason: "dropped" };
   }
 
@@ -175,14 +186,38 @@ export async function loadHouse(
     };
   }
 
+  const defaultModelId = planResult.data?.default_model_id ?? "qwen-flash";
+  const conversationModelId = input.conversationId
+    ? ((conversationResult.data ?? []).find(
+        (item) => item.id === input.conversationId,
+      )?.model_id ?? null)
+    : null;
+  const allowed = new Set(
+    (allowResult.data ?? []).map((row) => row.model_id),
+  );
+  const resolvedVoice = resolveModelId({
+    conversationModelId,
+    preferredModelId: profileResult.data?.preferred_model_id,
+    defaultModelId,
+    allowed,
+  });
+  const selectedModelId = resolvedVoice.ok
+    ? resolvedVoice.modelId
+    : defaultModelId;
+  const credits = parseCreditBalance(creditResult.data);
+  if (creditResult.error) {
+    logDropped("house", { credits: creditResult.error });
+  }
+
   return {
     ok: true,
     house: {
       agent,
       plan: planId,
       displayName: profileResult.data?.display_name?.trim() ?? "",
-      defaultModelId: planResult.data?.default_model_id ?? "qwen-flash",
-      dailyLimit: planResult.data?.daily_message_limit ?? null,
+      defaultModelId,
+      selectedModelId,
+      credits,
       threads,
       cast: buildCast({
         agents: agentRows,

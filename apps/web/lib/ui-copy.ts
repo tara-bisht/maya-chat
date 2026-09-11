@@ -79,8 +79,16 @@ export function lockedAgentCopy(shortName: string): string {
   return `${shortName} is on Plus. Marcus and Dr. Priya are free.`;
 }
 
-export function quotaCopy(limit: number): string {
-  return `Daily limit reached. ${limit} messages. Come back tomorrow, or upgrade.`;
+export function quotaCopy(): string {
+  return "Out of credits today. Come back after 00:00 UTC, switch to a lighter voice, or upgrade.";
+}
+
+export function monthlyQuotaCopy(): string {
+  return "Monthly credit limit reached. Upgrade, or wait for next month.";
+}
+
+export function creditsLeftLabel(remaining: number): string {
+  return `${remaining.toLocaleString("en-US")} left`;
 }
 
 export function studioCapCopy(max: number | null, planName: string): string {

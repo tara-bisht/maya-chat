@@ -179,7 +179,7 @@ Auth: Supabase session from cookies (web) or `Authorization: Bearer <access_toke
 3. If `modelId` not in that set → **403** with `{ allowedModelIds }`. Never silently upgrade.
 4. `streamText({ model: openrouter(models.gateway_id) })`.
 5. Tools registered = intersection of `agents.tools_enabled` and `plans.tools_allowed`.
-6. Daily cap = `plans.daily_message_limit` (`null` = unlimited). Count **before** the gateway call.
+6. Daily cap = `plans.daily_credit_limit` (AI credits from OpenRouter cost). Reserve **before** the gateway call; settle after.
 
 The client must not pass a raw gateway string. Only aliases from `GET /api/models`.
 
@@ -241,7 +241,9 @@ create table public.plans (
   yearly_price_cents int,
   stripe_price_id_monthly text,
   stripe_price_id_yearly text,
-  daily_message_limit int,              -- null = unlimited
+  daily_credit_limit int not null,      -- AI credits / UTC day
+  monthly_credit_limit int not null,    -- silent whale fuse
+  max_turns_per_day int not null,       -- anti-spam, not shown
   max_custom_agents int,                -- null = unlimited
   curated_agent_limit int,              -- null = all curated
   vector_memory boolean not null default false,
@@ -308,7 +310,7 @@ create policy "Users read own usage"
   on public.usage_events for select using (auth.uid() = user_id);
 ```
 
-Cap = `plans.daily_message_limit` for the user’s plan (`null` = unlimited). Count **before** `streamText`. Still log Pro turns for cost. Failed/aborted streams count if the model was invoked (prevents retry abuse).
+Cap = `plans.daily_credit_limit` for the user’s plan. Reserve credits **before** `streamText`; settle from OpenRouter `usage.cost`. Still log Pro turns. Failed/aborted streams settle the reservation (prevents retry abuse).
 
 ### 6.4 Memory RPC
 
@@ -365,7 +367,7 @@ Seed values below; **runtime reads the table**.
 
 | Action | Free (seed) | Plus (seed) | Pro (seed) |
 | :--- | :--- | :--- | :--- |
-| Daily messages | 50 | 200 | Unlimited |
+| Daily credits | 1,500 | 4,000 | 9,000 |
 | Curated agents | 2 (Marcus + Priya) | All 8 | All 8 |
 | Custom agents | 3, public only | 10, public or private | Unlimited |
 | Vector memory | No | Yes | Yes |
@@ -439,7 +441,7 @@ JWT is the RLS key. Chat route creates a Supabase client **with the user token**
 | Prompt leak of curated agents | Do not select `system_prompt` in gallery APIs. |
 | Entitlement bypass | Server reads `entitlements.plan` + `plans` + `plan_models`; ignore client `plan` / `model`. |
 | Model upgrade | 403 if `modelId` not on the plan. Client cannot send `gateway_id`. |
-| Quota bypass | Insert `usage_events` when the model is invoked; check against `plans.daily_message_limit`. |
+| Quota bypass | Reserve `usage_events` when the model is invoked; check against `plans.daily_credit_limit`. |
 | Secret exfil | No `OPENROUTER_*` / Stripe secret / service role in `NEXT_PUBLIC_` or Expo public env. |
 | Tool injection | Zod on tool inputs; memory content length cap; search URL allow-list not required if we only return snippets. |
 | Code execution | Stubbed in MVP. |
@@ -507,7 +509,7 @@ No need for full Playwright in week 1. Add it when the chat UI exists if time re
 - **Secrets:** Vercel env + EAS secrets later.
 - **On-call:** founder. If a tool pages you, it should not have shipped (hence no sandbox).
 
-Cost knobs: `plan_models` + `daily_message_limit`, embed-on-write, search only on Pro seed, `vector(N)` pinned small. To add a model to Plus: `INSERT INTO plan_models` — no deploy.
+Cost knobs: `plan_models` + `daily_credit_limit` / `monthly_credit_limit`, embed-on-write, search only on Pro seed, `vector(N)` pinned small. To add a model to Plus: `INSERT INTO plan_models` — no deploy.
 
 ---
 
