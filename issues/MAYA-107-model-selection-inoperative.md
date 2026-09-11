@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-107 |
 | **Issue Type** | 🏗️ Architecture & Feature Incompleteness |
-| **Status** | Backlog |
+| **Status** | Done (PR4a routing + PR4b picker) |
 | **Priority** | 🟠 P1 (High) |
 | **Severity** | Major (Paid Feature Blocker) |
 | **Component** | API (Model Routing) & Frontend (House Model Picker) |
@@ -135,9 +135,9 @@ Transform `{house.defaultModelId}` into a model selector dropdown populated with
 ---
 
 ## 7. Acceptance Criteria (AC)
-- [ ] Plus and Pro users can switch between their plan's allowed models in the chat UI.
-- [ ] Requesting a model not allowed on the user's plan (e.g. Free user requesting Claude) returns HTTP 403.
-- [ ] Omitted `modelId` gracefully defaults to the plan's `default_model_id`.
+- [x] Plus and Pro users can switch between their plan's allowed models in the chat UI.
+- [x] Requesting a model not allowed on the user's plan (e.g. Free user requesting Claude) returns HTTP 403.
+- [x] Omitted `modelId` gracefully defaults to the plan's `default_model_id`.
 
 ---
 

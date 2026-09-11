@@ -46,7 +46,7 @@ export default async function SettingsPage() {
         <SectionKicker kicker={COPY.profile} title="Your account">
           {COPY.everyAgentReads}
         </SectionKicker>
-        <SettingsForm view={loaded.view} />
+        <SettingsForm view={loaded.view} credits={loaded.credits} />
         <ProfileAgents agents={chrome.custom} capLabel={capLabel} />
         <p className="mt-8">
           <SignOutButton />

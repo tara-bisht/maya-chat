@@ -8,25 +8,17 @@ import {
   minPlanFor,
   parseCreditBalance,
   parseMayaPlan,
+  resolveModelId,
   type CreditBalance,
   type MayaPlan,
 } from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
+import type { CatalogModel, ModelsPayload } from "./catalog";
 
-export type CatalogModel = {
-  id: string;
-  displayName: string;
-  provider: string;
-  sortOrder: number;
-  allowed: boolean;
-  minPlan: MayaPlan;
-  estimatedCreditsPerTurn: number;
-};
+export type { CatalogModel, ModelsPayload };
 
-export type ModelsPayload = {
+export type CatalogLoad = {
   defaultModelId: string;
-  selectedModelId: string;
-  credits: CreditBalance;
   models: CatalogModel[];
 };
 
@@ -41,15 +33,11 @@ export async function loadCreditBalance(
   return parseCreditBalance(result.data);
 }
 
-export async function loadModelsPayload(
+export async function loadCatalogModels(
   supabase: SupabaseClient<Database>,
-  input: {
-    planId: MayaPlan;
-    conversationModelId?: string | null;
-    preferredModelId?: string | null;
-  },
-): Promise<ModelsPayload | null> {
-  const [modelsResult, planModelsResult, planResult, settingsResult, credits] =
+  planId: MayaPlan,
+): Promise<CatalogLoad | null> {
+  const [modelsResult, planModelsResult, planResult, settingsResult] =
     await Promise.all([
       supabase
         .from("models")
@@ -62,18 +50,17 @@ export async function loadModelsPayload(
       supabase
         .from("plans")
         .select("default_model_id")
-        .eq("id", input.planId)
+        .eq("id", planId)
         .maybeSingle(),
       supabase
         .from("catalog_settings")
         .select("credit_scale")
         .eq("id", 1)
         .maybeSingle(),
-      loadCreditBalance(supabase),
     ]);
 
   if (modelsResult.error || planModelsResult.error || planResult.error) {
-    logDropped("loadModelsPayload", {
+    logDropped("loadCatalogModels", {
       models: modelsResult.error,
       planModels: planModelsResult.error,
       plan: planResult.error,
@@ -81,7 +68,7 @@ export async function loadModelsPayload(
     return null;
   }
   if (settingsResult.error) {
-    logDropped("loadModelsPayload", { settings: settingsResult.error });
+    logDropped("loadCatalogModels", { settings: settingsResult.error });
   }
 
   const defaultModelId = planResult.data?.default_model_id ?? "qwen-flash";
@@ -96,7 +83,7 @@ export async function loadModelsPayload(
 
   const allowed = new Set(
     (planModelsResult.data ?? [])
-      .filter((row) => row.plan_id === input.planId)
+      .filter((row) => row.plan_id === planId)
       .map((row) => row.model_id),
   );
 
@@ -122,24 +109,40 @@ export async function loadModelsPayload(
     });
   }
 
-  const selected =
-    (input.conversationModelId && allowed.has(input.conversationModelId)
-      ? input.conversationModelId
-      : null) ??
-    (input.preferredModelId && allowed.has(input.preferredModelId)
-      ? input.preferredModelId
-      : null) ??
-    (allowed.has(defaultModelId) ? defaultModelId : models.find((item) => item.allowed)?.id) ??
-    defaultModelId;
+  return { defaultModelId, models };
+}
 
-  if (!credits) {
+export async function loadModelsPayload(
+  supabase: SupabaseClient<Database>,
+  input: {
+    planId: MayaPlan;
+    conversationModelId?: string | null;
+    preferredModelId?: string | null;
+  },
+): Promise<ModelsPayload | null> {
+  const [catalog, credits] = await Promise.all([
+    loadCatalogModels(supabase, input.planId),
+    loadCreditBalance(supabase),
+  ]);
+
+  if (!catalog || !credits) {
     return null;
   }
 
+  const allowed = new Set(
+    catalog.models.filter((item) => item.allowed).map((item) => item.id),
+  );
+  const resolved = resolveModelId({
+    conversationModelId: input.conversationModelId,
+    preferredModelId: input.preferredModelId,
+    defaultModelId: catalog.defaultModelId,
+    allowed,
+  });
+
   return {
-    defaultModelId,
-    selectedModelId: selected,
+    defaultModelId: catalog.defaultModelId,
+    selectedModelId: resolved.ok ? resolved.modelId : catalog.defaultModelId,
     credits,
-    models,
+    models: catalog.models,
   };
 }

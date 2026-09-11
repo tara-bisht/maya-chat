@@ -1,1 +1,8 @@
-export { lockedAgentCopy, monthlyQuotaCopy, quotaCopy } from "@/lib/ui-copy";
+export {
+  lockedAgentCopy,
+  lockedVoiceCopy,
+  lockedVoiceFallbackTitle,
+  lockedVoiceTitle,
+  monthlyQuotaCopy,
+  quotaCopy,
+} from "@/lib/ui-copy";

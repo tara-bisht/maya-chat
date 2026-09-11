@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { PageInner } from "@/components/app/page-frame";
-import { SEATS, SEATS_FOOTNOTE, SEATS_KICKER, type Seat } from "@/lib/landing";
+import { SEATS_FOOTNOTE, SEATS_KICKER, type Seat } from "@/lib/landing";
 import { LandingHeading } from "@/components/landing/section-kicker";
 
 function SeatTicket({ seat }: { seat: Seat }) {
@@ -72,7 +72,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
   );
 }
 
-export function Seats() {
+export function Seats({ seats }: { seats: Seat[] }) {
   return (
     <section
       id="seats"
@@ -83,7 +83,7 @@ export function Seats() {
           {SEATS_KICKER.body}
         </LandingHeading>
         <ul className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-          {SEATS.map((seat) => (
+          {seats.map((seat) => (
             <li key={seat.id} className="min-w-0 pt-3 pr-3">
               <SeatTicket seat={seat} />
             </li>

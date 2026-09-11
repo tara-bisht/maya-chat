@@ -2,10 +2,15 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
-import { toSettingsView, type SettingsView } from "@maya/shared";
+import {
+  toSettingsView,
+  type CreditBalance,
+  type SettingsView,
+} from "@maya/shared";
+import { loadCreditBalance } from "@/lib/credits/load";
 
 export type SettingsLoad =
-  | { ok: true; view: SettingsView }
+  | { ok: true; view: SettingsView; credits: CreditBalance | null }
   | { ok: false };
 
 function embeddedPlan(
@@ -29,7 +34,7 @@ export async function loadSettings(
   supabase: SupabaseClient<Database>,
   input: { userId: string; email: string | null | undefined },
 ): Promise<SettingsLoad> {
-  const [profileResult, entitlementResult] = await Promise.all([
+  const [profileResult, entitlementResult, credits] = await Promise.all([
     supabase
       .from("profiles")
       .select("display_name, preferred_language, global_bio")
@@ -40,6 +45,7 @@ export async function loadSettings(
       .select("plan, status, plans ( id, display_name )")
       .eq("user_id", input.userId)
       .maybeSingle(),
+    loadCreditBalance(supabase),
   ]);
 
   if (profileResult.error || !profileResult.data) {
@@ -53,6 +59,7 @@ export async function loadSettings(
 
   return {
     ok: true,
+    credits,
     view: toSettingsView({
       email: input.email,
       profile: profileResult.data,

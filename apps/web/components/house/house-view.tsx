@@ -6,14 +6,25 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
+import { CreditMeter } from "@/components/app/credit-meter";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
-import { lockedAgentCopy, monthlyQuotaCopy, quotaCopy } from "@/lib/house/copy";
+import type { CatalogModel } from "@/lib/credits/catalog";
+import {
+  lockedAgentCopy,
+  lockedVoiceCopy,
+  lockedVoiceFallbackTitle,
+  lockedVoiceTitle,
+  monthlyQuotaCopy,
+  quotaCopy,
+} from "@/lib/house/copy";
 import { houseHref } from "@/lib/house/href";
 import type { HouseView as HouseViewData } from "@/lib/house/types";
+import { COPY } from "@/lib/ui-copy";
 import { CastRail } from "./cast-rail";
 import { CharacterSheet } from "./character-sheet";
 import { Composer } from "./composer";
 import { Transcript, type StageTurn } from "./transcript";
+import { VoicePicker } from "./voice-picker";
 
 function toUiMessages(house: HouseViewData): UIMessage[] {
   return (
@@ -33,12 +44,22 @@ function textFromMessage(message: UIMessage): string {
     .trim();
 }
 
-type WellError = "locked_agent" | "quota" | "quota_month" | "dropped" | null;
+type WellError =
+  | "locked_agent"
+  | "quota"
+  | "quota_month"
+  | "forbidden_model"
+  | "dropped"
+  | null;
 
 export function HouseView({ house }: { house: HouseViewData }) {
   const conversationIdRef = useRef(house.conversation?.id ?? null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [nightsOpen, setNightsOpen] = useState(false);
+  const [selectedModelId, setSelectedModelId] = useState(house.selectedModelId);
+  const selectedModelIdRef = useRef(selectedModelId);
+  selectedModelIdRef.current = selectedModelId;
+  const [lockedVoice, setLockedVoice] = useState<CatalogModel | null>(null);
   const [wellError, setWellError] = useState<WellError>(
     house.agent.canChat ? null : "locked_agent",
   );
@@ -55,7 +76,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
             message: pending[pending.length - 1],
             conversationId: conversationIdRef.current,
             agentId: house.agent.id,
-            modelId: house.selectedModelId,
+            modelId: selectedModelIdRef.current,
           },
         };
       },
@@ -103,6 +124,21 @@ export function HouseView({ house }: { house: HouseViewData }) {
     }
   }
 
+  function selectAllowedVoice(modelId: string) {
+    setSelectedModelId(modelId);
+    setLockedVoice(null);
+    if (wellError === "forbidden_model") {
+      setWellError(null);
+      clearError();
+    }
+  }
+
+  function selectLockedVoice(model: CatalogModel) {
+    setLockedVoice(model);
+    setWellError("forbidden_model");
+    clearError();
+  }
+
   const listening = `${house.agent.shortName} is listening.`;
   const errorText = `${error?.message ?? ""} ${wellError ?? ""}`;
   const showMonth =
@@ -114,8 +150,14 @@ export function HouseView({ house }: { house: HouseViewData }) {
       errorText.includes("429"));
   const showLocked =
     !house.agent.canChat || wellError === "locked_agent";
+  const showForbidden =
+    !showLocked &&
+    !showQuota &&
+    !showMonth &&
+    (wellError === "forbidden_model" || errorText.includes("forbidden_model"));
   const showDropped =
-    wellError === "dropped" || Boolean(error && !showQuota && !showLocked);
+    wellError === "dropped" ||
+    Boolean(error && !showQuota && !showLocked && !showForbidden);
 
   return (
     <div className="flex h-dvh overflow-hidden bg-night text-cream">
@@ -143,12 +185,18 @@ export function HouseView({ house }: { house: HouseViewData }) {
             <p className="truncate font-display text-2xl leading-none text-cream italic">
               {house.agent.shortName}
             </p>
-            <p className="font-mono text-xs text-ink-soft">
-              Voice through {house.selectedModelId}
-              {house.credits
-                ? ` · ${house.credits.dailyRemaining.toLocaleString("en-US")} left`
-                : null}
-            </p>
+            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2">
+              <VoicePicker
+                models={house.models}
+                selectedModelId={selectedModelId}
+                disabled={!house.agent.canChat}
+                onSelect={selectAllowedVoice}
+                onLocked={selectLockedVoice}
+              />
+              {house.credits ? (
+                <CreditMeter credits={house.credits} variant="compact" />
+              ) : null}
+            </div>
           </div>
           <button
             type="button"
@@ -190,6 +238,19 @@ export function HouseView({ house }: { house: HouseViewData }) {
                 body={showMonth ? monthlyQuotaCopy() : quotaCopy()}
                 href="/plan?reason=quota"
                 cta="Upgrade"
+              />
+            </div>
+          ) : showForbidden ? (
+            <div className="flex flex-1 items-center justify-center px-4 py-10">
+              <PaywallTicket
+                title={
+                  lockedVoice
+                    ? lockedVoiceTitle(lockedVoice.displayName, lockedVoice.minPlan)
+                    : lockedVoiceFallbackTitle()
+                }
+                body={lockedVoiceCopy()}
+                href="/#seats"
+                cta={COPY.upgrade}
               />
             </div>
           ) : (

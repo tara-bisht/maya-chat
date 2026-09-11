@@ -55,6 +55,8 @@ describe("lobby marketing copy", () => {
       ...NOTES.map((note) => `${note.q} ${note.a}`),
     ].join(" ");
     expect(surfaces).not.toMatch(/eight/i);
+    expect(surfaces).not.toMatch(/50 messages/i);
+    expect(surfaces).not.toMatch(/unlimited messages/i);
     expect(COMPANY_KICKER.title).toMatch(/start/i);
     expect(STUDIO.title).toMatch(/personality/i);
     expect(NOTES[0]?.q).toMatch(/own agent/i);

@@ -119,9 +119,9 @@ Roles below are Team Freedom pod labels. One founder + agents may wear all of th
 - [ ] Null embeddings skipped; HNSW in place
 - [ ] Entitlement helpers: read `plans` + `plan_models`; agent access; Studio POST vs `max_custom_agents`
 - [ ] Daily AI-credit cap from `plans.daily_credit_limit` via `reserve_chat_turn` **before** `streamText`; 429 body includes reset
-- [ ] `GET /api/models` + chat `modelId` check (403 if not on plan); picker in chat header
+- [x] `GET /api/models` + chat `modelId` check (403 if not on plan); picker in chat header
 - [ ] Stripe Checkout for **Plus and Pro** + Portal + webhook → `entitlements.plan`
-- [ ] Pricing page (three columns; model names from catalog)
+- [x] Pricing page (three columns; model names from catalog)
 
 **Exit:** Free user blocked on Alex, on message 51, and on Claude; Plus checkout unlocks Alex + DeepSeek; Pro unlocks Claude; `INSERT` into `plan_models` changes the picker without a code change; webhook replay does not duplicate Plus/Pro.
 

@@ -5,6 +5,7 @@ import type {
   MayaPlan,
   ToneSettings,
 } from "@maya/shared";
+import type { CatalogModel } from "@/lib/credits/catalog";
 
 export type HydratedTurn = {
   id: string;
@@ -59,6 +60,7 @@ export type HouseView = {
   displayName: string;
   defaultModelId: string;
   selectedModelId: string;
+  models: CatalogModel[];
   credits: CreditBalance | null;
   threads: ThreadSummary[];
   cast: CastMember[];
