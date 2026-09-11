@@ -144,6 +144,8 @@ Each PR should be independently reviewable. Do not merge a slice that lacks Zod 
 
 **Exit:** Plus switches DeepSeek in the header. Free sees Claude locked. Landing no longer says “50 messages.”
 
+**Shipped:** `feat/pr4-voice-picker` — picker + meter + catalog seats. Next open slice is PR4c.
+
 ### PR4c — Memory + Stripe (rest of Phase 4)
 
 **Title:** pgvector retrieve, Plus/Pro Checkout

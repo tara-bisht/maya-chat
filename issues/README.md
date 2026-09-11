@@ -3,7 +3,7 @@
 **Audit Date**: September 10, 2026  
 **QA Lead**: Antigravity Staff QA Engineer  
 **Target Release**: Web MVP (Phase 2–4 Verification)  
-**Status**: 12 Done on `main` (#7, #9, #14–#18), 1 Todo, 9 Backlog — 2026-09-10  
+**Status**: 14 Done on `main` (#7, #9, #14–#18, PR4a+4b), 1 Todo, 7 Backlog — 2026-09-11  
 
 ---
 
@@ -25,8 +25,8 @@ While the foundation demonstrates sound multi-tenant security principles (RLS, P
 | **[MAYA-104](./MAYA-104-conversation-retitling-ineffective.md)** | Bug | **P2** | **Done** (#7) | API / Persistence | Auto-retitling logic fails when conversation title defaults to `'New Chat'` |
 | **[MAYA-105](./MAYA-105-abandoned-empty-conversations.md)** | Bug / UX | **P2** | **Done** (#7) | Client / House View | Premature conversation creation leaves orphaned empty threads in DB & UI |
 | **[MAYA-106](./MAYA-106-prompt-compiler-bio-tone-ignored.md)** | Architecture | **P1** | **Done** (#9) | AI / Prompt Engine | Custom tone sliders & user bio ignored during prompt construction |
-| **[MAYA-107](./MAYA-107-model-selection-inoperative.md)** | Architecture | **P1** | **Backlog** | API / Model Routing | Model selection per plan is inoperative; chat hardcoded to default model |
-| **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift | **P2** | **Backlog** | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
+| **[MAYA-107](./MAYA-107-model-selection-inoperative.md)** | Architecture | **P1** | **Done** (PR4a+4b) | API / Model Routing | Model selection per plan is inoperative; chat hardcoded to default model |
+| **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift | **P2** | **Done** (PR4b) | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
 | **[MAYA-109](./MAYA-109-memory-rpc-service-role-failure.md)** | Bug / Database | **P2** | **Backlog** | Database / pgvector | `match_agent_memories` RPC fails for service role & lacks tenant index isolation |
 | **[MAYA-110](./MAYA-110-unbounded-user-conversations-query.md)** | Performance | **P3** | **Backlog** | House / Threads | Unbounded, unpaginated conversation query degrades with user tenure |
 | **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | Security | **P0** | **Done** (#15) | Database / RPC | `chat_agent_prompt` leaks any public custom system prompt to any authenticated user |

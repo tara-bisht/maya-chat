@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Issue Key** | MAYA-108 |
 | **Issue Type** | 📉 Spec Drift / Data Integrity |
-| **Status** | Backlog |
+| **Status** | Done (PR4b) |
 | **Priority** | 🟡 P2 (Medium) |
 | **Severity** | Moderate |
 | **Component** | Frontend (Landing Seats) & Data Catalog |
@@ -115,8 +115,8 @@ Render `Seats` as an async React Server Component on the landing page, with a fa
 ---
 
 ## 7. Acceptance Criteria (AC)
-- [ ] Changing `monthly_price_cents` or adding a model to `plan_models` updates the landing page display.
-- [ ] The landing page loads with zero layout shift and sub-100ms response time using Next.js caching/ISR.
+- [x] Changing `monthly_price_cents` or adding a model to `plan_models` updates the landing page display.
+- [x] The landing page loads with zero layout shift and sub-100ms response time using Next.js caching/ISR.
 
 ---
 
