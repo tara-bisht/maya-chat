@@ -24,7 +24,7 @@ export default async function StudioNewPage() {
         <PaywallTicket
           title={COPY.agentLimit}
           body={studioCapCopy(context.maxCustomAgents, context.planDisplayName)}
-          href="/#seats"
+          href="/plan?reason=studio-cap"
           cta={COPY.upgrade}
         />
       ) : (

@@ -40,13 +40,11 @@ describe("navIsActive", () => {
 });
 
 describe("plan chrome", () => {
-  it("sends Free to seats and paid plans to Profile", () => {
+  it("sends every plan to the in-app paywall", () => {
     expect(planLabel("free")).toBe("Free");
     expect(planLabel("plus")).toBe("Plus");
     expect(planLabel("pro")).toBe("Pro");
-    expect(planHref("free")).toBe("/#seats");
-    expect(planHref("plus")).toBe("/settings");
-    expect(planHref("pro")).toBe("/settings");
+    expect(planHref()).toBe("/plan");
   });
 
   it("uses the first letter, or Y when the name is empty", () => {

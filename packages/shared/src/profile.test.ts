@@ -134,14 +134,14 @@ describe("toSettingsView", () => {
       displayName: "Plus",
       status: "active",
     });
-    expect(view.bill).toEqual({ kind: "portal-disabled" });
+    expect(view.bill).toEqual({ kind: "plan", href: "/plan" });
   });
 
-  it("falls back a missing entitlement to Free and the seats link", () => {
+  it("falls back a missing entitlement to Free and the plan link", () => {
     const view = toSettingsView(viewInput({ entitlement: null, plan: null }));
     expect(view.seat.planId).toBe("free");
     expect(view.seat.displayName).toBe("Free");
-    expect(view.bill).toEqual({ kind: "seats", href: "/#seats" });
+    expect(view.bill).toEqual({ kind: "plan", href: "/plan" });
   });
 
   it("clamps unknown language to en and empty bio to an empty string", () => {
