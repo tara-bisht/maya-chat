@@ -4,6 +4,7 @@
 **Target Branch:** `main`  
 **Reference Document:** [`docs/reviews/pr4a-credit-engine.md`](./pr4a-credit-engine.md)  
 **Original status:** **Approve with Fixes** (Ready to merge once comments 1–3 are resolved)  
+**Re-Review Status:** **APPROVED FOR MERGE** 🚀 (All blockers resolved; comment 6 appropriately deferred to PR4b)  
 **Follow-up:** comments 1–5 landed; comment 6 deferred to PR4b. Full table in the brief §14.
 
 | Item | Disposition |
@@ -233,3 +234,42 @@ Below are specific, actionable comments and code suggestions to address before m
 - [ ] Complete manual SQL checklist in `supabase/tests/ai_credits.sql`.
 - [ ] Verify manual chat flow for Free user on Qwen Flash and 403 on Claude.
 - [ ] Cancel one in-flight turn; confirm `usage_events` flips `reserved → settled`.
+
+---
+
+## Senior Developer Re-Review & Final Sign-Off (Commit `26df22d`)
+
+**Verdict:** **APPROVED FOR MERGE** 🚀
+
+### Evaluation of Author's Changes & Dispositions
+
+1. **Item 1 (House Voice Allowlist on Downgrade):**  
+   **Verified.** `loadHouse` now queries `plan_models` and delegates to `resolveModelId({ conversationModelId, preferredModelId, defaultModelId, allowed })` without passing `requested`. This cleanly preserves the fallback hierarchy (`conversation` → `profile` → `default` → `first allowed`) among permitted models. The Free user lock-out scenario after a Pro downgrade is completely eliminated.
+
+2. **Item 2 (Provider Metadata Cost Fallback):**  
+   **Verified.** `costFromProviderBag` recursively checks `record.cost` and `record.usage.cost`. The addition of `apps/web/lib/credits/usage.test.ts` (8 passing unit tests) provides strong regression protection across both OpenRouter AI SDK metadata shapes as well as explicit `$0` gateway returns.
+
+3. **Item 3 (`abortSignal`, `onAbort`, and `await settleTurn`):**  
+   **Verified.** Passing `abortSignal: request.signal` stops OpenRouter token burn immediately when a client connection terminates. Adding `onAbort` and making both `onAbort` and `onError` `async` while awaiting `settleTurn` fully closes the Trap 8 reservation leak and avoids process-teardown races.
+
+4. **Item 4 (Deterministic Model Order):**  
+   **Verified.** Adding `.order("sort_order", { ascending: true })` to `loadPlanModel` aligns TypeScript fallback resolution with the SQL RPC `reserve_chat_turn`.
+
+5. **Item 5 (Forwarding `openrouter_generation_id`):**  
+   **Verified.** `event.response?.id` is now forwarded to `settle_chat_turn`, ensuring end-to-end trace auditability.
+
+6. **Item 6 (PaywallTicket for `forbidden_model` Deferred to PR4b):**  
+   **Concur with Author's Rationale.** Since Item 1 prevents normal UI callers from ever sending a forbidden `modelId`, an illegal request now only occurs via forged requests or stale clients. User-facing locked model upsells belong with the interactive model picker component in PR4b.
+
+7. **Architectural Commendation on Muse M2 (Models SELECT Grant):**  
+   The author correctly rejected the suggestion to revoke `SELECT` on `models` from `authenticated`. `loadPlanModel` and `loadModelsPayload` run with user JWTs; revoking table SELECT would break chat unless those reads were moved to `service_role`. Crucially, authorization is enforced at the RPC level (`reserve_chat_turn`) and `GET /api/models` strips `gateway_id`. Keeping public list prices readable while column-hiding actual COGS (`openrouter_cost_usd`) on `usage_events` is the correct design.
+
+---
+
+### Final Merge Clearance
+
+- [x] Test suite passing: 21 test suites, 136 tests passing (`pnpm test`).
+- [x] Typecheck and lint passing with no errors (`pnpm exec turbo typecheck lint --force`).
+- [x] All PR4a criteria and traps (Trap 3, Trap 5, Trap 8, MAYA-112) satisfied.
+- [x] Ready to squash-merge `feat/pr4-credit-engine` into `main`.
+

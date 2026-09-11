@@ -1,21 +1,42 @@
-# PR #21 Review — muse (senior dev) — Action Required
+# PR #21 Review — muse (senior dev) — Round 2: Approve (with staging checks)
 
 **PR:** #21 `feat/pr4-credit-engine` → `main`
-**Brief:** `docs/reviews/pr4a-credit-engine.md`
-**Original verdict:** Request changes — 3 blockers. Core metering + allowlist are sound; fix below then ready to approve.
-**Follow-up:** dispositions below. Full table in the brief §14.
+**Brief:** `docs/reviews/pr4a-credit-engine.md` (§14 triage)
+**Round 1 verdict:** Request changes — 3 blockers.
+**Round 2 verdict (commit `26df22d`): Approve** — all blockers resolved or rejected with valid reasoning. Remaining items are staging manual checks (cancelled-turn settle, cost-branch confirm) and one low-priority follow-up below.
+**Verified:** `pnpm --filter @maya/shared test` 66/66 pass, `lib/credits/usage.test.ts` 8/8 pass, `turbo typecheck` 3/3 pass, `turbo lint` pass.
 
 | Item | Disposition |
 | :--- | :--- |
-| Required 1 — abort never settles | **Done** — `abortSignal` + `onAbort` + await `settleTurn` |
-| Required 2 — revoke `models` SELECT | **Rejected** — would break user-JWT catalog reads; not Trap 5. Documented. |
-| Required 3 — House voice not allowlisted | **Done** — `loadHouse` uses `resolveModelId` against `plan_models` |
-| Suggested 4 — `sort_order` | **Done** |
-| Suggested 5 — scale-read log | **Done** (log; still default scale) |
-| Suggested 6 — `Promise.all` | **Done** |
-| Suggested 7 — dead `isDailyCapReached` | **Done** |
-| Suggested 8 — zero-cost edge | **Done** — `$0` → `min_turn_credits` |
-| Suggested 9 — unparseable reserve | **Done** (log raw payload; no Sentry yet) |
+| Required 1 — abort never settles | **Done, verified** — `abortSignal` + `onAbort` + await `settleTurn` (`route.ts:268-275`) |
+| Required 2 — revoke `models` SELECT | **Rejected, accepted** — would break user-JWT catalog reads; not Trap 5. Documented in migration header + brief §9. |
+| Required 3 — House voice not allowlisted | **Done, verified** — `loadHouse` uses `resolveModelId` against `plan_models` (`house/load.ts:195-206`). One residual nit below (no `is_enabled` filter). |
+| Suggested 4 — `sort_order` | **Done, verified** (`load-context.ts:160-161`) |
+| Suggested 5 — scale-read log | **Done, verified** (log-only, still defaults — agreed, fail-closed 500 is worse) |
+| Suggested 6 — `Promise.all` | **Done, verified** (`route.ts:178-188`) |
+| Suggested 7 — dead `isDailyCapReached` | **Done, verified** (export + tests removed, `consume_chat_turn.sql` marked historical, roadmap updated) |
+| Suggested 8 — zero-cost edge | **Done, verified** — explicit `$0` → `min_turn_credits` (`usage.ts:88-97`), covered by test |
+| Suggested 9 — unparseable reserve | **Done, accepted** (raw `quota.data` logged; Sentry deferred to PR5) |
+| New (Round 2) — House ignores `is_enabled` | **Nit, not a blocker** — see Round 2 notes |
+
+---
+
+## Round 2 notes (author replies reviewed at `26df22d`)
+
+Reviewed each §14 disposition against the code + tests. Author's replies are accurate; no disposition was overstated.
+
+* **M1 abort — agree, done.** `route.ts:268-275` now passes `abortSignal: request.signal` with `onAbort` + `onError` both `await settleTurn({ aborted: true })`. In-process `settled` flag (`route.ts:225-228`) keeps the three callbacks mutually exclusive. Improvement over the original suggestion (which used `void`): awaiting reduces serverless-teardown loss. Crash-before-callback still leaks until UTC roll — already documented as accepted MVP behavior, not a defect.
+* **M2 models SELECT — agree with rejection.** Observation stands (JWT can `select gateway_id from models`), but the proposed revoke as written was unsafe: `default_model_id` lives on `plans`, and `loadPlanModel` / `loadModelsPayload` read `gateway_id` + rates with the user JWT — a bare revoke breaks chat. Enforcement is the RPC + TS allowlist, not obscurity of public OpenRouter slugs, and `GET /api/models` still omits `gateway_id`. Migration header + brief §9 now record this. Future hardening (catalog view or definer RPC + narrowed grant) can be a v1.1 ticket; not a 4a blocker.
+* **M3 House allowlist — agree, done.** `house/load.ts:119-135` fetches `plan_models` (fails closed on error) and `195-206` runs `resolveModelId` with no `requested`, so stale Pro `claude` degrades to an allowed voice instead of hard-403ing every send. Server still 403s explicit illegal `modelId` (Trap 5 intact). **Residual nit (not blocking):** unlike `loadPlanModel` (`load-context.ts:160`) and `loadModelsPayload` (`credits/load.ts:59`), `loadHouse` does not intersect with `models.is_enabled`. A disabled model stays selectable in House chrome until the send 403s. Suggest one follow-up: filter `allowResult` by enabled models or reuse the same `allowedRows` query. Low priority — disabled-model flips are founder ops, not user flows.
+* **M4 sort_order — agree, done.** `.order("sort_order")` matches the RPC's `order by m.sort_order`; `[...allowed][0]` fallback is now deterministic.
+* **M5 scale log — agree (log-only).** `logDropped` added in both loaders; still mints at `CREDIT_SCALE_DEFAULT` on read error. Correct call — 500ing every send over a seeded constant is worse.
+* **M6 Promise.all — agree, done.** Both calls are log-only on failure; no error-semantics change.
+* **M7 dead code — agree, done.** Export + `chat.test.ts` references removed, `consume_chat_turn.sql` marked historical, roadmap bullet is credits. Nothing else references `isDailyCapReached` (verified by grep in Round 2).
+* **M8 $0 — agree, done.** `usage.ts:88-97` short-circuits `costUsd === 0` to `max(1, minTurnCredits)` before catalog-rate fallback, with an explanatory comment. `usage.test.ts` covers `$0` + `raw.cost` + `openrouter.usage.cost` + preference order. Correct: a free model must not be priced at catalog rates.
+* **M9 reserve parse — agree (log).** `console.error` now includes raw `quota.data`. Sentry hook deferred to PR5 — acceptable, schema drift is low-probability and parser-tested.
+* **G5 generation_id (from Gemini thread) — done, no issue.** `onEnd` forwards `event.response?.id ?? null`; abort/error settle with null. Column is nullable; audit trail complete when the SDK provides it.
+
+**Still staging-only (not automated, per brief §11):** (1) cancel one in-flight turn → `usage_events` flips `reserved → settled` at reserved amount; (2) confirm which settle branch runs in staging (`raw.cost` vs `openrouter.usage.cost` vs catalog rates). Neither blocks merge — code paths are correct, only the live-provider shape is unproven.
 
 ---
 
@@ -237,4 +258,4 @@ If `reserve_chat_turn` succeeds but `parseReserveChatTurn` fails (schema drift),
 
 Fix Required 1–3 + Suggested 4 and I'm an approve. Thanks for the reviewer brief — it made this review fast.
 
-**Follow-up:** Required 1 and 3 + Suggested 4 landed. Required 2 was rejected with documentation (see Status on that item). Remaining suggested items also landed except no Sentry hook.
+**Follow-up (Round 2 at `26df22d`):** Required 1 and 3 + Suggested 4 landed and verified. Required 2 was rejected with documentation (see Status on that item) — accepted. Remaining suggested items also landed except no Sentry hook (deferred to PR5, accepted). **Final: Approve** pending only the two staging manual checks above.
