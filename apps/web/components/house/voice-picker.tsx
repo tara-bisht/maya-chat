@@ -62,15 +62,31 @@ export function VoicePicker({
     <div ref={rootRef} className="relative min-w-0">
       <button
         type="button"
-        className="flex h-8 max-w-full items-center truncate font-mono text-xs text-ink-soft underline-offset-4 hover:underline disabled:no-underline"
+        className="flex h-8 max-w-full items-center gap-1.5 font-mono text-xs text-ink-soft hover:text-cream disabled:opacity-40"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
-        aria-label={triggerLabel}
+        aria-label={`${triggerLabel}. Change voice`}
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
       >
-        {triggerLabel}
+        <span className="min-w-0 truncate">{triggerLabel}</span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          aria-hidden
+          className={`shrink-0 opacity-80 transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          <path
+            d="M2.5 4.5 6 8l3.5-3.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
       {open ? (
         <ul
