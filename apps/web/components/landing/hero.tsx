@@ -19,7 +19,7 @@ function PersonalityMark({ children }: { children: string }) {
           <path
             d="M3 10.5 C 40 3.5, 75 11, 110 7.5 S 180 4, 217 8"
             pathLength="1"
-            stroke="var(--maya-stub)"
+            stroke="var(--maya-acid)"
             strokeWidth="5"
             strokeLinecap="round"
           />
