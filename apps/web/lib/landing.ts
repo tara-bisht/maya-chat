@@ -354,85 +354,11 @@ export const STUDIO = {
 } as const;
 
 /**
- * Seed seat copy. Source of truth at runtime is `public.plans` /
- * `public.plan_models` (PR4). Do not scatter these numbers in JSX.
+ * Fallback seat copy when the catalog cannot load. Runtime source of truth
+ * is `public.plans` / `public.plan_models` via `loadPublicSeats`.
  */
-export type SeatCtaKind = "acid" | "ghost";
-
-export type Seat = {
-  id: "free" | "plus" | "pro";
-  name: string;
-  price: string;
-  cadence: string;
-  stamp: string;
-  stampTone: "cream" | "stub";
-  cta: { href: "/login"; label: string; kind: SeatCtaKind };
-  bullets: string[];
-  models: string[];
-};
-
-export const SEATS: Seat[] = [
-  {
-    id: "free",
-    name: "Free",
-    price: "$0",
-    cadence: "No bill",
-    stamp: "Included",
-    stampTone: "cream",
-    cta: { href: "/login", label: "Get started", kind: "acid" },
-    bullets: [
-      "50 messages a day",
-      "Starter voices + 3 of yours, public",
-      "No vector memory",
-      "No tools",
-    ],
-    models: ["qwen-flash", "gemini-flash", "grok-fast"],
-  },
-  {
-    id: "plus",
-    name: "Plus",
-    price: "$9",
-    cadence: "/ month · $90 / year",
-    stamp: "Plus",
-    stampTone: "stub",
-    cta: { href: "/login", label: "Sign in", kind: "ghost" },
-    bullets: [
-      "200 messages a day",
-      "Every featured voice",
-      "10 custom agents, public or private",
-      "Private per-agent memory",
-      "Memory saver, math solver",
-    ],
-    models: ["qwen-flash", "gemini-flash", "grok-fast", "deepseek", "qwen", "grok", "gpt"],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "$19",
-    cadence: "/ month · $190 / year",
-    stamp: "Pro",
-    stampTone: "stub",
-    cta: { href: "/login", label: "Sign in", kind: "ghost" },
-    bullets: [
-      "Unlimited messages",
-      "Every featured voice",
-      "Unlimited custom agents, public or private",
-      "Private per-agent memory",
-      "Plus tools, and web search",
-    ],
-    models: [
-      "qwen-flash",
-      "gemini-flash",
-      "grok-fast",
-      "deepseek",
-      "qwen",
-      "grok",
-      "gpt",
-      "claude",
-      "kimi",
-    ],
-  },
-];
+export type { Seat, SeatCtaKind } from "./landing/seats-from-catalog";
+export { FALLBACK_SEATS as SEATS } from "./landing/seats-from-catalog";
 
 export const SEATS_KICKER = {
   kicker: "Pricing",
@@ -450,7 +376,7 @@ export const NOTES = [
   },
   {
     q: "What can I do on Free?",
-    a: "Talk to a starter voice, then write three public characters of your own. Fifty messages a day. Models: qwen-flash, gemini-flash, and grok-fast. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
+    a: "Talk to a starter voice, then write three public characters of your own. Credits reset 00:00 UTC. Models follow the catalog on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
   },
   {
     q: "Do they remember me?",
@@ -462,7 +388,7 @@ export const NOTES = [
   },
   {
     q: "Which models?",
-    a: "The model is the instrument, not the character. Free: Gemini Flash and Grok Fast. Plus adds DeepSeek, Qwen, Grok, and GPT. Pro adds Claude and Kimi.",
+    a: "The model is the instrument, not the character. Free, Plus, and Pro unlock different voices. Plans lists the current catalog.",
   },
 ] as const;
 

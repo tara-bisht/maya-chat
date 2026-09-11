@@ -13,6 +13,7 @@ import { StudioSheet } from "@/components/landing/studio-sheet";
 import { Usual } from "@/components/landing/usual";
 import { getSessionUser } from "@/lib/auth/session";
 import { COMPANY_KICKER } from "@/lib/landing";
+import { loadPublicSeats } from "@/lib/landing/load-seats";
 
 export default async function Home() {
   let signedIn = false;
@@ -21,6 +22,7 @@ export default async function Home() {
   } catch {
     signedIn = false;
   }
+  const seats = await loadPublicSeats();
 
   return (
     <div className="min-h-screen overflow-x-clip bg-night text-cream">
@@ -43,7 +45,7 @@ export default async function Home() {
       <Nights />
       <HouseSteps />
       <StudioSheet />
-      <Seats />
+      <Seats seats={seats} />
       <Notes />
       <HouseOpen />
       <LobbyFooter />
