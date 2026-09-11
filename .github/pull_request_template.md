@@ -11,7 +11,7 @@
 - [ ] `pnpm turbo lint typecheck test`
 - [ ] New routes validate with Zod
 - [ ] New tables have RLS (user A cannot read user B)
-- [ ] UI screenshot if the house look changed
+- [ ] UI screenshot posted as a PR comment (do not commit images) if the look changed
 
 ## Notes
 
