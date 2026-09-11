@@ -67,21 +67,18 @@ export const SceneHook: React.FC = () => {
         }}
       >
         Give your AI
-        <br />
-        <span style={{ position: 'relative', display: 'inline-block' }}>
-          a personality.
-          <span
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: -14,
-              height: 22,
-            }}
-          >
-            <AcidScribble delay={55} />
-          </span>
-        </span>
+        <br />a personality.
+      </div>
+
+      <div
+        style={{
+          opacity: opacity(20),
+          width: 660,
+          height: 24,
+          marginTop: -10,
+        }}
+      >
+        <AcidScribble delay={55} />
       </div>
 
       <div
