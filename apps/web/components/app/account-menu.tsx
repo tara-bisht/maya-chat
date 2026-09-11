@@ -6,7 +6,6 @@ import type { MayaPlan } from "@maya/shared";
 import {
   COPY,
   planHref,
-  planLabel,
   profileInitial,
 } from "@/lib/ui-copy";
 import {
@@ -37,7 +36,6 @@ export function AccountMenu({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
   const href = planHref();
-  const chipLabel = plan === "free" ? COPY.upgrade : planLabel(plan);
   const planItemLabel = plan === "free" ? COPY.upgrade : COPY.plan;
 
   function placeMenu() {
@@ -95,25 +93,21 @@ export function AccountMenu({
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative flex shrink-0 items-center gap-3">
-      <Link
-        href={href}
-        className={
-          plan === "free"
-            ? `font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline ${
-                dense ? "hidden lg:inline" : ""
-              }`
-            : `font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase hover:text-cream ${
-                dense ? "hidden lg:inline" : ""
-              }`
-        }
-      >
-        {chipLabel}
-      </Link>
+    <div ref={rootRef} className="relative flex shrink-0 items-center gap-2">
+      {plan === "free" ? (
+        <Link
+          href={href}
+          className={`font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline ${
+            dense ? "hidden lg:inline" : ""
+          }`}
+        >
+          {COPY.upgrade}
+        </Link>
+      ) : null}
       <button
         ref={buttonRef}
         type="button"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cream font-display text-sm leading-none text-night italic"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream font-display text-sm leading-none text-night italic"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={menuId}

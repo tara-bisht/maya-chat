@@ -77,6 +77,7 @@ export function toRecentChats(
   const limit = options.limit ?? RECENT_CHAT_LIMIT;
   const nowMs = options.nowMs ?? Date.now();
   const recents: RecentChat[] = [];
+  const seenAgents = new Set<string>();
 
   for (const row of conversations) {
     if (recents.length >= limit) {
@@ -85,10 +86,14 @@ export function toRecentChats(
     if (row.messageCount <= 0) {
       continue;
     }
+    if (seenAgents.has(row.agent_id)) {
+      continue;
+    }
     const agent = agentsById.get(row.agent_id);
     if (!agent) {
       continue;
     }
+    seenAgents.add(agent.id);
     recents.push({
       conversationId: row.id,
       agentId: agent.id,

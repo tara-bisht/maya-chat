@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ContinueChats } from "@/components/app/recent-chats";
 import { DroppedNotice } from "@/components/app/dropped-notice";
+import { GalleryJumps } from "@/components/app/gallery-jumps";
 import { PageInner } from "@/components/app/page-frame";
 import { PlaybillWall } from "@/components/playbill-card";
-import { SectionKicker } from "@/components/landing/section-kicker";
+import { LandingHeading } from "@/components/landing/section-kicker";
 import { requireUser } from "@/lib/auth/session";
 import { loadGallery } from "@/lib/gallery/load";
 import { COPY } from "@/lib/ui-copy";
@@ -29,37 +30,28 @@ export default async function GalleryPage() {
 
   return (
     <main>
-      <section className="relative z-10 py-6 md:py-8">
-        <PageInner>
-          <nav
-            aria-label="On this page"
-            className="mb-8 flex flex-wrap gap-x-4 gap-y-2"
-          >
-            {jumps.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream-dim uppercase underline-offset-4 hover:text-cream hover:underline"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+      <GalleryJumps items={jumps} />
 
-          {gallery.recents.length > 0 ? (
-            <div id="continue">
-              <SectionKicker kicker="Chats" title={COPY.continueChatting} />
-              <ContinueChats recents={gallery.recents} />
-            </div>
-          ) : null}
-        </PageInner>
-      </section>
+      {gallery.recents.length > 0 ? (
+        <section
+          id="continue"
+          className="relative z-10 scroll-mt-14 py-6 md:py-8"
+        >
+          <PageInner>
+            <LandingHeading title={COPY.continueChatting} />
+            <ContinueChats recents={gallery.recents} />
+          </PageInner>
+        </section>
+      ) : null}
 
-      <section id="featured" className="relative z-10 py-6 md:py-10">
+      <section
+        id="featured"
+        className="relative z-10 scroll-mt-14 py-6 md:py-10"
+      >
         <PageInner>
-          <SectionKicker kicker="Agents" title={COPY.featured}>
+          <LandingHeading title={COPY.featured}>
             {COPY.featuredBody}
-          </SectionKicker>
+          </LandingHeading>
           {gallery.curated.length === 0 ? (
             <p className="font-sans text-base text-cream-dim">
               No featured agents yet.
@@ -70,11 +62,14 @@ export default async function GalleryPage() {
         </PageInner>
       </section>
 
-      <section id="your-agents" className="relative z-10 py-6 md:py-10">
+      <section
+        id="your-agents"
+        className="relative z-10 scroll-mt-14 py-6 md:py-10"
+      >
         <PageInner>
-          <SectionKicker kicker="Yours" title={COPY.yourAgents}>
+          <LandingHeading title={COPY.yourAgents}>
             Agents you created. Edit them from Profile.
-          </SectionKicker>
+          </LandingHeading>
           {gallery.custom.length === 0 ? (
             <p className="font-sans text-base text-cream-dim">
               {COPY.yourAgentsEmpty}{" "}
@@ -93,11 +88,14 @@ export default async function GalleryPage() {
       </section>
 
       {gallery.house.length > 0 ? (
-        <section id="from-others" className="relative z-10 py-6 md:py-10">
+        <section
+          id="from-others"
+          className="relative z-10 scroll-mt-14 py-6 md:py-10"
+        >
           <PageInner>
-            <SectionKicker kicker="Community" title={COPY.fromOthers}>
+            <LandingHeading title={COPY.fromOthers}>
               Public custom agents. Your chats with them stay private.
-            </SectionKicker>
+            </LandingHeading>
             <PlaybillWall players={gallery.house} />
           </PageInner>
         </section>

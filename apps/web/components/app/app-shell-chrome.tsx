@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Playbill } from "@/lib/gallery/playbill";
@@ -14,19 +14,55 @@ import {
 } from "@/lib/ui-copy";
 import { AccountMenu } from "./account-menu";
 import { CreditMeter } from "./credit-meter";
-import { MenuIcon, NAV_ICONS } from "./nav-icons";
+import {
+  CollapseIcon,
+  ExpandIcon,
+  MenuIcon,
+  NAV_ICONS,
+} from "./nav-icons";
 import { RecentChatsList } from "./recent-chats";
 import { SidebarAgents } from "./your-agents-list";
 
+const RAIL_STORAGE_KEY = "maya.navRail";
+
+function readRailCollapsed(): boolean {
+  try {
+    return window.localStorage.getItem(RAIL_STORAGE_KEY) === "collapsed";
+  } catch {
+    return false;
+  }
+}
+
+function writeRailCollapsed(collapsed: boolean) {
+  try {
+    window.localStorage.setItem(
+      RAIL_STORAGE_KEY,
+      collapsed ? "collapsed" : "expanded",
+    );
+  } catch {
+    // Private mode and blocked storage should not break the rail.
+  }
+}
+
+function RailSlot({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center">
+      {children}
+    </span>
+  );
+}
+
 function NavLinks({
   pathname,
+  collapsed,
   onClick,
 }: {
   pathname: string;
+  collapsed: boolean;
   onClick?: () => void;
 }) {
   return (
-    <nav className="flex shrink-0 flex-col gap-0.5 px-2" aria-label="App">
+    <nav className="flex shrink-0 flex-col gap-0.5" aria-label="App">
       {APP_NAV.map((item) => {
         const active = navIsActive(item.href, pathname);
         const Icon = NAV_ICONS[item.id];
@@ -35,12 +71,20 @@ function NavLinks({
             key={item.href}
             href={item.href}
             onClick={onClick}
-            className={`flex items-center gap-3 rounded-md px-2 py-2 font-sans text-sm font-semibold ${
-              active ? "bg-rule/60 text-cream" : "text-cream-dim hover:bg-rule/40 hover:text-cream"
+            title={collapsed ? item.label : undefined}
+            aria-label={collapsed ? item.label : undefined}
+            className={`flex items-center rounded-md py-2 font-sans text-sm font-semibold ${
+              collapsed ? "justify-center" : "gap-3 px-3"
+            } ${
+              active
+                ? "bg-rule/60 text-cream"
+                : "text-cream-dim hover:bg-rule/40 hover:text-cream"
             }`}
           >
-            <Icon className="shrink-0" />
-            {item.label}
+            <RailSlot>
+              <Icon />
+            </RailSlot>
+            {collapsed ? null : item.label}
           </Link>
         );
       })}
@@ -52,47 +96,57 @@ function SidebarBody({
   recents,
   custom,
   pathname,
+  collapsed,
   onNavigate,
 }: {
   recents: RecentChat[];
   custom: Playbill[];
   pathname: string;
+  collapsed: boolean;
   onNavigate?: () => void;
 }) {
   return (
     <>
-      <div className="shrink-0 px-4 py-5">
+      <div
+        className={`shrink-0 py-5 ${collapsed ? "flex justify-center" : "px-3"}`}
+      >
         <Link
           href="/gallery"
           onClick={onNavigate}
-          className="font-display text-3xl text-cream italic"
+          className={`font-display text-cream italic ${
+            collapsed ? "text-2xl" : "text-3xl"
+          }`}
+          aria-label="Maya"
         >
-          Maya
+          {collapsed ? "M" : "Maya"}
         </Link>
       </div>
-      <NavLinks pathname={pathname} onClick={onNavigate} />
-      <div className="mt-6 min-h-0 flex-1 overflow-y-auto px-2 pb-6">
-        <p className="px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-          {COPY.recentChats}
-        </p>
-        <div className="mt-2">
-          <RecentChatsList recents={recents} />
+      <NavLinks
+        pathname={pathname}
+        collapsed={collapsed}
+        onClick={onNavigate}
+      />
+      <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-6">
+        {collapsed ? null : (
+          <p className="px-3 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+            {COPY.recentChats}
+          </p>
+        )}
+        <div className={collapsed ? "" : "mt-2"}>
+          <RecentChatsList recents={recents} iconOnly={collapsed} />
         </div>
-        <p className="mt-6 px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-          {COPY.yourAgents}
-        </p>
-        <div className="mt-2">
-          <SidebarAgents agents={custom} />
+        {collapsed ? (
+          recents.length > 0 && custom.length > 0 ? (
+            <div className="mx-3 my-2 h-px bg-rule" aria-hidden />
+          ) : null
+        ) : (
+          <p className="mt-6 px-3 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+            {COPY.yourAgents}
+          </p>
+        )}
+        <div className={collapsed ? "" : "mt-2"}>
+          <SidebarAgents agents={custom} iconOnly={collapsed} />
         </div>
-        <p className="mt-3 px-2">
-          <Link
-            href="/studio/new"
-            onClick={onNavigate}
-            className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-          >
-            {COPY.createAgent}
-          </Link>
-        </p>
       </div>
     </>
   );
@@ -111,15 +165,57 @@ export function AppShellChrome({
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const hideCreateCta = pathname.startsWith("/studio/new");
+
+  useEffect(() => {
+    setCollapsed(readRailCollapsed());
+  }, []);
+
+  function toggleRail() {
+    setCollapsed((current) => {
+      const next = !current;
+      writeRailCollapsed(next);
+      return next;
+    });
+  }
 
   return (
     <div className="flex h-dvh overflow-hidden bg-night text-cream">
-      <aside className="hidden h-full min-h-0 w-[268px] shrink-0 flex-col border-r border-rule lg:flex">
-        <SidebarBody recents={recents} custom={custom} pathname={pathname} />
-        {viewer.credits ? (
-          <CreditMeter credits={viewer.credits} variant="rail" />
-        ) : null}
+      <aside
+        className={`hidden h-full min-h-0 shrink-0 flex-col overflow-hidden border-r border-rule motion-reduce:transition-none lg:flex ${
+          collapsed ? "w-[72px]" : "w-[268px]"
+        } transition-[width] duration-200 ease-[cubic-bezier(0.2,0,0,1)]`}
+      >
+        <SidebarBody
+          recents={recents}
+          custom={custom}
+          pathname={pathname}
+          collapsed={collapsed}
+        />
+        <div className="mt-auto shrink-0">
+          <button
+            type="button"
+            className={`flex w-full items-center rounded-md py-2 font-sans text-sm font-semibold text-cream-dim hover:bg-rule/40 hover:text-cream ${
+              collapsed ? "justify-center" : "gap-3 px-3"
+            }`}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? COPY.expandRail : COPY.collapseRail}
+            onClick={toggleRail}
+          >
+            <RailSlot>
+              {collapsed ? <ExpandIcon /> : <CollapseIcon />}
+            </RailSlot>
+            {collapsed ? null : COPY.collapseRail}
+          </button>
+          {viewer.credits ? (
+            <CreditMeter
+              credits={viewer.credits}
+              variant="rail"
+              collapsed={collapsed}
+            />
+          ) : null}
+        </div>
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -133,12 +229,7 @@ export function AppShellChrome({
           <p className="hidden min-w-0 flex-1 truncate font-display text-2xl text-cream italic lg:block">
             {greetingName(viewer.displayName)}
           </p>
-          <div className="ml-auto flex items-center gap-3">
-            {viewer.credits ? (
-              <div className="hidden sm:block">
-                <CreditMeter credits={viewer.credits} variant="compact" />
-              </div>
-            ) : null}
+          <div className="ml-auto flex items-center gap-3 lg:gap-6">
             {hideCreateCta ? null : (
               <Link
                 href="/studio/new"
@@ -150,7 +241,7 @@ export function AppShellChrome({
             <AccountMenu displayName={viewer.displayName} plan={viewer.plan} />
             <button
               type="button"
-              className="flex h-8 w-8 items-center justify-center text-cream lg:hidden"
+              className="flex h-10 w-10 items-center justify-center text-cream lg:hidden"
               aria-label={COPY.menu}
               onClick={() => setMenuOpen(true)}
             >
@@ -158,7 +249,10 @@ export function AppShellChrome({
             </button>
           </div>
         </header>
-        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-0">
+        <div
+          id="maya-stage"
+          className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-0"
+        >
           {children}
         </div>
       </div>
@@ -210,6 +304,7 @@ export function AppShellChrome({
               recents={recents}
               custom={custom}
               pathname={pathname}
+              collapsed={false}
               onNavigate={() => setMenuOpen(false)}
             />
           </aside>
