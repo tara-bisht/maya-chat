@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, Sequence } from 'remotion';
+import { AbsoluteFill, Audio, Sequence, staticFile } from 'remotion';
 import { loadFont as loadFraunces } from '@remotion/google-fonts/Fraunces';
 import { loadFont as loadBricolage } from '@remotion/google-fonts/BricolageGrotesque';
 import { loadFont as loadPlexMono } from '@remotion/google-fonts/IBMPlexMono';
@@ -18,10 +18,11 @@ loadPlexMono('normal', { weights: ['400'], subsets: ['latin'] });
 
 export const VIDEO = { w: 1920, h: 1080, fps: 30, frames: 1800 } as const;
 
-// LaunchMuse: 60s general Maya Chat launch. Audio wired in Task 4.
+// LaunchMuse: 60s general Maya Chat launch with synthesized ambient score.
 export const LaunchMuse: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.night }}>
+      <Audio src={staticFile('music.mp3')} volume={0.35} />
       <Sequence from={0} durationInFrames={180} name="Hook">
         <SceneHook />
       </Sequence>
