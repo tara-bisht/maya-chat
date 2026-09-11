@@ -21,14 +21,16 @@ describe("HERO", () => {
     expect(HERO.body).toMatch(/chatbot/i);
   });
 
-  it("marks personality as the highlight word", () => {
+  it("marks personality as the highlight word and uses 'AI with a personality.'", () => {
+    expect(HERO.titleLead).toBe("AI with a ");
     expect(HERO.titleMark).toBe("personality.");
-    expect(HERO.title).toBe(`${HERO.titleLead}${HERO.titleMark}`);
+    expect(HERO.title).toBe("AI with a personality.");
   });
 
   it("sells writing a character, not a closed roster", () => {
     expect(HERO.body).not.toMatch(/eight/i);
     expect(HERO.body).toMatch(/write/i);
+    expect(HERO.body).toMatch(/Studio/i);
   });
 });
 
