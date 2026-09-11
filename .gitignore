@@ -16,3 +16,10 @@ playwright-report
 test-results
 .pnpm-store
 .worktrees/
+
+# Marketing video outputs
+marketing/**/out/
+marketing/**/*.mp4
+marketing/**/*.wav
+*.mp4
+*.wav
