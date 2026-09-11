@@ -47,6 +47,7 @@ export const COPY = {
   yourAgentsEmpty: "You have not created an agent yet.",
   recentChats: "Recent chats",
   plan: "Plan",
+  credits: "Credits",
   managePlan: "Manage plan",
   portalClosed: "Billing portal is not open yet.",
   everyAgentReads: "Every agent can read this.",
@@ -87,8 +88,35 @@ export function monthlyQuotaCopy(): string {
   return "Monthly credit limit reached. Upgrade, or wait for next month.";
 }
 
+export function lockedVoiceTitle(
+  displayName: string,
+  plan: "free" | "plus" | "pro",
+): string {
+  return `${displayName} is on ${planLabel(plan)}`;
+}
+
+export function lockedVoiceCopy(): string {
+  return "Upgrade to use this voice.";
+}
+
+export function lockedVoiceFallbackTitle(): string {
+  return "That voice is locked";
+}
+
 export function creditsLeftLabel(remaining: number): string {
   return `${remaining.toLocaleString("en-US")} left`;
+}
+
+export function creditsRailLabel(remaining: number, limit: number): string {
+  return `${creditsLeftLabel(remaining)} of ${limit.toLocaleString("en-US")}`;
+}
+
+export function creditsResetLabel(): string {
+  return "Resets 00:00 UTC";
+}
+
+export function creditsMonthLabel(remaining: number, limit: number): string {
+  return `${remaining.toLocaleString("en-US")} of ${limit.toLocaleString("en-US")} this month`;
 }
 
 export function studioCapCopy(max: number | null, planName: string): string {

@@ -10,6 +10,7 @@ import {
   parseMayaPlan,
   resolveModelId,
 } from "@maya/shared";
+import { loadCatalogModels } from "@/lib/credits/load";
 import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
 import { toHouseAgent } from "./public-agent";
@@ -116,23 +117,7 @@ export async function loadHouse(
   }
 
   const planId = parseMayaPlan(entitlementResult.data?.plan);
-  const [planResult, allowResult] = await Promise.all([
-    supabase
-      .from("plans")
-      .select("default_model_id")
-      .eq("id", planId)
-      .maybeSingle(),
-    supabase.from("plan_models").select("model_id").eq("plan_id", planId),
-  ]);
-
-  if (planResult.error) {
-    logDropped("house", { plan: planResult.error });
-    return { ok: false, reason: "dropped" };
-  }
-  if (allowResult.error) {
-    logDropped("house", { planModels: allowResult.error });
-    return { ok: false, reason: "dropped" };
-  }
+  const catalog = await loadCatalogModels(supabase, planId);
 
   let backstory: string | null = null;
   if (row.user_id === input.userId && !row.is_curated) {
@@ -186,14 +171,15 @@ export async function loadHouse(
     };
   }
 
-  const defaultModelId = planResult.data?.default_model_id ?? "qwen-flash";
+  const defaultModelId = catalog?.defaultModelId ?? "qwen-flash";
+  const models = catalog?.models ?? [];
   const conversationModelId = input.conversationId
     ? ((conversationResult.data ?? []).find(
         (item) => item.id === input.conversationId,
       )?.model_id ?? null)
     : null;
   const allowed = new Set(
-    (allowResult.data ?? []).map((row) => row.model_id),
+    models.filter((item) => item.allowed).map((item) => item.id),
   );
   const resolvedVoice = resolveModelId({
     conversationModelId,
@@ -217,6 +203,7 @@ export async function loadHouse(
       displayName: profileResult.data?.display_name?.trim() ?? "",
       defaultModelId,
       selectedModelId,
+      models,
       credits,
       threads,
       cast: buildCast({

@@ -6,9 +6,11 @@ import {
   DISPLAY_NAME_MAX,
   GLOBAL_BIO_MAX,
   LANGUAGE_PRESETS,
+  type CreditBalance,
   type SettingsView,
 } from "@maya/shared";
 import { updateProfile } from "@/app/(app)/settings/actions";
+import { CreditMeter } from "./credit-meter";
 
 function seatStatusLabel(status: SettingsView["seat"]["status"]) {
   if (status === "past_due") {
@@ -17,7 +19,13 @@ function seatStatusLabel(status: SettingsView["seat"]["status"]) {
   return status;
 }
 
-export function SettingsForm({ view }: { view: SettingsView }) {
+export function SettingsForm({
+  view,
+  credits,
+}: {
+  view: SettingsView;
+  credits: CreditBalance | null;
+}) {
   const [state, action, pending] = useActionState(updateProfile, null);
   const fieldErrors = state && !state.ok ? state.fieldErrors : undefined;
   const formError = state && !state.ok ? state.formError : undefined;
@@ -168,6 +176,8 @@ export function SettingsForm({ view }: { view: SettingsView }) {
           </p>
         ) : null}
       </section>
+
+      {credits ? <CreditMeter credits={credits} variant="block" /> : null}
     </form>
   );
 }

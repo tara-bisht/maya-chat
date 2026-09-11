@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   APP_NAV,
   MOBILE_NAV,
+  creditsLeftLabel,
+  creditsRailLabel,
+  lockedVoiceTitle,
   navIsActive,
   planHref,
   planLabel,
@@ -53,5 +56,11 @@ describe("plan chrome", () => {
     expect(profileInitial("Kamal Bisht")).toBe("K");
     expect(profileInitial("  maya")).toBe("M");
     expect(profileInitial("")).toBe("Y");
+  });
+
+  it("stamps a locked voice with the plan that unlocks it", () => {
+    expect(lockedVoiceTitle("Claude", "pro")).toBe("Claude is on Pro");
+    expect(creditsLeftLabel(1484)).toBe("1,484 left");
+    expect(creditsRailLabel(1484, 1500)).toBe("1,484 left of 1,500");
   });
 });

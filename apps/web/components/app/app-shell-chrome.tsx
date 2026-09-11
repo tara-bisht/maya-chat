@@ -9,11 +9,11 @@ import {
   APP_NAV,
   COPY,
   MOBILE_NAV,
-  creditsLeftLabel,
   greetingName,
   navIsActive,
 } from "@/lib/ui-copy";
 import { AccountMenu } from "./account-menu";
+import { CreditMeter } from "./credit-meter";
 import { MenuIcon, NAV_ICONS } from "./nav-icons";
 import { RecentChatsList } from "./recent-chats";
 import { SidebarAgents } from "./your-agents-list";
@@ -118,36 +118,7 @@ export function AppShellChrome({
       <aside className="hidden h-full min-h-0 w-[268px] shrink-0 flex-col border-r border-rule lg:flex">
         <SidebarBody recents={recents} custom={custom} pathname={pathname} />
         {viewer.credits ? (
-          <div className="shrink-0 border-t border-rule px-4 py-3">
-            <p className="font-mono text-xs text-ink-soft">
-              {creditsLeftLabel(viewer.credits.dailyRemaining)} of{" "}
-              {viewer.credits.dailyLimit.toLocaleString("en-US")}
-            </p>
-            <div className="mt-2 h-[3px] bg-rule">
-              <div
-                className={`h-full ${
-                  viewer.credits.dailyLimit > 0 &&
-                  viewer.credits.dailyRemaining / viewer.credits.dailyLimit <=
-                    0.15
-                    ? "bg-acid"
-                    : "bg-cream"
-                }`}
-                style={{
-                  width: `${
-                    viewer.credits.dailyLimit > 0
-                      ? Math.min(
-                          100,
-                          Math.round(
-                            (100 * viewer.credits.dailyRemaining) /
-                              viewer.credits.dailyLimit,
-                          ),
-                        )
-                      : 0
-                  }%`,
-                }}
-              />
-            </div>
-          </div>
+          <CreditMeter credits={viewer.credits} variant="rail" />
         ) : null}
       </aside>
 
@@ -164,12 +135,9 @@ export function AppShellChrome({
           </p>
           <div className="ml-auto flex items-center gap-3">
             {viewer.credits ? (
-              <p
-                className="hidden font-mono text-xs text-ink-soft sm:block"
-                title={`${viewer.credits.dailyRemaining.toLocaleString("en-US")} of ${viewer.credits.dailyLimit.toLocaleString("en-US")} credits · resets 00:00 UTC`}
-              >
-                {creditsLeftLabel(viewer.credits.dailyRemaining)}
-              </p>
+              <div className="hidden sm:block">
+                <CreditMeter credits={viewer.credits} variant="compact" />
+              </div>
             ) : null}
             {hideCreateCta ? null : (
               <Link
