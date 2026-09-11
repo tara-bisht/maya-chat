@@ -1,0 +1,32 @@
+{
+  "name": "@maya/marketing-promo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "render:muse:v1": "remotion render src/index.ts LaunchMuse out/launch-muse-v1.mp4 --overwrite",
+    "render:muse:v2": "remotion render src/index.ts LaunchMuseV2 out/launch-muse-v2.mp4 --overwrite",
+    "render:muse": "pnpm render:muse:v1 && pnpm render:muse:v2",
+    "render:gemini:v1": "remotion render src/index.ts MayaLaunch out/launch-gemini-v1.mp4 --overwrite",
+    "render:gemini:v2": "remotion render src/index.ts MayaLaunchV2 out/launch-gemini-v2.mp4 --overwrite",
+    "render:gemini": "pnpm render:gemini:v1 && pnpm render:gemini:v2",
+    "render:grok:v1": "remotion render src/index.ts LaunchGrok out/launch-grok-v1.mp4 --overwrite",
+    "render:grok:v2": "remotion render src/index.ts LaunchGrokV2 out/launch-grok-v2.mp4 --overwrite",
+    "render:grok": "pnpm render:grok:v1 && pnpm render:grok:v2",
+    "render:all": "pnpm render:muse && pnpm render:gemini && pnpm render:grok",
+    "still": "remotion still src/index.ts LaunchMuseV2 out/still.png --overwrite"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.400",
+    "@remotion/google-fonts": "4.0.400",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.400"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.8.3"
+  }
+}
