@@ -4,6 +4,8 @@ export type SeedModel = {
   displayName: string;
   provider: string;
   sortOrder: number;
+  inputUsdPerMillion: number;
+  outputUsdPerMillion: number;
 };
 
 /**
@@ -20,6 +22,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Qwen Flash",
     provider: "qwen",
     sortOrder: 10,
+    inputUsdPerMillion: 0.15,
+    outputUsdPerMillion: 0.47,
   },
   {
     alias: "gemini-flash",
@@ -27,6 +31,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Gemini Flash",
     provider: "google",
     sortOrder: 15,
+    inputUsdPerMillion: 0.3,
+    outputUsdPerMillion: 2.5,
   },
   {
     alias: "grok-fast",
@@ -34,6 +40,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Grok Fast",
     provider: "xai",
     sortOrder: 20,
+    inputUsdPerMillion: 1.25,
+    outputUsdPerMillion: 2.5,
   },
   {
     alias: "deepseek",
@@ -41,6 +49,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "DeepSeek",
     provider: "deepseek",
     sortOrder: 30,
+    inputUsdPerMillion: 0.27,
+    outputUsdPerMillion: 1,
   },
   {
     alias: "qwen",
@@ -48,6 +58,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Qwen",
     provider: "qwen",
     sortOrder: 40,
+    inputUsdPerMillion: 0.46,
+    outputUsdPerMillion: 1.82,
   },
   {
     alias: "grok",
@@ -55,6 +67,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Grok",
     provider: "xai",
     sortOrder: 50,
+    inputUsdPerMillion: 2,
+    outputUsdPerMillion: 6,
   },
   {
     alias: "gpt",
@@ -62,6 +76,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "GPT",
     provider: "openai",
     sortOrder: 60,
+    inputUsdPerMillion: 2.5,
+    outputUsdPerMillion: 15,
   },
   {
     alias: "claude",
@@ -69,6 +85,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Claude",
     provider: "anthropic",
     sortOrder: 70,
+    inputUsdPerMillion: 3,
+    outputUsdPerMillion: 15,
   },
   {
     alias: "kimi",
@@ -76,6 +94,8 @@ export const SEED_MODELS: readonly SeedModel[] = [
     displayName: "Kimi",
     provider: "moonshot",
     sortOrder: 80,
+    inputUsdPerMillion: 0.44,
+    outputUsdPerMillion: 2,
   },
 ];
 

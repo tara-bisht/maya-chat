@@ -6,6 +6,7 @@ import {
   HISTORY_WINDOW,
   chronologicalWindow,
   isUuid,
+  parseCreditBalance,
   parseMayaPlan,
 } from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
@@ -68,6 +69,7 @@ export async function loadHouse(
     conversationResult,
     agentsResult,
     profileResult,
+    creditResult,
   ] = await Promise.all([
     supabase
       .from("agents")
@@ -81,7 +83,7 @@ export async function loadHouse(
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, title, updated_at, messages(count)")
+      .select("id, agent_id, title, updated_at, model_id, messages(count)")
       .eq("user_id", input.userId)
       .order("updated_at", { ascending: false }),
     supabase
@@ -92,9 +94,10 @@ export async function loadHouse(
       ),
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, preferred_model_id")
       .eq("id", input.userId)
       .maybeSingle(),
+    supabase.rpc("credit_balance"),
   ]);
 
   if (agentResult.error || conversationResult.error || agentsResult.error) {
@@ -114,7 +117,7 @@ export async function loadHouse(
   const planId = parseMayaPlan(entitlementResult.data?.plan);
   const planResult = await supabase
     .from("plans")
-    .select("default_model_id, daily_message_limit")
+    .select("default_model_id")
     .eq("id", planId)
     .maybeSingle();
 
@@ -175,14 +178,30 @@ export async function loadHouse(
     };
   }
 
+  const defaultModelId = planResult.data?.default_model_id ?? "qwen-flash";
+  const conversationModelId = input.conversationId
+    ? ((conversationResult.data ?? []).find(
+        (item) => item.id === input.conversationId,
+      )?.model_id ?? null)
+    : null;
+  const selectedModelId =
+    conversationModelId ??
+    profileResult.data?.preferred_model_id ??
+    defaultModelId;
+  const credits = parseCreditBalance(creditResult.data);
+  if (creditResult.error) {
+    logDropped("house", { credits: creditResult.error });
+  }
+
   return {
     ok: true,
     house: {
       agent,
       plan: planId,
       displayName: profileResult.data?.display_name?.trim() ?? "",
-      defaultModelId: planResult.data?.default_model_id ?? "qwen-flash",
-      dailyLimit: planResult.data?.daily_message_limit ?? null,
+      defaultModelId,
+      selectedModelId,
+      credits,
       threads,
       cast: buildCast({
         agents: agentRows,

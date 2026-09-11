@@ -1,0 +1,22 @@
+-- Manual SQL checks for AI credits (reserve / settle / allowlist).
+-- Requires a JWT so auth.uid() is set. Do not run as postgres without
+-- `select set_config('request.jwt.claim.sub', '<user-uuid>', true);`
+-- and `set role authenticated;`.
+--
+-- Expected:
+-- 1. credit_balance() for a Free user with no rows: dailyLimit 1500,
+--    dailyRemaining 1500, ok true.
+-- 2. reserve_chat_turn('qwen-flash', 16) returns ok, reserved 16, inserts
+--    usage_events status=reserved, bumps credit_days.
+-- 3. reserve_chat_turn('claude', 16) as Free returns forbidden_model and
+--    allowed includes qwen-flash, not claude.
+-- 4. After reserving until dailyRemaining < min_turn_credits, the next
+--    reserve returns quota and does not insert.
+-- 5. settle_chat_turn(event_id, 10) moves reserved → settled (net used
+--    drops by 6 if reserved was 16). Second settle is idempotent.
+-- 6. Concurrent reserves at the remaining boundary: advisory lock, only
+--    the remaining allowance returns ok.
+-- 7. anon / no JWT: credit_balance and reserve return unauthorized / ok false.
+-- 8. authenticated SELECT usage_events.openrouter_cost_usd is denied.
+-- 9. authenticated INSERT usage_events is denied.
+-- 10. consume_chat_turn() no longer exists.

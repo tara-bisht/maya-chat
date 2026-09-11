@@ -122,15 +122,35 @@ Each PR should be independently reviewable. Do not merge a slice that lacks Zod 
 
 **Cut:** Studio preview pane; language presets beyond `en` + Hinglish.
 
-### PR4 — Memory, catalog routing, Stripe (Phase 4)
+### PR4a — AI credits + model routing (Phase 4)
 
-**Title:** pgvector retrieve, plan-gated models, Plus/Pro Checkout
+**Title:** Credit engine, `plan_models` gate, `modelId` on chat
 
-**Touches:** embeddings + `match_agent_memories`, `GET /api/models`, quota before `streamText`, Stripe webhook + `stripe_events`, pricing page
+**Touches:** `supabase/migrations/*_ai_credits.sql`, `consume_chat_turn` → `reserve_chat_turn` / `settle_chat_turn` / `credit_balance`, `GET /api/models`, `GET /api/credits`, `POST /api/chat`, `@maya/shared` credits, House remaining count
 
-**Does:** 403 on locked agent / locked model (body includes allowlist). 429 on daily cap. 402 on Studio over cap. Webhook maps `price_id` → `plans.id`. Pricing copy reads catalog.
+**Does:** Optional `modelId` (catalog alias only). 403 `forbidden_model` + allowlist. Reserve-then-settle from OpenRouter `usage.cost` (fallback: catalog rates × tokens). Daily credits Free 1,500 / Plus 4,000 / Pro 9,000. Meter remaining in shell + House header. No picker menu yet.
 
-**Exit:** Free blocked on Alex, on message 51, and on Claude. Plus unlocks Alex + DeepSeek. Pro unlocks Claude. `INSERT INTO plan_models` changes the picker with no deploy.
+**Does not:** Locked-row picker, landing seats rewrite, Stripe, memory retrieve.
+
+**Exit:** Free + `modelId=claude` → 403. Omit `modelId` → plan default. Concurrent reserves cannot exceed the daily cap. `usage_events.model_id` is queryable.
+
+### PR4b — Picker, meter polish, seats copy
+
+**Title:** Voice picker, locked models, catalog-true seats
+
+**Depends on:** PR4a
+
+**Does:** House model picker with locked Plus/Pro rows, CreditMeter, Profile credits block, landing `SEATS` from catalog (MAYA-108).
+
+**Exit:** Plus switches DeepSeek in the header. Free sees Claude locked. Landing no longer says “50 messages.”
+
+### PR4c — Memory + Stripe (rest of Phase 4)
+
+**Title:** pgvector retrieve, Plus/Pro Checkout
+
+**Touches:** embeddings + `match_agent_memories`, Stripe webhook + `stripe_events`, pricing checkout
+
+**Does:** 402 on Studio over cap. Webhook maps `price_id` → `plans.id`. Picker CTAs can stay `/#seats` until portal exists.
 
 **Cut:** Yearly prices; Stripe-hosted portal is enough.
 
@@ -159,7 +179,7 @@ The product is not a gallery. It is:
 1. Sign in
 2. Pick a character
 3. Stream a reply that stays in character
-4. Hit a paywall (agent, quota, or model) that is catalog-true
+4. Hit a paywall (agent, credits, or model) that is catalog-true
 5. Pay, and the catalog changes what the picker shows
 
 If the calendar slips, cut Studio preview, yearly billing, KaTeX polish, and conversation auto-title — not the compiler, not RLS, not the 403-on-Claude path.
@@ -170,7 +190,7 @@ If the calendar slips, cut Studio preview, yearly billing, KaTeX polish, and con
 
 1. **Copy-pasting `architecture.md` §4** — superseded. Use this file + `roadmap.md`.
 2. **`select *` on agents** — leaks curated `system_prompt`. Explicit column lists / a view.
-3. **Concurrent quota** — count + insert `usage_events` in one transaction (or advisory lock) **before** `streamText`. A naive `count(*)` then insert races.
+3. **Concurrent quota** — reserve credits + insert `usage_events` in one transaction (advisory lock) **before** `streamText`. A naive `count(*)` then insert races.
 4. **Free + `memory_saver` in the prompt** — Marcus’s base prompt mentions the tool. Compiler must drop that policy when the plan’s `tools_allowed` is empty.
 5. **Silent model upgrade** — missing or illegal `modelId` → plan default or 403, never Claude.
 6. **Zinc shadcn** — remap tokens in PR0 or the house look never lands.

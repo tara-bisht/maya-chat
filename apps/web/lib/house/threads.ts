@@ -18,6 +18,7 @@ export type ConversationQueryRow = {
   agent_id: string;
   title: string;
   updated_at: string;
+  model_id?: string | null;
   messages?: unknown;
 };
 

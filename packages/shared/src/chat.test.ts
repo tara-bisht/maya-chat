@@ -56,6 +56,38 @@ describe("parseChatRequest", () => {
         agentId: AGENT_ID,
       }),
     });
+    if (parsed.ok) {
+      expect(parsed.data.modelId).toBeUndefined();
+    }
+  });
+
+  it("accepts a catalog model alias and drops gateway slugs", () => {
+    const parsed = parseChatRequest({
+      conversationId: CONVERSATION_ID,
+      agentId: AGENT_ID,
+      modelId: "grok-fast",
+      message: {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "Hi" }],
+      },
+    });
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.data.modelId).toBe("grok-fast");
+    }
+    expect(
+      parseChatRequest({
+        conversationId: CONVERSATION_ID,
+        agentId: AGENT_ID,
+        modelId: "openai/gpt-5.4",
+        message: {
+          id: "msg-1",
+          role: "user",
+          parts: [{ type: "text", text: "Hi" }],
+        },
+      }).ok,
+    ).toBe(false);
   });
 
   it("rejects missing ids and empty text", () => {

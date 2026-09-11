@@ -53,7 +53,7 @@ Three plans. Seed prices and limits below are **defaults in `public.plans`**. Ch
 | | **Free** | **Plus** | **Pro** |
 | :--- | :--- | :--- | :--- |
 | Price (seed) | $0 | **$9 / mo** or **$90 / yr** | **$19 / mo** or **$190 / yr** |
-| Daily messages | 50 | 200 | Unlimited (`null`) |
+| Daily credits | 1,500 | 4,000 | 9,000 |
 | Curated agents | 2 (Marcus + Dr. Priya) | All 8 | All 8 |
 | Custom agents | 0 | 5 | Unlimited (`null`) |
 | Vector memory | No | Yes | Yes |
@@ -104,7 +104,7 @@ Chat path:
 3. Missing `modelId` → `plans.default_model_id`.
 4. `modelId` not allowed → **403** (never silently upgrade to Claude).
 5. `streamText({ model: openrouter(models.gateway_id) })`.
-6. `GET /api/models` returns only that plan’s list for the picker.
+6. `GET /api/models` returns every enabled model with `allowed` + `minPlan` (locked rows are the upsell).
 
 ---
 

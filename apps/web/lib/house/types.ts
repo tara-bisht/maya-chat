@@ -1,5 +1,6 @@
 import type {
   CostumeId,
+  CreditBalance,
   LanguagePresetId,
   MayaPlan,
   ToneSettings,
@@ -57,7 +58,8 @@ export type HouseView = {
   plan: MayaPlan;
   displayName: string;
   defaultModelId: string;
-  dailyLimit: number | null;
+  selectedModelId: string;
+  credits: CreditBalance | null;
   threads: ThreadSummary[];
   cast: CastMember[];
   conversation: HouseConversation | null;

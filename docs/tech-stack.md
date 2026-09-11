@@ -74,7 +74,8 @@ Routes that matter:
 - `(app)/studio` — custom agent + tone sliders
 - `(app)/settings` — profile, billing portal
 - `api/chat` — streaming gateway (Node); `modelId` checked against `plan_models`
-- `api/models` — plan-filtered catalog for the picker
+- `api/models` — catalog for the picker (`allowed` + `minPlan` + credits)
+- `api/credits` — daily/monthly remaining for the meter
 - `api/webhooks/stripe` — entitlements (`free` / `plus` / `pro`)
 
 ### 2.2 Mobile — `apps/mobile` (Phase 6)
@@ -125,7 +126,7 @@ Canonical tables (see [`architecture.md`](architecture.md) §3): `profiles`, `ag
 
 - `models`, `plans`, `plan_models` — configurable catalog (see [`technical-plan.md`](technical-plan.md) §6)
 - `entitlements` — Stripe (later RevenueCat) writes `plan` ∈ `free|plus|pro`; optional `profiles.plan` cache
-- `usage_events` — daily message cap from `plans.daily_message_limit`
+- `usage_events` — daily AI credit cap from `plans.daily_credit_limit`
 - `match_agent_memories(...)` RPC with HNSW
 - indexes on `(user_id, agent_id)` and `(conversation_id, created_at)`
 
@@ -278,7 +279,7 @@ Mobile additionally uses the same `NEXT_PUBLIC_SUPABASE_*` (or Expo `EXPO_PUBLIC
 | Cost | How we keep it boring |
 | :--- | :--- |
 | Vercel + Supabase | Stay on starter/pro until traffic forces a move |
-| LLM | Plan allowlist + `plans.daily_message_limit` **before** `streamText`. Free stays on cheap models. |
+| LLM | Plan allowlist + `plans.daily_credit_limit` **before** `streamText`. Free stays on cheap models. |
 | Embeddings | Pin smaller `dimensions` if quality holds; embed on memory *write*, not every token |
 | Search | Cap snippets; only if `web_search` ∈ `plans.tools_allowed` |
 | Vectors | HNSW, top-k ≤ 8, filter `user_id` + `agent_id` in the RPC (not after fetch) |

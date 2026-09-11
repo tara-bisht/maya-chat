@@ -30,13 +30,19 @@ export async function insertUserMessage(
 
 export async function insertAssistantMessage(
   supabase: SupabaseClient<Database>,
-  input: { conversationId: string; content: string; tokensUsed: number },
+  input: {
+    conversationId: string;
+    content: string;
+    tokensUsed: number;
+    modelId?: string | null;
+  },
 ): Promise<{ ok: true } | PersistFail> {
   const { error } = await supabase.from("messages").insert({
     conversation_id: input.conversationId,
     role: "assistant",
     content: input.content,
     tokens_used: input.tokensUsed,
+    model_id: input.modelId ?? null,
   });
 
   if (error) {
@@ -66,23 +72,25 @@ export async function retitleConversation(
   }
 }
 
-export async function countTurnsToday(
+export async function rememberVoice(
   supabase: SupabaseClient<Database>,
-  userId: string,
-): Promise<{ ok: true; count: number } | PersistFail> {
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
+  input: { userId: string; conversationId: string; modelId: string },
+): Promise<void> {
+  const [conversation, profile] = await Promise.all([
+    supabase
+      .from("conversations")
+      .update({ model_id: input.modelId })
+      .eq("id", input.conversationId),
+    supabase
+      .from("profiles")
+      .update({ preferred_model_id: input.modelId })
+      .eq("id", input.userId),
+  ]);
 
-  const { count, error } = await supabase
-    .from("usage_events")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .eq("event_type", "chat_turn")
-    .gte("created_at", start.toISOString());
-
-  if (error) {
-    return { ok: false, error };
+  if (conversation.error) {
+    logDropped("rememberVoice", { conversation: conversation.error });
   }
-
-  return { ok: true, count: count ?? 0 };
+  if (profile.error) {
+    logDropped("rememberVoice", { profile: profile.error });
+  }
 }

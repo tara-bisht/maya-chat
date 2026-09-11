@@ -1,10 +1,15 @@
-import { OPEN_NIGHT_TITLE, type MayaPlan } from "@maya/shared";
+import {
+  OPEN_NIGHT_TITLE,
+  type CreditBalance,
+  type MayaPlan,
+} from "@maya/shared";
 import type { PosterCostumeId } from "@/lib/company";
 import { houseHref } from "@/lib/house/href";
 
 export type GalleryViewer = {
   displayName: string;
   plan: MayaPlan;
+  credits: CreditBalance | null;
 };
 
 export const RECENT_CHAT_LIMIT = 8;

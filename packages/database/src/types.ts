@@ -110,11 +110,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      catalog_settings: {
+        Row: {
+          credit_scale: number;
+          id: number;
+        };
+        Insert: {
+          credit_scale?: number;
+          id?: number;
+        };
+        Update: {
+          credit_scale?: number;
+          id?: number;
+        };
+        Relationships: [];
+      };
       conversations: {
         Row: {
           agent_id: string;
           created_at: string;
           id: string;
+          model_id: string | null;
           title: string;
           updated_at: string;
           user_id: string;
@@ -123,6 +139,7 @@ export type Database = {
           agent_id: string;
           created_at?: string;
           id?: string;
+          model_id?: string | null;
           title?: string;
           updated_at?: string;
           user_id: string;
@@ -131,6 +148,7 @@ export type Database = {
           agent_id?: string;
           created_at?: string;
           id?: string;
+          model_id?: string | null;
           title?: string;
           updated_at?: string;
           user_id?: string;
@@ -143,7 +161,59 @@ export type Database = {
             referencedRelation: "agents";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "conversations_model_id_fkey";
+            columns: ["model_id"];
+            isOneToOne: false;
+            referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
         ];
+      };
+      credit_days: {
+        Row: {
+          day_utc: string;
+          reserved_credits: number;
+          settled_credits: number;
+          turn_count: number;
+          user_id: string;
+        };
+        Insert: {
+          day_utc: string;
+          reserved_credits?: number;
+          settled_credits?: number;
+          turn_count?: number;
+          user_id: string;
+        };
+        Update: {
+          day_utc?: string;
+          reserved_credits?: number;
+          settled_credits?: number;
+          turn_count?: number;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      credit_months: {
+        Row: {
+          month_utc: string;
+          reserved_credits: number;
+          settled_credits: number;
+          user_id: string;
+        };
+        Insert: {
+          month_utc: string;
+          reserved_credits?: number;
+          settled_credits?: number;
+          user_id: string;
+        };
+        Update: {
+          month_utc?: string;
+          reserved_credits?: number;
+          settled_credits?: number;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       entitlements: {
         Row: {
@@ -192,6 +262,7 @@ export type Database = {
           conversation_id: string;
           created_at: string;
           id: string;
+          model_id: string | null;
           role: string;
           tokens_used: number;
           tool_calls: Json | null;
@@ -201,6 +272,7 @@ export type Database = {
           conversation_id: string;
           created_at?: string;
           id?: string;
+          model_id?: string | null;
           role: string;
           tokens_used?: number;
           tool_calls?: Json | null;
@@ -210,6 +282,7 @@ export type Database = {
           conversation_id?: string;
           created_at?: string;
           id?: string;
+          model_id?: string | null;
           role?: string;
           tokens_used?: number;
           tool_calls?: Json | null;
@@ -222,6 +295,13 @@ export type Database = {
             referencedRelation: "conversations";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "messages_model_id_fkey";
+            columns: ["model_id"];
+            isOneToOne: false;
+            referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
         ];
       };
       models: {
@@ -229,7 +309,11 @@ export type Database = {
           display_name: string;
           gateway_id: string;
           id: string;
+          input_usd_per_million: number;
           is_enabled: boolean;
+          max_output_tokens: number;
+          min_turn_credits: number;
+          output_usd_per_million: number;
           provider: string;
           sort_order: number;
           supports_tools: boolean;
@@ -238,7 +322,11 @@ export type Database = {
           display_name: string;
           gateway_id: string;
           id: string;
+          input_usd_per_million: number;
           is_enabled?: boolean;
+          max_output_tokens?: number;
+          min_turn_credits?: number;
+          output_usd_per_million: number;
           provider: string;
           sort_order?: number;
           supports_tools?: boolean;
@@ -247,7 +335,11 @@ export type Database = {
           display_name?: string;
           gateway_id?: string;
           id?: string;
+          input_usd_per_million?: number;
           is_enabled?: boolean;
+          max_output_tokens?: number;
+          min_turn_credits?: number;
+          output_usd_per_million?: number;
           provider?: string;
           sort_order?: number;
           supports_tools?: boolean;
@@ -287,12 +379,14 @@ export type Database = {
       plans: {
         Row: {
           curated_agent_limit: number | null;
-          daily_message_limit: number | null;
+          daily_credit_limit: number;
           default_model_id: string;
           display_name: string;
           id: string;
           is_active: boolean;
           max_custom_agents: number | null;
+          max_turns_per_day: number;
+          monthly_credit_limit: number;
           monthly_price_cents: number;
           stripe_price_id_monthly: string | null;
           stripe_price_id_yearly: string | null;
@@ -302,12 +396,14 @@ export type Database = {
         };
         Insert: {
           curated_agent_limit?: number | null;
-          daily_message_limit?: number | null;
+          daily_credit_limit: number;
           default_model_id: string;
           display_name: string;
           id: string;
           is_active?: boolean;
           max_custom_agents?: number | null;
+          max_turns_per_day?: number;
+          monthly_credit_limit: number;
           monthly_price_cents?: number;
           stripe_price_id_monthly?: string | null;
           stripe_price_id_yearly?: string | null;
@@ -317,12 +413,14 @@ export type Database = {
         };
         Update: {
           curated_agent_limit?: number | null;
-          daily_message_limit?: number | null;
+          daily_credit_limit?: number;
           default_model_id?: string;
           display_name?: string;
-          id: string;
+          id?: string;
           is_active?: boolean;
           max_custom_agents?: number | null;
+          max_turns_per_day?: number;
+          monthly_credit_limit?: number;
           monthly_price_cents?: number;
           stripe_price_id_monthly?: string | null;
           stripe_price_id_yearly?: string | null;
@@ -348,6 +446,7 @@ export type Database = {
           id: string;
           plan: string | null;
           preferred_language: string;
+          preferred_model_id: string | null;
           updated_at: string;
         };
         Insert: {
@@ -357,6 +456,7 @@ export type Database = {
           id: string;
           plan?: string | null;
           preferred_language?: string;
+          preferred_model_id?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -366,30 +466,81 @@ export type Database = {
           id?: string;
           plan?: string | null;
           preferred_language?: string;
+          preferred_model_id?: string | null;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "profiles_preferred_model_id_fkey";
+            columns: ["preferred_model_id"];
+            isOneToOne: false;
+            referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       usage_events: {
         Row: {
+          completion_tokens: number;
+          conversation_id: string | null;
           created_at: string;
           event_type: string;
           id: string;
+          model_id: string;
+          openrouter_cost_usd: number | null;
+          openrouter_generation_id: string | null;
+          prompt_tokens: number;
+          reserved_credits: number;
+          settled_credits: number;
+          status: string;
           user_id: string;
         };
         Insert: {
+          completion_tokens?: number;
+          conversation_id?: string | null;
           created_at?: string;
           event_type: string;
           id?: string;
+          model_id: string;
+          openrouter_cost_usd?: number | null;
+          openrouter_generation_id?: string | null;
+          prompt_tokens?: number;
+          reserved_credits?: number;
+          settled_credits?: number;
+          status?: string;
           user_id: string;
         };
         Update: {
+          completion_tokens?: number;
+          conversation_id?: string | null;
           created_at?: string;
           event_type?: string;
           id?: string;
+          model_id?: string;
+          openrouter_cost_usd?: number | null;
+          openrouter_generation_id?: string | null;
+          prompt_tokens?: number;
+          reserved_credits?: number;
+          settled_credits?: number;
+          status?: string;
           user_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "usage_events_conversation_id_fkey";
+            columns: ["conversation_id"];
+            isOneToOne: false;
+            referencedRelation: "conversations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "usage_events_model_id_fkey";
+            columns: ["model_id"];
+            isOneToOne: false;
+            referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {
@@ -400,9 +551,28 @@ export type Database = {
         Args: { p_agent_id: string };
         Returns: string;
       };
-      consume_chat_turn: {
+      credit_balance: {
         Args: Record<PropertyKey, never>;
-        Returns: boolean;
+        Returns: Json;
+      };
+      reserve_chat_turn: {
+        Args: {
+          p_conversation_id?: string | null;
+          p_model_id: string;
+          p_reserve_credits: number;
+        };
+        Returns: Json;
+      };
+      settle_chat_turn: {
+        Args: {
+          p_completion_tokens?: number;
+          p_cost?: number | null;
+          p_event_id: string;
+          p_generation_id?: string | null;
+          p_prompt_tokens?: number;
+          p_settled_credits: number;
+        };
+        Returns: Json;
       };
       match_agent_memories: {
         Args: { p_agent_id: string; p_match_count?: number; p_query: string };

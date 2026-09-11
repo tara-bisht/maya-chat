@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { modelIdSchema } from "./credits";
 import {
   LANGUAGE_PRESETS,
   parseLanguagePreset,
@@ -42,6 +43,10 @@ const userMessageSchema = z.object({
 export const chatRequestSchema = z.object({
   conversationId: uuidSchema,
   agentId: uuidSchema,
+  modelId: z.preprocess(
+    (value) => (value === null || value === "" ? undefined : value),
+    modelIdSchema.optional(),
+  ),
   message: userMessageSchema,
 });
 

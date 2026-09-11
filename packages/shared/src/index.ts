@@ -84,3 +84,28 @@ export {
   type ConversationCreate,
   type ParseChatRequestResult,
 } from "./chat";
+
+export {
+  CREDIT_SCALE_DEFAULT,
+  MODEL_ID_MAX,
+  TYPICAL_COMPLETION_TOKENS,
+  TYPICAL_PROMPT_TOKENS,
+  creditBalanceSchema,
+  creditsFromRates,
+  creditsFromUsd,
+  estimateCharsAsTokens,
+  estimateReserveCredits,
+  estimatedCreditsPerTurn,
+  minPlanFor,
+  modelIdSchema,
+  parseCreditBalance,
+  parseModelId,
+  parseReserveChatTurn,
+  parseSettleChatTurn,
+  resolveModelId,
+  usdFromTokens,
+  type CreditBalance,
+  type ReserveChatTurnResult,
+  type ResolveModelIdInput,
+  type ResolveModelIdResult,
+} from "./credits";

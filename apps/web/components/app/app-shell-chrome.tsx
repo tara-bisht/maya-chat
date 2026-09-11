@@ -9,6 +9,7 @@ import {
   APP_NAV,
   COPY,
   MOBILE_NAV,
+  creditsLeftLabel,
   greetingName,
   navIsActive,
 } from "@/lib/ui-copy";
@@ -116,6 +117,38 @@ export function AppShellChrome({
     <div className="flex h-dvh overflow-hidden bg-night text-cream">
       <aside className="hidden h-full min-h-0 w-[268px] shrink-0 flex-col border-r border-rule lg:flex">
         <SidebarBody recents={recents} custom={custom} pathname={pathname} />
+        {viewer.credits ? (
+          <div className="shrink-0 border-t border-rule px-4 py-3">
+            <p className="font-mono text-xs text-ink-soft">
+              {creditsLeftLabel(viewer.credits.dailyRemaining)} of{" "}
+              {viewer.credits.dailyLimit.toLocaleString("en-US")}
+            </p>
+            <div className="mt-2 h-[3px] bg-rule">
+              <div
+                className={`h-full ${
+                  viewer.credits.dailyLimit > 0 &&
+                  viewer.credits.dailyRemaining / viewer.credits.dailyLimit <=
+                    0.15
+                    ? "bg-acid"
+                    : "bg-cream"
+                }`}
+                style={{
+                  width: `${
+                    viewer.credits.dailyLimit > 0
+                      ? Math.min(
+                          100,
+                          Math.round(
+                            (100 * viewer.credits.dailyRemaining) /
+                              viewer.credits.dailyLimit,
+                          ),
+                        )
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+        ) : null}
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -130,6 +163,14 @@ export function AppShellChrome({
             {greetingName(viewer.displayName)}
           </p>
           <div className="ml-auto flex items-center gap-3">
+            {viewer.credits ? (
+              <p
+                className="hidden font-mono text-xs text-ink-soft sm:block"
+                title={`${viewer.credits.dailyRemaining.toLocaleString("en-US")} of ${viewer.credits.dailyLimit.toLocaleString("en-US")} credits · resets 00:00 UTC`}
+              >
+                {creditsLeftLabel(viewer.credits.dailyRemaining)}
+              </p>
+            ) : null}
             {hideCreateCta ? null : (
               <Link
                 href="/studio/new"
