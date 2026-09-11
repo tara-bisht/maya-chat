@@ -118,7 +118,7 @@ Roles below are Team Freedom pod labels. One founder + agents may wear all of th
 - [ ] Embed user turn with `"query: "` prefix; `match_agent_memories`; inject top-k into compiler
 - [ ] Null embeddings skipped; HNSW in place
 - [ ] Entitlement helpers: read `plans` + `plan_models`; agent access; Studio POST vs `max_custom_agents`
-- [ ] Daily cap from `plans.daily_message_limit` **before** `streamText`; 429 body includes reset
+- [ ] Daily AI-credit cap from `plans.daily_credit_limit` via `reserve_chat_turn` **before** `streamText`; 429 body includes reset
 - [ ] `GET /api/models` + chat `modelId` check (403 if not on plan); picker in chat header
 - [ ] Stripe Checkout for **Plus and Pro** + Portal + webhook → `entitlements.plan`
 - [ ] Pricing page (three columns; model names from catalog)

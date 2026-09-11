@@ -80,6 +80,9 @@ export async function loadModelsPayload(
     });
     return null;
   }
+  if (settingsResult.error) {
+    logDropped("loadModelsPayload", { settings: settingsResult.error });
+  }
 
   const defaultModelId = planResult.data?.default_model_id ?? "qwen-flash";
   const scale = settingsResult.data?.credit_scale ?? CREDIT_SCALE_DEFAULT;

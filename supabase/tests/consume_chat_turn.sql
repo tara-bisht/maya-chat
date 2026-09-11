@@ -1,3 +1,7 @@
+-- Historical. consume_chat_turn() was dropped in
+-- 20260911090000_ai_credits.sql. Do not re-add a message cap.
+-- Live checklist: supabase/tests/ai_credits.sql.
+--
 -- Superseded by supabase/tests/ai_credits.sql (reserve_chat_turn).
 -- Manual SQL checks for the retired consume_chat_turn() quota.
 -- Requires a JWT so auth.uid() is set. Do not run as postgres without

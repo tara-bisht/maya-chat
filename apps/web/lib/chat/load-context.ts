@@ -157,7 +157,8 @@ export async function loadPlanModel(
       .select(
         "id, gateway_id, display_name, provider, is_enabled, input_usd_per_million, output_usd_per_million, min_turn_credits, max_output_tokens",
       )
-      .eq("is_enabled", true),
+      .eq("is_enabled", true)
+      .order("sort_order", { ascending: true }),
     supabase.from("catalog_settings").select("credit_scale").eq("id", 1).maybeSingle(),
   ]);
 
@@ -171,6 +172,9 @@ export async function loadPlanModel(
       models: modelsResult.error,
     });
     return { ok: false, reason: "dropped" };
+  }
+  if (settingsResult.error) {
+    logDropped("loadPlanModel", { settings: settingsResult.error });
   }
 
   const allowedIdsOnPlan = new Set(

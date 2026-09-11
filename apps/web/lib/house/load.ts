@@ -8,6 +8,7 @@ import {
   isUuid,
   parseCreditBalance,
   parseMayaPlan,
+  resolveModelId,
 } from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
@@ -115,14 +116,21 @@ export async function loadHouse(
   }
 
   const planId = parseMayaPlan(entitlementResult.data?.plan);
-  const planResult = await supabase
-    .from("plans")
-    .select("default_model_id")
-    .eq("id", planId)
-    .maybeSingle();
+  const [planResult, allowResult] = await Promise.all([
+    supabase
+      .from("plans")
+      .select("default_model_id")
+      .eq("id", planId)
+      .maybeSingle(),
+    supabase.from("plan_models").select("model_id").eq("plan_id", planId),
+  ]);
 
   if (planResult.error) {
     logDropped("house", { plan: planResult.error });
+    return { ok: false, reason: "dropped" };
+  }
+  if (allowResult.error) {
+    logDropped("house", { planModels: allowResult.error });
     return { ok: false, reason: "dropped" };
   }
 
@@ -184,10 +192,18 @@ export async function loadHouse(
         (item) => item.id === input.conversationId,
       )?.model_id ?? null)
     : null;
-  const selectedModelId =
-    conversationModelId ??
-    profileResult.data?.preferred_model_id ??
-    defaultModelId;
+  const allowed = new Set(
+    (allowResult.data ?? []).map((row) => row.model_id),
+  );
+  const resolvedVoice = resolveModelId({
+    conversationModelId,
+    preferredModelId: profileResult.data?.preferred_model_id,
+    defaultModelId,
+    allowed,
+  });
+  const selectedModelId = resolvedVoice.ok
+    ? resolvedVoice.modelId
+    : defaultModelId;
   const credits = parseCreditBalance(creditResult.data);
   if (creditResult.error) {
     logDropped("house", { credits: creditResult.error });

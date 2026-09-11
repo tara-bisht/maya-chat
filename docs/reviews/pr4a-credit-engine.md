@@ -4,6 +4,7 @@
 **Plan id:** PR4a ([`docs/implementation-plan.md`](../implementation-plan.md))
 **Tickets:** [MAYA-107](../../issues/MAYA-107-model-selection-inoperative.md) (picker/routing), [MAYA-116](../../issues/MAYA-116-no-model-attribution-plan-models-unenforced.md) (DB gate + cost audit)
 **ADR:** [`docs/adr/0003-ai-credits-from-gateway-cost.md`](../adr/0003-ai-credits-from-gateway-cost.md)
+**Review follow-up:** muse [`pr_comment_muse.md`](./pr_comment_muse.md) · Gemini [`pr_comment_gemini.md`](./pr_comment_gemini.md) — dispositions in §14.
 
 Read this before the diff. The interesting code is the migration + chat route, not the chrome copy.
 
@@ -92,9 +93,10 @@ POST /api/chat { conversationId, agentId, modelId?, message }
        insert usage_events status=reserved
        bump credit_days / credit_months.reserved
   9. rememberVoice (conversation.model_id + profiles.preferred_model_id).
- 10. streamText(gateway_id, maxOutputTokens from catalog).
+ 10. streamText(gateway_id, maxOutputTokens from catalog,
+       abortSignal: request.signal).
  11. onEnd: settle from usage.cost → credits; insert assistant + model_id.
-     onError / abort: settle reserved (Trap 8). No refund_chat_turn.
+     onAbort / onError: await settle reserved (Trap 8). No refund_chat_turn.
 ```
 
 **Forbidden model is checked before insert** (client bug / attack; no reason to persist). **Quota is reserved after insert** (same 114 shape as today: a 429 can leave a user row with no assistant).
@@ -112,9 +114,10 @@ credit_scale default 10_000  (catalog_settings.credit_scale)
 
 Settle fallbacks in `apps/web/lib/credits/usage.ts`:
 
-1. `usage.raw.cost` or `providerMetadata.openrouter.cost` (OpenRouter usage accounting, USD).
-2. Else catalog `input_usd_per_million` / `output_usd_per_million` × actual tokens.
-3. Else settle the **reserved** amount (never undercharge a gateway hit).
+1. `usage.raw.cost` or `providerMetadata.openrouter.usage.cost` (OpenRouter AI SDK nests cost under `usage`; also accepts a top-level `.cost`).
+2. Explicit gateway `$0` → `min_turn_credits` (do not fall through to catalog rates).
+3. Else catalog `input_usd_per_million` / `output_usd_per_million` × actual tokens.
+4. Else settle the **reserved** amount (never undercharge a gateway hit).
 
 Reserve estimate uses **max output tokens** (seed 2048), not a typical 800-token completion, so we do not start a turn we cannot afford in the worst case. The RPC then `least(estimate, daily_remaining, monthly_remaining)` so a user with 100 credits left can still send a short Flash reply instead of 429ing on a 500-credit Claude-sized estimate.
 
@@ -184,7 +187,7 @@ No `gateway_id` on the wire. `GET /api/models` already returns **locked** models
 
 ## 8. UI in this PR
 
-House header: `Voice through {selectedModelId} · {n} left`. Client now sends `modelId: house.selectedModelId` on each turn (whatever was last remembered / plan default). There is **no dropdown yet**.
+House header: `Voice through {selectedModelId} · {n} left`. `loadHouse` walks conversation → preferred → plan default **among `plan_models`**, so a Pro `claude` thread does not 403 after a Free downgrade. Client sends `modelId: house.selectedModelId` on each turn. There is **no dropdown yet**.
 
 Lobby: remaining in the AppShell header and a 3px bar at the bottom of the 268px rail. Acid at ≤15%.
 
@@ -218,13 +221,14 @@ Landing pricing still claims message caps. That is a known 4b/MAYA-108 leftover,
 - `openrouter_cost_usd` is not granted to `authenticated`.
 - `credit_days` / `credit_months` are not on the Data API for users.
 - `catalog_settings` is readable (scale is not a secret). Writes are service_role.
+- `public.models` keeps table-level `SELECT` for `authenticated`. User-JWT loaders (`loadPlanModel`, `loadModelsPayload`) need `gateway_id` and list rates. That is **not Trap 5**: a JWT that can read `anthropic/claude-sonnet-4.5` still cannot route a Free user there — `reserve_chat_turn` and `loadPlanModel` 403. List prices are public on OpenRouter. `GET /api/models` still omits `gateway_id`. Do not column-revoke `models` without moving those reads to service_role.
 
 ### Concurrency / reliability
 
 - Same `pg_advisory_xact_lock(hashtext(uid))` as Studio quota and the old consume RPC. Parallel sends at the cap cannot both pass.
 - Process crash after reserve and before settle: reserved credits stay held until UTC day roll (new `credit_days` row; old reserved does not count). Worst case: one max-output reservation leaked per crash. No sweeper in this PR. Acceptable for MVP; call it out, do not invent a cron here.
-- `settle` is idempotent. `onEnd` + `onError` share a `settled` flag in the route so we do not double-settle in-process.
-- `onError` settle is fire-and-forget (`void settleTurn`). If that promise loses a race with process teardown, same crash-leak as above.
+- `settle` is idempotent. `onEnd` + `onAbort` + `onError` share a `settled` flag in the route so we do not double-settle in-process.
+- `streamText` gets `abortSignal: request.signal`. Client cancel / navigate-away hits `onAbort` (AI SDK v7 does **not** fire `onEnd` on abort). `onAbort` / `onError` **await** `settleTurn` so serverless teardown is less likely to drop the RPC. Crash-before-callback still leaks reserved until UTC day roll.
 
 ### Performance
 
@@ -248,8 +252,9 @@ Start here, in order:
 | `supabase/migrations/20260911090000_ai_credits.sql` | Whole design. Grants, RLS, lock, allowlist, clamp, settle math. |
 | `apps/web/app/api/chat/route.ts` | Order of persist / reserve / stream / settle. Trap 5 and Trap 8. |
 | `packages/shared/src/credits.ts` | Formula, `resolveModelId`, RPC parsers, modelId regex. |
-| `apps/web/lib/credits/usage.ts` | Cost extraction fallbacks. |
-| `apps/web/lib/chat/load-context.ts` | `loadPlanModel` allowlist. |
+| `apps/web/lib/credits/usage.ts` | Cost extraction fallbacks (`openrouter.usage.cost`). |
+| `apps/web/lib/chat/load-context.ts` | `loadPlanModel` allowlist + `sort_order`. |
+| `apps/web/lib/house/load.ts` | Allowlisted `selectedModelId` (downgrade must not 403). |
 | `apps/web/app/api/models/route.ts` | No `gateway_id` on the wire. |
 | `packages/database/src/types.ts` | Hand-updated to match the migration (no `supabase gen` in CI). |
 
@@ -264,6 +269,7 @@ Chrome (`app-shell-chrome`, `house-view`, `ui-copy`) is presentation. Docs/CONTE
 - `@maya/shared` credits: formula, alias vs gateway slug, Trap 5 resolve, RPC parsers.
 - Chat parse: `modelId: "grok-fast"` ok; `openai/gpt-5.4` rejected.
 - Catalog seed rates pinned.
+- `apps/web/lib/credits/usage.test.ts`: `usage.raw.cost`, `openrouter.usage.cost`, explicit `$0` does not use catalog rates.
 
 **Not automated (SQL file is a checklist, same pattern as `consume_chat_turn.sql`):**
 
@@ -290,7 +296,7 @@ See `supabase/tests/ai_credits.sql`. After `supabase db reset` (or migrate) with
 
 ## 12. Known risks (do not rubber-stamp these away)
 
-1. **`usage.raw.cost` may be missing** from the Vercel AI SDK OpenRouter path. Fallback to catalog rates is correct; last-resort settle-reserved is correct. Worth one staging turn logged to confirm which branch runs. Optional later: `GET /api/v1/generation?id=` if stream usage is empty.
+1. **`usage.raw.cost` may be missing** from the Vercel AI SDK OpenRouter path. The metadata fallback now also reads `providerMetadata.openrouter.usage.cost` (the shape `@openrouter/ai-sdk-provider@3.0.0` actually emits). Catalog-rate fallback and last-resort settle-reserved remain. Worth one staging turn logged to confirm which branch runs. Optional later: `GET /api/v1/generation?id=` if stream usage is empty.
 2. **Reserved leak on crash** (see §9). No sweeper.
 3. **429 after user-message insert** — same as current main (MAYA-114). Empty-looking turns can appear if the client does not refetch; House already hides empty threads on the rail.
 4. **Grok Fast on Free is expensive** (~120 credits/turn). Default stays Qwen Flash. 4b should show estimates.
@@ -311,3 +317,29 @@ See `supabase/tests/ai_credits.sql`. After `supabase db reset` (or migrate) with
 - [ ] 4b/4c scope was not sneakily required for this merge.
 
 Approve PR4a if the metering and allowlist are sound. Do not hold it for the picker.
+
+---
+
+## 14. Review follow-up (muse + Gemini)
+
+Triage of [`pr_comment_muse.md`](./pr_comment_muse.md) and [`pr_comment_gemini.md`](./pr_comment_gemini.md). Core metering + `plan_models` gate were already sound. Follow-up landed on this branch; not every “Required” was a merge blocker.
+
+| ID | Claim | Disposition | What landed |
+| :--- | :--- | :--- | :--- |
+| M1 / G3 | Client abort never settles (Trap 8) | **Done** | `abortSignal: request.signal`, `onAbort` + `onError` **await** `settleTurn` at reserved. In-process `settled` flag kept. Do not add `abortSignal` without `onAbort`. |
+| M2 | Narrow `models` SELECT; hide `gateway_id` | **Rejected** (documented) | Observation is true (JWT can `select gateway_id from models`). Not Trap 5 — RPC still 403s Free→Claude. Suggested grant listed `default_model_id` (that column is on `plans`). User-JWT loaders read `gateway_id` / rates; a revoke without moving those reads to service_role **breaks chat**. `GET /api/models` still omits `gateway_id`. COGS stays column-hidden. Migration header records this. |
+| M3 / G1 | House `selectedModelId` not allowlisted | **Done** | `loadHouse` fetches `plan_models` and uses `resolveModelId` (no `requested`). Stale Pro `claude` after Free downgrade degrades to an allowed voice. `POST /api/chat` still 403s an explicit illegal `modelId`. |
+| G2 | Cost fallback looks at `openrouter.cost` | **Done** | Reads `usage.raw.cost`, `openrouter.cost`, and `openrouter.usage.cost` (the `@openrouter/ai-sdk-provider@3.0.0` shape). |
+| M4 / G4 | `loadPlanModel` missing `sort_order` | **Done** | `.order("sort_order")` so `[...allowed][0]` matches the RPC. |
+| M5 | Scale-read failure silent | **Done (log only)** | `logDropped` on `catalog_settings` error. Still mint at `CREDIT_SCALE_DEFAULT` (10_000). Fail-closed 500 over a seeded constant is worse. |
+| M6 | Sequential remember/retitle | **Done** | `Promise.all` — both are log-only on failure. |
+| M7 | Dead `isDailyCapReached` | **Done** | Removed export + tests. `consume_chat_turn.sql` marked historical. Roadmap Phase 4 bullet is credits. |
+| M8 | `costUsd === 0` overcharges via rates | **Done** | Explicit `$0` settles `min_turn_credits`, does not use catalog rates. |
+| M9 | Unparseable reserve leaks | **Done (log)** | `console.error` includes raw `quota.data`. No Sentry hook (PR5). |
+| G5 | Forward `openrouter_generation_id` | **Done** | `settle_chat_turn` gets `p_generation_id` from `event.response?.id`. Abort/error: null. |
+| G6 | `forbidden_model` PaywallTicket | **Deferred to PR4b** | After the House allowlist, this is attack/stale-client, not the downgrade path. Locked-row upsell is the picker slice. |
+
+**Still for reviewers / staging (not automated):**
+
+1. Apply `20260911090000_ai_credits.sql`, then cancel one in-flight turn and confirm `usage_events` flips `reserved → settled` at the reserved amount.
+2. Confirm which settle branch runs (`usage.raw.cost` vs `openrouter.usage.cost` vs catalog rates).

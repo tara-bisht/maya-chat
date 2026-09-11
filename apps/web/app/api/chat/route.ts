@@ -149,7 +149,10 @@ export async function POST(request: Request) {
   }
   const reserved = parseReserveChatTurn(quota.data);
   if (!reserved) {
-    console.error("[maya] reserve_chat_turn dropped: unparseable payload");
+    console.error(
+      "[maya] reserve_chat_turn dropped: unparseable payload",
+      quota.data,
+    );
     return chatError("dropped", 500);
   }
   if (!reserved.ok) {
@@ -172,17 +175,18 @@ export async function POST(request: Request) {
     });
   }
 
-  await rememberVoice(supabase, {
-    userId: user.id,
-    conversationId: conversationLoad.conversation.id,
-    modelId: planLoad.modelId,
-  });
-
-  await retitleConversation(supabase, {
-    conversationId: conversationLoad.conversation.id,
-    currentTitle: conversationLoad.conversation.title,
-    firstUserText: parsed.text,
-  });
+  await Promise.all([
+    rememberVoice(supabase, {
+      userId: user.id,
+      conversationId: conversationLoad.conversation.id,
+      modelId: planLoad.modelId,
+    }),
+    retitleConversation(supabase, {
+      conversationId: conversationLoad.conversation.id,
+      currentTitle: conversationLoad.conversation.title,
+      firstUserText: parsed.text,
+    }),
+  ]);
 
   const prior: UIMessage[] = conversationLoad.history.map((turn, index) => ({
     id: `hist-${index}`,
@@ -216,6 +220,7 @@ export async function POST(request: Request) {
     };
     providerMetadata?: unknown;
     aborted?: boolean;
+    generationId?: string | null;
   }) {
     if (settled) {
       return;
@@ -234,6 +239,7 @@ export async function POST(request: Request) {
       p_prompt_tokens: billed.promptTokens,
       p_completion_tokens: billed.completionTokens,
       p_cost: billed.costUsd,
+      p_generation_id: input.generationId ?? null,
     });
     if (settle.error) {
       logDropped("settle_chat_turn", { rpc: settle.error });
@@ -259,11 +265,17 @@ export async function POST(request: Request) {
     maxOutputTokens: voice.maxOutputTokens,
     system,
     messages: await convertToModelMessages(nextMessages),
-    onError: ({ error }) => {
+    abortSignal: request.signal,
+    onAbort: async () => {
+      await settleTurn({ text: "", aborted: true });
+    },
+    onError: async ({ error }) => {
       console.error("[streamText error]", error);
-      void settleTurn({ text: "", aborted: true });
+      await settleTurn({ text: "", aborted: true });
     },
     onEnd: async (event) => {
+      const generationId =
+        typeof event.response?.id === "string" ? event.response.id : null;
       await settleTurn({
         text: event.text,
         usage: {
@@ -273,6 +285,7 @@ export async function POST(request: Request) {
           raw: event.usage.raw as Record<string, unknown> | undefined,
         },
         providerMetadata: event.providerMetadata,
+        generationId,
       });
     },
   });

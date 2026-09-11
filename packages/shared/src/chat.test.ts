@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   OPEN_NIGHT_TITLE,
   chronologicalWindow,
-  isDailyCapReached,
   isDefaultConversationTitle,
   isUuid,
   parseChatRequest,
@@ -152,14 +151,6 @@ describe("isDefaultConversationTitle", () => {
     expect(isDefaultConversationTitle("New Chat")).toBe(true);
     expect(isDefaultConversationTitle("NEW CHAT")).toBe(true);
     expect(isDefaultConversationTitle("Physics Homework")).toBe(false);
-  });
-});
-
-describe("isDailyCapReached", () => {
-  it("treats null as unlimited", () => {
-    expect(isDailyCapReached(null, 10_000)).toBe(false);
-    expect(isDailyCapReached(50, 50)).toBe(true);
-    expect(isDailyCapReached(50, 49)).toBe(false);
   });
 });
 

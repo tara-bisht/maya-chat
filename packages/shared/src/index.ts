@@ -72,7 +72,6 @@ export {
   chatRequestSchema,
   chronologicalWindow,
   conversationCreateSchema,
-  isDailyCapReached,
   isDefaultConversationTitle,
   isUuid,
   parseChatRequest,

@@ -21,24 +21,40 @@ function finiteNumber(value: unknown): number | null {
   return null;
 }
 
+function costFromProviderBag(value: unknown): number | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  const direct = finiteNumber(record.cost);
+  if (direct != null && direct >= 0) {
+    return direct;
+  }
+  const nested = record.usage;
+  if (nested && typeof nested === "object") {
+    const usageCost = finiteNumber((nested as Record<string, unknown>).cost);
+    if (usageCost != null && usageCost >= 0) {
+      return usageCost;
+    }
+  }
+  return null;
+}
+
 export function costUsdFromUsage(
   usage: UsageLike | undefined,
   providerMetadata: unknown,
 ): number | null {
-  const rawCost = usage?.raw ? finiteNumber(usage.raw.cost) : null;
-  if (rawCost != null && rawCost >= 0) {
+  const rawCost = costFromProviderBag(usage?.raw);
+  if (rawCost != null) {
     return rawCost;
   }
 
   if (providerMetadata && typeof providerMetadata === "object") {
     const record = providerMetadata as Record<string, unknown>;
     for (const key of ["openrouter", "openai"]) {
-      const nested = record[key];
-      if (nested && typeof nested === "object") {
-        const cost = finiteNumber((nested as Record<string, unknown>).cost);
-        if (cost != null && cost >= 0) {
-          return cost;
-        }
+      const nestedCost = costFromProviderBag(record[key]);
+      if (nestedCost != null) {
+        return nestedCost;
       }
     }
   }
@@ -66,6 +82,17 @@ export function settleCreditsFromUsage(input: {
       promptTokens,
       completionTokens,
       costUsd,
+    };
+  }
+
+  // Explicit $0 from the gateway. Do not fall through to catalog rates
+  // (that overcharges a free/zero-cost model). Floor at min_turn_credits.
+  if (costUsd === 0) {
+    return {
+      credits: Math.max(1, input.model.minTurnCredits),
+      promptTokens,
+      completionTokens,
+      costUsd: 0,
     };
   }
 

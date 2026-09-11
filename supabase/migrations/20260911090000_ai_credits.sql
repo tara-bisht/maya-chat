@@ -1,5 +1,12 @@
 -- AI credits replace daily_message_limit. Model allowlist is enforced in
 -- reserve_chat_turn (plan_models ∩ models.is_enabled). Writes stay RPC-only.
+--
+-- `models` keeps table-level SELECT for authenticated: user-JWT loaders
+-- (loadPlanModel, loadModelsPayload) read gateway_id and list rates.
+-- That is not Trap 5 — enforcement is the RPC + TS allowlist.
+-- GET /api/models omits gateway_id. Actual COGS (openrouter_cost_usd)
+-- is column-hidden on usage_events below. Do not revoke models SELECT
+-- without moving those reads to service_role.
 
 -- ---------------------------------------------------------------------------
 -- Catalog knobs

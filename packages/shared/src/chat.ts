@@ -112,16 +112,6 @@ export function titleFromFirstMessage(text: string): string {
   return trimmed || OPEN_NIGHT_TITLE;
 }
 
-export function isDailyCapReached(
-  limit: number | null,
-  usedToday: number,
-): boolean {
-  if (limit === null) {
-    return false;
-  }
-  return usedToday >= limit;
-}
-
 export function systemPromptWithLanguage(
   basePrompt: string,
   languagePreset: string | null | undefined,
