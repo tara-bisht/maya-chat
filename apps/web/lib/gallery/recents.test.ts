@@ -60,7 +60,7 @@ describe("toRecentChats", () => {
     [PRIYA.id, agent(PRIYA)],
   ]);
 
-  it("keeps newest-first order, caps at 8, and skips unknown agents", () => {
+  it("keeps one live thread per agent, newest first, and skips unknown agents", () => {
     const conversations: RecentConversation[] = [
       row({
         id: "c-new",
@@ -90,7 +90,7 @@ describe("toRecentChats", () => {
 
     const recents = toRecentChats(conversations, agents, { nowMs: NOW, limit: 8 });
 
-    expect(recents).toHaveLength(8);
+    expect(recents).toHaveLength(2);
     expect(recents[0]).toMatchObject({
       conversationId: "c-new",
       agentId: MARCUS.id,
@@ -105,6 +105,74 @@ describe("toRecentChats", () => {
       href: houseHref(PRIYA.id, "c-priya"),
     });
     expect(recents.some((item) => item.conversationId === "c-ghost")).toBe(false);
+    expect(recents.some((item) => item.conversationId.startsWith("extra-"))).toBe(
+      false,
+    );
+  });
+
+  it("does not let a newer empty thread hide an older live thread", () => {
+    const recents = toRecentChats(
+      [
+        row({
+          id: "c-empty",
+          agent_id: MARCUS.id,
+          title: "Empty",
+          updated_at: "2026-09-10T11:30:00.000Z",
+          messageCount: 0,
+        }),
+        row({
+          id: "c-live",
+          agent_id: MARCUS.id,
+          title: "Still here",
+          updated_at: "2026-09-10T10:00:00.000Z",
+          messageCount: 2,
+        }),
+        row({
+          id: "c-priya",
+          agent_id: PRIYA.id,
+          title: "Priya live",
+          updated_at: "2026-09-10T09:00:00.000Z",
+        }),
+      ],
+      agents,
+      { nowMs: NOW, limit: 8 },
+    );
+
+    expect(recents.map((item) => item.conversationId)).toEqual([
+      "c-live",
+      "c-priya",
+    ]);
+  });
+
+  it("caps at unique agents, not conversations", () => {
+    const crowd = new Map<string, RecentAgent>();
+    const conversations: RecentConversation[] = [];
+    for (let index = 0; index < 10; index += 1) {
+      const id = `agent-${index}`;
+      crowd.set(id, {
+        id,
+        shortName: `Agent ${index}`,
+        costume: "marcus",
+        avatar: "",
+      });
+      conversations.push(
+        row({
+          id: `c-${index}`,
+          agent_id: id,
+          title: `Thread ${index}`,
+        }),
+      );
+    }
+
+    const recents = toRecentChats(conversations, crowd, {
+      nowMs: NOW,
+      limit: 8,
+    });
+
+    expect(recents).toHaveLength(8);
+    expect(recents.map((item) => item.agentId)).toEqual(
+      Array.from({ length: 8 }, (_, index) => `agent-${index}`),
+    );
   });
 
   it("skips conversations with zero messages", () => {

@@ -69,6 +69,8 @@ export const COPY = {
   signingOut: "Signing out…",
   menu: "Menu",
   close: "Close",
+  collapseRail: "Collapse",
+  expandRail: "Expand",
 } as const;
 
 export function greetingName(displayName: string): string {

@@ -6,10 +6,19 @@ import {
 } from "@/lib/gallery/playbill";
 import { COPY } from "@/lib/ui-copy";
 
-export function SidebarAgents({ agents }: { agents: Playbill[] }) {
+export function SidebarAgents({
+  agents,
+  iconOnly = false,
+}: {
+  agents: Playbill[];
+  iconOnly?: boolean;
+}) {
   if (agents.length === 0) {
+    if (iconOnly) {
+      return null;
+    }
     return (
-      <p className="px-2 py-2 font-sans text-xs text-ink-soft">
+      <p className="px-3 py-2 font-sans text-xs text-ink-soft">
         {COPY.noAgents}
       </p>
     );
@@ -17,31 +26,63 @@ export function SidebarAgents({ agents }: { agents: Playbill[] }) {
 
   return (
     <ul className="flex flex-col gap-0.5">
-      {agents.map((agent) => (
-        <li key={agent.id}>
-          <Link
-            href={agent.href ?? `/chat/${agent.id}`}
-            className="flex min-w-0 items-center gap-3 rounded-md px-2 py-2 hover:bg-rule/40"
-          >
-            <AgentPortrait
-              name={agent.shortName}
-              costume={agent.costume}
-              avatar={agent.avatar}
-              size="rail"
-            />
-            <span className="min-w-0">
-              <span className="block truncate font-sans text-sm font-semibold text-cream">
-                {agent.shortName}
-              </span>
-              {agent.stamp ? (
-                <span className="block font-sans text-[11px] text-ink-soft">
-                  {PLAYBILL_STAMP_LABEL[agent.stamp]}
+      {agents.map((agent) => {
+        const href = agent.href ?? `/chat/${agent.id}`;
+        const stamp = agent.stamp ? PLAYBILL_STAMP_LABEL[agent.stamp] : null;
+        const label = stamp
+          ? `${agent.shortName} · ${stamp}`
+          : agent.shortName;
+
+        if (iconOnly) {
+          return (
+            <li key={agent.id}>
+              <Link
+                href={href}
+                title={label}
+                aria-label={label}
+                className="flex items-center justify-center rounded-md py-2 hover:bg-rule/40"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center">
+                  <AgentPortrait
+                    name={agent.shortName}
+                    costume={agent.costume}
+                    avatar={agent.avatar}
+                    size="rail"
+                  />
                 </span>
-              ) : null}
-            </span>
-          </Link>
-        </li>
-      ))}
+              </Link>
+            </li>
+          );
+        }
+
+        return (
+          <li key={agent.id}>
+            <Link
+              href={href}
+              className="flex min-w-0 items-center gap-3 rounded-md px-3 py-2 hover:bg-rule/40"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center">
+                <AgentPortrait
+                  name={agent.shortName}
+                  costume={agent.costume}
+                  avatar={agent.avatar}
+                  size="rail"
+                />
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate font-sans text-sm font-semibold text-cream">
+                  {agent.shortName}
+                </span>
+                {stamp ? (
+                  <span className="block font-sans text-[11px] text-ink-soft">
+                    {stamp}
+                  </span>
+                ) : null}
+              </span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }

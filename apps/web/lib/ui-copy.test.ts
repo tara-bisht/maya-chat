@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   APP_NAV,
+  COPY,
   MOBILE_NAV,
   creditsLeftLabel,
   creditsRailLabel,
@@ -39,6 +40,13 @@ describe("navIsActive", () => {
     expect(navIsActive("/explore", "/explore/more")).toBe(true);
     expect(navIsActive("/explore", "/marketplace")).toBe(false);
     expect(navIsActive("/gallery", "/gallery")).toBe(true);
+  });
+});
+
+describe("rail chrome", () => {
+  it("names collapse and expand in plain chrome", () => {
+    expect(COPY.collapseRail).toBe("Collapse");
+    expect(COPY.expandRail).toBe("Expand");
   });
 });
 

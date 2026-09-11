@@ -88,6 +88,22 @@ export function AgentsIcon(props: IconProps) {
   );
 }
 
+export function CollapseIcon(props: IconProps) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M15 6 9 12l6 6" />
+    </svg>
+  );
+}
+
+export function ExpandIcon(props: IconProps) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export const NAV_ICONS: Record<AppNavId, (props: IconProps) => ReactElement> = {
   home: HomeIcon,
   explore: ExploreIcon,

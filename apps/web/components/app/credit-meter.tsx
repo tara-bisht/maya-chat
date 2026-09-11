@@ -27,9 +27,11 @@ function barIsLow(credits: CreditBalance): boolean {
 export function CreditMeter({
   credits,
   variant,
+  collapsed = false,
 }: {
   credits: CreditBalance;
   variant: "rail" | "compact" | "block";
+  collapsed?: boolean;
 }) {
   if (variant === "compact") {
     return (
@@ -71,11 +73,16 @@ export function CreditMeter({
   }
 
   return (
-    <div className="shrink-0 border-t border-rule px-4 py-3">
-      <p className="font-mono text-xs text-ink-soft">
-        {creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)}
-      </p>
-      <div className="mt-2 h-[3px] bg-rule">
+    <div
+      className={`shrink-0 border-t border-rule py-3 ${collapsed ? "px-3" : "px-4"}`}
+      title={`${creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)} · ${creditsResetLabel()}`}
+    >
+      {collapsed ? null : (
+        <p className="font-mono text-xs text-ink-soft">
+          {creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)}
+        </p>
+      )}
+      <div className={`h-[3px] bg-rule ${collapsed ? "" : "mt-2"}`}>
         <div
           className={`h-full ${barIsLow(credits) ? "bg-acid" : "bg-cream"}`}
           style={{ width: `${barWidth(credits)}%` }}
