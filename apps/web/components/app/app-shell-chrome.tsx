@@ -52,6 +52,27 @@ function RailSlot({ children }: { children: ReactNode }) {
   );
 }
 
+function RailBrand({
+  collapsed,
+  onClick,
+}: {
+  collapsed: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href="/gallery"
+      onClick={onClick}
+      className={`font-display text-cream italic ${
+        collapsed ? "text-2xl" : "text-3xl"
+      }`}
+      aria-label="Maya"
+    >
+      {collapsed ? "M" : "Maya"}
+    </Link>
+  );
+}
+
 function NavLinks({
   pathname,
   collapsed,
@@ -62,7 +83,10 @@ function NavLinks({
   onClick?: () => void;
 }) {
   return (
-    <nav className="flex shrink-0 flex-col gap-0.5" aria-label="App">
+    <nav
+      className={`flex shrink-0 flex-col gap-0.5 ${collapsed ? "" : "px-2"}`}
+      aria-label="App"
+    >
       {APP_NAV.map((item) => {
         const active = navIsActive(item.href, pathname);
         const Icon = NAV_ICONS[item.id];
@@ -74,7 +98,7 @@ function NavLinks({
             title={collapsed ? item.label : undefined}
             aria-label={collapsed ? item.label : undefined}
             className={`flex items-center rounded-md py-2 font-sans text-sm font-semibold ${
-              collapsed ? "justify-center" : "gap-3 px-3"
+              collapsed ? "justify-center" : "gap-3 px-2"
             } ${
               active
                 ? "bg-rule/60 text-cream"
@@ -97,42 +121,39 @@ function SidebarBody({
   custom,
   pathname,
   collapsed,
+  showBrand,
   onNavigate,
 }: {
   recents: RecentChat[];
   custom: Playbill[];
   pathname: string;
   collapsed: boolean;
+  showBrand: boolean;
   onNavigate?: () => void;
 }) {
+  const gutter = collapsed ? "" : "px-2";
+
   return (
     <>
-      <div
-        className={`shrink-0 py-5 ${collapsed ? "flex justify-center" : "px-3"}`}
-      >
-        <Link
-          href="/gallery"
-          onClick={onNavigate}
-          className={`font-display text-cream italic ${
-            collapsed ? "text-2xl" : "text-3xl"
-          }`}
-          aria-label="Maya"
-        >
-          {collapsed ? "M" : "Maya"}
-        </Link>
-      </div>
+      {showBrand ? (
+        <div className={`shrink-0 py-4 ${collapsed ? "flex justify-center" : "px-4"}`}>
+          <RailBrand collapsed={collapsed} onClick={onNavigate} />
+        </div>
+      ) : null}
       <NavLinks
         pathname={pathname}
         collapsed={collapsed}
         onClick={onNavigate}
       />
-      <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-6">
+      <div
+        className={`mt-4 min-h-0 flex-1 overflow-y-auto pb-4 ${gutter}`}
+      >
         {collapsed ? null : (
-          <p className="px-3 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+          <p className="px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
             {COPY.recentChats}
           </p>
         )}
-        <div className={collapsed ? "" : "mt-2"}>
+        <div className={collapsed ? "" : "mt-1.5"}>
           <RecentChatsList recents={recents} iconOnly={collapsed} />
         </div>
         {collapsed ? (
@@ -140,15 +161,35 @@ function SidebarBody({
             <div className="mx-3 my-2 h-px bg-rule" aria-hidden />
           ) : null
         ) : (
-          <p className="mt-6 px-3 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+          <p className="mt-4 px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
             {COPY.yourAgents}
           </p>
         )}
-        <div className={collapsed ? "" : "mt-2"}>
+        <div className={collapsed ? "" : "mt-1.5"}>
           <SidebarAgents agents={custom} iconOnly={collapsed} />
         </div>
       </div>
     </>
+  );
+}
+
+function RailToggle({
+  collapsed,
+  onToggle,
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-cream-dim hover:bg-rule/40 hover:text-cream"
+      aria-expanded={!collapsed}
+      aria-label={collapsed ? COPY.expandRail : COPY.collapseRail}
+      onClick={onToggle}
+    >
+      {collapsed ? <ExpandIcon /> : <CollapseIcon />}
+    </button>
   );
 }
 
@@ -187,35 +228,30 @@ export function AppShellChrome({
           collapsed ? "w-[72px]" : "w-[268px]"
         } transition-[width] duration-200 ease-[cubic-bezier(0.2,0,0,1)]`}
       >
+        <div
+          className={`shrink-0 ${
+            collapsed
+              ? "flex flex-col items-center gap-2 py-4"
+              : "flex items-center justify-between gap-2 px-4 py-4"
+          }`}
+        >
+          <RailBrand collapsed={collapsed} />
+          <RailToggle collapsed={collapsed} onToggle={toggleRail} />
+        </div>
         <SidebarBody
           recents={recents}
           custom={custom}
           pathname={pathname}
           collapsed={collapsed}
+          showBrand={false}
         />
-        <div className="mt-auto shrink-0">
-          <button
-            type="button"
-            className={`flex w-full items-center rounded-md py-2 font-sans text-sm font-semibold text-cream-dim hover:bg-rule/40 hover:text-cream ${
-              collapsed ? "justify-center" : "gap-3 px-3"
-            }`}
-            aria-expanded={!collapsed}
-            aria-label={collapsed ? COPY.expandRail : COPY.collapseRail}
-            onClick={toggleRail}
-          >
-            <RailSlot>
-              {collapsed ? <ExpandIcon /> : <CollapseIcon />}
-            </RailSlot>
-            {collapsed ? null : COPY.collapseRail}
-          </button>
-          {viewer.credits ? (
-            <CreditMeter
-              credits={viewer.credits}
-              variant="rail"
-              collapsed={collapsed}
-            />
-          ) : null}
-        </div>
+        {viewer.credits ? (
+          <CreditMeter
+            credits={viewer.credits}
+            variant="rail"
+            collapsed={collapsed}
+          />
+        ) : null}
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -305,6 +341,7 @@ export function AppShellChrome({
               custom={custom}
               pathname={pathname}
               collapsed={false}
+              showBrand
               onNavigate={() => setMenuOpen(false)}
             />
           </aside>

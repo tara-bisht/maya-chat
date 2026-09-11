@@ -39,8 +39,8 @@ export function RecentChatRow({
   return (
     <Link
       href={chat.href}
-      className={`flex min-w-0 items-center gap-3 rounded-md px-3 py-2 hover:bg-rule/40 ${
-        compact ? "" : "bg-rule/25"
+      className={`flex min-w-0 items-center gap-3 rounded-md py-2 hover:bg-rule/40 ${
+        compact ? "px-2" : "bg-rule/25 px-3"
       }`}
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center">
@@ -84,7 +84,7 @@ export function RecentChatsList({
       return null;
     }
     return (
-      <p className="px-3 py-2 font-sans text-xs text-ink-soft">
+      <p className="px-2 py-2 font-sans text-xs text-ink-soft">
         {empty ?? COPY.noChats}
       </p>
     );
