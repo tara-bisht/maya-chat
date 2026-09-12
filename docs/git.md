@@ -53,7 +53,7 @@ fix(ci): let packageManager pin pnpm
 chore(git): add PR template and branch rules
 ```
 
-Body only when the *why* is not in the subject. Several focused commits on the branch are fine; **squash on merge** so `main` is one commit per PR.
+Body only when the *why* is not in the subject. Focused commits on the branch are fine while working. **Squash to one conventional commit before opening the PR** so reviewers see one commit. Squash-merge still makes `main` one commit per PR.
 
 Stage the files that belong to this slice. Leave unrelated dirty files unstaged. Never `git add -A` if `.DS_Store`, `*.tsbuildinfo`, or `.env*` are in the tree.
 
@@ -61,14 +61,18 @@ Stage the files that belong to this slice. Leave unrelated dirty files unstaged.
 
 ## Pull requests
 
-- Base: `main`. Title matches the squash commit (`feat(auth): …`).
+Agents: `/pr-creator` (canonical skill: `.agents/skills/pr-creator`).
+
+- Base: `main`. Title matches the single commit (`feat(auth): …`).
 - Fill the template: summary, plan id (`PR1` or `n/a`), test plan.
 - Independently reviewable: `pnpm turbo lint typecheck test build` green. Zod if the PR adds a route. RLS if it adds a table.
-- Request review from the other person. During the sprint, squash-merge after CI is green even with zero approvals **if** a PR still exists (preview + bisect). After the sprint, prefer one approval.
+- Visual UI: attach screenshots as a **PR comment** (`gh pr comment --attach`). Do not commit screenshot files.
+- Apply one kind label and the matching area labels (below). Request review from the other person.
+- During the sprint, squash-merge after CI is green even with zero approvals **if** a PR still exists (preview + bisect). After the sprint, prefer one approval.
 - Delete the branch on merge.
 
 ```bash
-gh pr create --fill
+gh pr create --base main --title "feat(auth): …"
 gh pr merge --squash --delete-branch
 ```
 
@@ -129,12 +133,38 @@ Until this ruleset exists, `git push origin main` still works. After it exists, 
 
 ### Labels
 
+Kind (exactly one):
+
 ```bash
 gh label create feat --description "New product work" --color 0E8A16
 gh label create fix --description "Bug" --color D73A4A
 gh label create chore --description "Tooling and repo" --color F9D0C4
 gh label create docs --description "Documentation" --color 0075CA
+gh label create enhancement --description "Improvement that is not a new feature" --color A2EEEF
+gh label create hotfix --description "Production break" --color B60205
+```
+
+Human-applied:
+
+```bash
 gh label create blocked --description "Waiting on a decision or person" --color B60205
+```
+
+Area (every match):
+
+```bash
+gh label create ui --description "User-facing screens, components, copy" --color 1D76DB
+gh label create styling --description "Tokens, CSS, theme, layout" --color BFD4F2
+gh label create db --description "Migrations, RLS, schema" --color FBCA04
+gh label create functional --description "Product behavior / business logic" --color C2E0C6
+gh label create api --description "Route handlers and server actions" --color 0052CC
+gh label create auth --description "OAuth, session, login" --color 006B75
+gh label create ci --description "GitHub Actions, turbo, package manager" --color 5319E7
+```
+
+Implementation-plan slice:
+
+```bash
 gh label create phase-0 --description "Scaffold" --color EDEDED
 gh label create phase-1 --description "Data + auth" --color EDEDED
 gh label create phase-2 --description "Gallery + chat" --color EDEDED
