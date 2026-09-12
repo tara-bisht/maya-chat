@@ -16,10 +16,11 @@ pnpm install
 Launch the interactive visual preview editor:
 ```bash
 # From workspace root
-pnpm --filter @maya/marketing-promo dev
+pnpm dev:promo
+# Or: pnpm --filter @maya/marketing-promo studio
 
 # Or inside marketing/promo
-pnpm dev
+pnpm studio
 ```
 Studio opens on `http://localhost:3000` (or the configured Remotion port) allowing frame-by-frame inspection, timing adjustments, and live component reloading.
 
