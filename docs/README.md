@@ -37,6 +37,7 @@ monetization: "Free / Plus $9/mo / Pro $19/mo — configurable model allowlists 
 | 🌿 **[Git and GitHub](git.md)** | **GitHub Flow**:<br>• Branch names, conventional commits, squash-merge to `main`<br>• Owner ruleset and merge-button checklist | Engineering, Grok |
 | 📖 **[Domain glossary (`CONTEXT.md`)](../CONTEXT.md)** | **Words**: agent, company, plan, entitlement, house, playbill, costume | Everyone |
 | ⚖️ **[ADR 0001](adr/0001-openrouter-sole-gateway.md)** | OpenRouter is the sole LLM gateway; AI SDK stays for chat UI | Engineering |
+| 💡 **[To-Dos & Ideas Backlog](todos/README.md)** | **Backlog & Spikes**:<br>• Unscheduled feature ideas, tech debt, and spikes<br>• Structured markdown notes ready to pick up | Founder, Engineering |
 
 ---
 
