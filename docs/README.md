@@ -14,6 +14,7 @@ Which file answers which question. Product one-liner: every conversation is with
 | How a turn flows | [`technical-plan.md`](technical-plan.md) |
 | Libraries and env | [`tech-stack.md`](tech-stack.md) |
 | Starter character prompts | [`curated-agents.md`](curated-agents.md) + [`seed-agents.sql`](seed-agents.sql) |
+| How the inbuilt catalog grows | [`catalog/taxonomy.md`](catalog/taxonomy.md) + [`catalog/wave-1.md`](catalog/wave-1.md) |
 | Git / PR | [`git.md`](git.md) |
 | Hard-to-reverse why | [`adr/`](adr/) |
 | Schema sketch (archived) | [`archive/architecture.md`](archive/architecture.md) |

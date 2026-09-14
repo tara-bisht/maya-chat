@@ -22,6 +22,22 @@ describe("buildMarketplaceBill", () => {
   const sections = buildMarketplaceBill();
 
   it("keeps category order and omits custom", () => {
+    expect(MARKETPLACE_CATEGORIES.map((category) => category.id)).toEqual([
+      "learning",
+      "philosophy",
+      "productivity",
+      "wellbeing",
+      "lifestyle",
+      "play",
+    ]);
+    expect(MARKETPLACE_CATEGORIES.map((category) => category.label)).toEqual([
+      "Learning",
+      "Debate",
+      "Work",
+      "Advice",
+      "Everyday",
+      "Play",
+    ]);
     expect(sections.map((section) => section.id)).toEqual([
       "learning",
       "philosophy",
@@ -35,6 +51,7 @@ describe("buildMarketplaceBill", () => {
     const sectionIds: string[] = sections.map((section) => section.id);
     expect(categoryIds).not.toContain("custom");
     expect(sectionIds).not.toContain("custom");
+    expect(sectionIds).not.toContain("play");
   });
 
   it("lists eight on tonight and four on the next bill", () => {

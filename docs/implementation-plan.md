@@ -26,7 +26,7 @@ Build sequence for **remaining** slices. What is true on `main`: [`NOW.md`](NOW.
 | :--- | :--- |
 | Curated catalog | Unbounded. Starter seed: [`seed-agents.sql`](seed-agents.sql) + [`curated-agents.md`](curated-agents.md). Not a cap of eight. |
 | Free gate | `agents.free_tier`. Seed: Marcus + Dr. Priya. Plus/Pro see every curated row. Not “first N rows.” Free may also cast 3 public custom agents. |
-| Categories | `learning`, `philosophy`, `productivity`, `wellbeing`, `lifestyle`, `custom`. Nonna = `wellbeing`. Barnaby = `lifestyle`. |
+| Categories | Live CHECK: `learning`, `philosophy`, `productivity`, `wellbeing`, `lifestyle`, `custom`. Explore labels and planned `play`: [`catalog/taxonomy.md`](catalog/taxonomy.md). Nonna = `wellbeing`. Barnaby = `lifestyle`. |
 | Tone sliders | Locked on curated agents. Compiler overlays sliders for **custom** agents only. |
 | Tools vs plan | Register `agents.tools_enabled ∩ plans.tools_allowed`. Strip tool-policy text when a tool is not allowed. |
 | Catalog | `plans` / `models` / `plan_models` are the source of truth. No `if (plan === 'pro')` for quotas or model names. |
