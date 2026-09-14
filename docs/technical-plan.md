@@ -12,14 +12,13 @@ lead_engineer: "team-mates/cto"
 related:
   - "PROJECT_DESCRIPTION.md"
   - "tech-stack.md"
-  - "roadmap.md"
-  - "architecture.md"
+  - "NOW.md"
   - "prd.md"
   - "curated-agents.md"
 ---
 ```
 
-Engineering plan for building Maya Chat as a **solo-maintained** multi-agent chat product. Handover: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Stack: [`tech-stack.md`](tech-stack.md). Sequence: [`roadmap.md`](roadmap.md). Original schema sketch: [`architecture.md`](architecture.md).
+Engineering plan for building Maya Chat as a **solo-maintained** multi-agent chat product. Handover: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Stack: [`tech-stack.md`](tech-stack.md). Status: [`NOW.md`](NOW.md). Schema sketch: [`archive/architecture.md`](archive/architecture.md).
 
 This is not a second PRD. It answers: **what we build, how a message flows, where state lives, and what can kill us**.
 
@@ -30,7 +29,7 @@ This is not a second PRD. It answers: **what we build, how a message flows, wher
 1. **One core loop:** pick an agent → pick an allowed model → stream a reply that stays in character → remember what matters for *that* agent.
 2. **One server:** Next.js is the only process that talks to the **LLM gateway** and Stripe.
 3. **Three plans, data-driven:** Free / Plus / Pro. Quotas, tools, and **model allowlists** live in Postgres, not `if (isPro)`.
-4. **Web MVP in 14 days;** mobile consumes the same API in days 15–21. Voice, IAP, real code execution, group chat, marketplace, in-app catalog admin are **out**.
+4. **Web first;** mobile consumes the same API (PR6). Voice, IAP, real code execution, group chat, community marketplace, ratings, remix, and in-app catalog admin are **out** of MVP.
 5. **Company gates:** Zod on inputs, RLS on tables, no secrets on the client, &lt;1 support ticket/week.
 6. **Personas are the product.** The prompt compiler is a first-class module, not a string concat in the route handler.
 
@@ -215,9 +214,9 @@ Gallery UI receives `{ id, name, tagline, avatar_url, category, tone_settings, t
 
 ---
 
-## 6. Data additions (beyond architecture.md)
+## 6. Data additions (beyond the schema sketch)
 
-Keep the six tables in [`architecture.md`](architecture.md). Add the following in the first migration set.
+Keep the six tables in [`archive/architecture.md`](archive/architecture.md). Add the following in the first migration set.
 
 ### 6.1 Catalog — models, plans, plan_models
 
@@ -271,7 +270,7 @@ create policy "Authenticated read plan_models"
 -- writes: service role / founder only
 ```
 
-Seed `plans` rows: `free` (0¢, 50/day, 3 public custom, 2 curated via `agents.free_tier`, no vector, default `gemini-flash`), `plus` (900¢ / 9000¢ yr, 200/day, 10 custom, all 8 curated, vector, tools memory+math, default `grok`), `pro` (1900¢ / 19000¢ yr, unlimited, unlimited custom, all 8 curated, vector, tools + search, default `claude`).
+Seed `plans` rows: see [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md) §3. Runtime reads the table. Curated access is `agents.free_tier` (Free) or all curated (Plus/Pro) — not a count of eight.
 
 ### 6.2 Entitlements
 
@@ -368,7 +367,7 @@ Seed values below; **runtime reads the table**.
 | Action | Free (seed) | Plus (seed) | Pro (seed) |
 | :--- | :--- | :--- | :--- |
 | Daily credits | 1,500 | 4,000 | 9,000 |
-| Curated agents | 2 (Marcus + Priya) | All 8 | All 8 |
+| Curated agents | `free_tier` rows (seed: Marcus, Priya) | All curated | All curated |
 | Custom agents | 3, public only | 10, public or private | Unlimited |
 | Vector memory | No | Yes | Yes |
 | Tools | `{}` | memory, math | + `web_search` |
@@ -437,7 +436,7 @@ JWT is the RLS key. Chat route creates a Supabase client **with the user token**
 
 | Threat | Mitigation |
 | :--- | :--- |
-| IDOR on conversations / memories | RLS: `auth.uid() = user_id`. Messages via conversation ownership subquery (already in architecture.md). |
+| IDOR on conversations / memories | RLS: `auth.uid() = user_id`. Messages via conversation ownership subquery (schema sketch). |
 | Prompt leak of curated agents | Do not select `system_prompt` in gallery APIs. |
 | Entitlement bypass | Server reads `entitlements.plan` + `plans` + `plan_models`; ignore client `plan` / `model`. |
 | Model upgrade | 403 if `modelId` not on the plan. Client cannot send `gateway_id`. |
@@ -478,7 +477,7 @@ Enough structure for engineering, not a design spec.
 
 | Surface | Behavior |
 | :--- | :--- |
-| Gallery | 8 curated cards + custom list. Locked cards CTA to Plus/Pro. |
+| Gallery | Curated cards from the catalog + custom list. Locked cards CTA to Plus/Pro. |
 | Chat | Message list, markdown, KaTeX, code highlight, pending tool chips. Agent name + avatar. **Model picker** from `GET /api/models`. |
 | Studio | Name, tagline, category, language preset, tone sliders, backstory textarea, tool toggles. Preview pane can wait until Phase 3 if time-boxed. |
 | Settings | Profile bio/language, Stripe portal (upgrade/downgrade Plus ↔ Pro). |

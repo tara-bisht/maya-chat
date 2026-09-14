@@ -2,7 +2,7 @@
 
 **PR:** [#21](https://github.com/tara-bisht/maya-chat/pull/21) · `feat/pr4-credit-engine` → `main`
 **Plan id:** PR4a ([`docs/implementation-plan.md`](../implementation-plan.md))
-**Tickets:** [MAYA-107](../../issues/MAYA-107-model-selection-inoperative.md) (picker/routing), [MAYA-116](../../issues/MAYA-116-no-model-attribution-plan-models-unenforced.md) (DB gate + cost audit)
+**Tickets:** [MAYA-107](../issues/MAYA-107-model-selection-inoperative.md) (picker/routing), [MAYA-116](../issues/MAYA-116-no-model-attribution-plan-models-unenforced.md) (DB gate + cost audit)
 **ADR:** [`docs/adr/0003-ai-credits-from-gateway-cost.md`](../adr/0003-ai-credits-from-gateway-cost.md)
 **Review follow-up:** muse [`pr_comment_muse.md`](./pr_comment_muse.md) · Gemini [`pr_comment_gemini.md`](./pr_comment_gemini.md) — dispositions in §14.
 

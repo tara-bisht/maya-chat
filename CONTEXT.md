@@ -1,6 +1,6 @@
 # Maya Chat
 
-A consumer chat product where every conversation is with a named character, not a generic assistant. The company is a touring lineup wheatpasted on a night wall.
+A consumer chat product where every conversation is with a named character, not a generic assistant. The company is a touring lineup wheatpasted on a night wall. The first-party catalog can grow to thousands of inbuilt agents; the named starter set is seed, not a cap.
 
 ## Language
 
@@ -9,11 +9,15 @@ A named character the user talks to, with a system prompt, tone, tools, and cost
 _Avoid_: Bot, assistant, copilot, persona-as-UI-theme
 
 **Curated agent**:
-One of the eight first-party repertory players, owned by the system (`user_id` is null, `is_curated` is true).
-_Avoid_: Starter bot, default persona, NPC
+A first-party inbuilt character owned by the system (`user_id` is null, `is_curated` is true). Count is catalog data, not a product constant. The house can hold thousands.
+_Avoid_: Starter bot, default persona, NPC, “the eight agents” as the product
+
+**Starter company**:
+The initial curated examples in [`docs/curated-agents.md`](docs/curated-agents.md) and [`docs/seed-agents.sql`](docs/seed-agents.sql). Useful as examples; not the roster cap.
+_Avoid_: Final catalog, closed repertory
 
 **Custom agent**:
-A user-owned character created in Studio. Counted against `plans.max_custom_agents`.
+A user-owned character created in Studio. Counted against `plans.max_custom_agents` (a plan row, not a hardcoded eight).
 _Avoid_: Bot, user persona
 
 **Public custom agent**:
@@ -33,16 +37,24 @@ Soft-removal of a custom agent (`archived_at` set). Leaves Home and blocks new t
 _Avoid_: Hard delete, unpublish
 
 **Free-tier agent**:
-A curated agent with `free_tier = true`. Only Marcus and Dr. Priya. Plus and Pro see every curated agent.
+A curated agent with `free_tier = true`. Seed: Marcus and Dr. Priya. The flag is the gate, not “2 of N.” Plus and Pro see every curated agent.
 _Avoid_: Free agent limit, first N agents, `curated_agent_limit` as a runtime gate
 
 **Company**:
-The eight curated agents as a repertory. Gallery copy says **Featured agents**, not “your bots.”
-_Avoid_: Roster of chatbots, AI team
+The first-party repertory — every curated agent. Gallery copy says **Featured agents**, not “your bots.” Size follows the catalog.
+_Avoid_: Roster of chatbots, AI team, a fixed eight
 
 **Studio**:
 The character sheet where a user creates or edits a custom agent (name, tagline, language, costume, backstory, tone sliders, tool toggles).
 _Avoid_: Agent builder IDE, prompt playground
+
+**Rating**:
+A signed-in member’s score from 1 to 5 on an agent they can see. One row per `(user_id, agent_id)`. A playbill may show an aggregate later. Not shipped.
+_Avoid_: Marketplace rank, likes, stars-as-currency
+
+**Remix**:
+Create a new custom agent from another agent’s public playbill (name, tagline, costume, tone as a starting point). Backstory / `system_prompt` is newly authored. Non-owners never receive a curated or foreign custom prompt. Not shipped.
+_Avoid_: Fork the prompt, clone the thread, steal the backstory
 
 **Plan**:
 A catalog row in `plans`: `free`, `plus`, or `pro`. Credit allowances, tools, prices, and default model live here, not in application `if` branches.

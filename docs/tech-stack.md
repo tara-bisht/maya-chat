@@ -13,13 +13,12 @@ supersedes: "Unspecified provider / Edge chat / OpenAI embeddings in architectur
 related:
   - "PROJECT_DESCRIPTION.md"
   - "technical-plan.md"
-  - "roadmap.md"
-  - "architecture.md"
+  - "NOW.md"
   - "prd.md"
 ---
 ```
 
-This document **locks** the stack for Maya Chat. Handover: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Product intent: [`prd.md`](prd.md). Schema sketches: [`architecture.md`](architecture.md). System design: [`technical-plan.md`](technical-plan.md). Sequence: [`roadmap.md`](roadmap.md).
+This document **locks** the stack for Maya Chat. Handover: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Product intent: [`prd.md`](prd.md). Schema sketch: [`archive/architecture.md`](archive/architecture.md). System design: [`technical-plan.md`](technical-plan.md). Status: [`NOW.md`](NOW.md).
 
 **Rule:** do not add a dependency that is not in this file without updating this file first.
 
@@ -120,7 +119,7 @@ There is **one** backend: Next.js.
 | Migrations | `supabase/migrations/` in the turborepo, not ad-hoc SQL in the dashboard |
 | Storage | Avatars later; MVP can use static `/public/avatars` for curated agents |
 
-Canonical tables (see [`architecture.md`](architecture.md) §3): `profiles`, `agents`, `agent_memories`, `conversations`, `messages`.
+Canonical tables (see [`archive/architecture.md`](archive/architecture.md) §3): `profiles`, `agents`, `agent_memories`, `conversations`, `messages`.
 
 **Additions required before build** (full SQL in [`technical-plan.md`](technical-plan.md) §6):
 
@@ -165,7 +164,7 @@ Seed aliases and plan allowlists: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION
 
 ### Embeddings — do not copy `vector(1536)` blindly
 
-[`architecture.md`](architecture.md) assumed OpenAI `text-embedding-3-small` at 1536 dims. That is **superseded**.
+The archived schema sketch assumed OpenAI `text-embedding-3-small` at 1536 dims. That is **superseded**.
 
 At Day 0 pick **one** embedding model on OpenRouter, pin `dimensions` if the API allows (prefer 1024), bake `vector(N)` into the migration. Never mix dims in one column. Migration currently has `vector(1024)`; confirm the embedding model in the memory PR.
 
@@ -205,16 +204,12 @@ When code is scaffolded (not this docs pass), it lives **in this repository root
 ```
 maya-chat/
 ├── apps/web/
-├── apps/mobile/          # Phase 6
+├── apps/mobile/          # PR6
 ├── packages/shared/      # Zod, types, prompt compiler, tones, entitlements helpers
 ├── packages/database/    # generated types, supabase helpers
 ├── supabase/migrations/
-├── prd.md
-├── architecture.md
-├── PROJECT_DESCRIPTION.md
-├── tech-stack.md
-├── technical-plan.md
-├── roadmap.md
+├── CONTEXT.md
+├── docs/                 # NOW, PRD, stack, backlog
 └── ...
 ```
 

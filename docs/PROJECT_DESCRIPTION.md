@@ -4,33 +4,34 @@
 ---
 document_id: "DESC-MAYA-001"
 title: "Maya Chat: Project Description & Engineering Handover"
-version: "2.0.0"
-date: "2026-09-10"
+version: "2.1.0"
+date: "2026-09-14"
 status: "APPROVED-FOR-BUILD"
 author: "Kamal Bisht (Founder)"
 target_audience: "CTO, Engineering Pod, Product"
 portfolio_id: "PRJ-MAYA-001"
 primary_domain: "Consumer multi-agent chat SaaS (personas, memory, tools)"
 target_stack: "Next.js 15, Expo, TypeScript, Supabase (Postgres + pgvector + RLS), OpenRouter + Vercel AI SDK, Stripe"
-monetization: "Free / Plus $9/mo / Pro $19/mo — model allowlists configurable in Postgres"
+monetization: "Free / Plus / Pro — model allowlists configurable in Postgres"
 ---
 ```
 
-This is the **handover brief** for Maya Chat. Use it to understand the product, the three paid layers, and the rule that **models are catalog data, not hardcoded providers**. Detail lives in [`prd.md`](prd.md), [`tech-stack.md`](tech-stack.md), [`technical-plan.md`](technical-plan.md), and [`roadmap.md`](roadmap.md).
+Handover brief. Product intent: [`prd.md`](prd.md). How a turn flows: [`technical-plan.md`](technical-plan.md). What is shipped: [`NOW.md`](NOW.md). Words: [`../CONTEXT.md`](../CONTEXT.md).
 
 ---
 
-## 1. What it is & Core Market Angle
+## 1. What it is
 
-**Maya Chat** is a web + later iOS/Android product built on a single core truth: **Don't talk to a boring AI chatbot. Give your AI personality and character.**
+**Maya Chat** is a web + later iOS/Android product: **Don't talk to a boring AI chatbot. Give your AI personality and character.**
 
-Every conversation, question, or discussion cannot and should not be a generic AI experience. Every interaction must be with an intentional character tailored to the context:
-- **Context-driven personality & tone**: When learning maths, you need a different character, pedagogical tone, and response cadence than when dissecting your favourite movie or seeking advice about your relationship.
-- **Pre-built or custom**: Users can converse with our curated repertory company of out-of-the-box characters or craft their own custom characters in the Studio as per their exact needs.
+Every interaction is with an intentional character:
 
-Eight curated agents ship in the gallery: Marcus (Savage Stoic), Dr. Priya (Flirty STEM Prof), Alex (Exhausted 10x Tech Lead), Nonna Maria (Fierce Italian Grandma), Viktor (Tin-Foil Drill Sergeant), Valerian (Cosmic Polymath: Physics & Wealth in Verse), Barnaby (Cynical Apartment Cat), and Ren (Shy Metaphysician). Specs: [`curated-agents.md`](curated-agents.md).
+- **Context-driven personality**: learning maths is a different character than dissecting a film or taking advice.
+- **Pre-built or custom**: talk to first-party inbuilt characters, or write your own in Studio.
 
-The wedge: **personality-first context matching (anti-boring AI) + utility**, plus **private per-agent memory**, plus **the user picking which model talks** — gated by plan.
+The first-party **curated** catalog is unbounded (thousands of inbuilt agents over time). [`curated-agents.md`](curated-agents.md) is the **starter seed**, not a closed roster of eight. Free sees rows with `free_tier`; Plus/Pro see every live curated agent.
+
+The wedge: personality-first matching + utility + private per-agent memory + the user picking which model talks, gated by plan.
 
 ---
 
@@ -42,7 +43,7 @@ The wedge: **personality-first context matching (anti-boring AI) + utility**, pl
 4. Hit a paywall (locked agent, quota, or locked model) and upgrade **Free → Plus → Pro** via Stripe.
 5. Founder can change **which models sit on which plan**, quotas, and prices **in the database** without a deploy.
 
-Mobile (days 15–21) is the same API. Voice, store IAP, real code execution, group chat, marketplace are **v1.1**.
+Mobile is the same API (PR6). Voice, store IAP, real code execution, group chat, community marketplace, ratings, and remix are **later** ([`backlog/README.md`](backlog/README.md)).
 
 ---
 
@@ -54,8 +55,8 @@ Three plans. Seed prices and limits below are **defaults in `public.plans`**. Ch
 | :--- | :--- | :--- | :--- |
 | Price (seed) | $0 | **$9 / mo** or **$90 / yr** | **$19 / mo** or **$190 / yr** |
 | Daily credits | 1,500 | 4,000 | 9,000 |
-| Curated agents | 2 (Marcus + Dr. Priya) | All 8 | All 8 |
-| Custom agents | 0 | 5 | Unlimited (`null`) |
+| Curated agents | `free_tier` rows (seed: Marcus, Dr. Priya) | All curated | All curated |
+| Custom agents | 3, public only | 10, public or private | Unlimited (`null`) |
 | Vector memory | No | Yes | Yes |
 | Tools | none (short-term chat only) | `memory_saver`, `math_solver` | those + `web_search` |
 | Voice | — | — | v1.1 |
@@ -95,7 +96,7 @@ Do not add a second SDK per lab. Chat UI still uses the Vercel AI SDK through `@
 | `plan_models` | Which models each plan may use |
 | `entitlements` | This user’s current `plan` (from Stripe / manual) |
 
-MVP config UX: **Supabase table editor or SQL**. No in-app admin until v1.1.
+MVP config UX: **Supabase table editor or SQL**. No in-app admin until later.
 
 Chat path:
 
@@ -131,13 +132,9 @@ Non-negotiables: Zod on every route, RLS on every table, no provider API keys on
 
 ## 6. Delivery
 
-See [`roadmap.md`](roadmap.md).
+See [`NOW.md`](NOW.md). Remaining slices: [`implementation-plan.md`](implementation-plan.md).
 
-- **Days 1–14:** Web MVP — auth, gallery, streaming chat, compiler, catalog, Stripe Plus + Pro, quotas, model picker.
-- **Days 15–21:** Expo against the same API.
-- **v1.1:** Voice, RevenueCat, real sandbox, in-app plan/model admin.
-
-Web MVP is done when a production user can chat on Free models, get 403 on Claude, pay Plus, see DeepSeek in the picker, pay Pro, see Claude, and you can add a model to Plus with an `INSERT` into `plan_models` (no deploy).
+Web MVP is done when a production user can chat on Free models, get 403 on Claude, pay Plus, see DeepSeek in the picker, pay Pro, see Claude, and you can add a model to Plus with an `INSERT` into `plan_models` (no deploy). Adding a curated agent is a catalog/seed change, not a product-identity change.
 
 ---
 
@@ -145,13 +142,13 @@ Web MVP is done when a production user can chat on Free models, get 403 on Claud
 
 | Doc | Use |
 | :--- | :--- |
-| [`prd.md`](prd.md) | Product scope, personas, 3-tier packaging |
-| [`DESIGN.md`](DESIGN.md) | Visual identity (Maya Street Cast): night wall, costume floods, acid tickets |
+| [`prd.md`](prd.md) | Product scope |
+| [`NOW.md`](NOW.md) | Shipped vs next |
+| [`DESIGN.md`](DESIGN.md) | Visual identity |
 | [`tech-stack.md`](tech-stack.md) | Locked libraries, gateway, env |
-| [`technical-plan.md`](technical-plan.md) | Schema, chat lifecycle, APIs, security |
-| [`roadmap.md`](roadmap.md) | Phases and cuts |
-| [`implementation-plan.md`](implementation-plan.md) | PR-level build sequence |
+| [`technical-plan.md`](technical-plan.md) | Schema, chat lifecycle, APIs |
+| [`implementation-plan.md`](implementation-plan.md) | Remaining PR write-ups |
+| [`backlog/README.md`](backlog/README.md) | Open work |
 | [`../CONTEXT.md`](../CONTEXT.md) | Domain glossary |
-| [`architecture.md`](architecture.md) | Original monorepo + agent/memory SQL |
-| [`curated-agents.md`](curated-agents.md) | System prompts |
-| [`seed-agents.sql`](seed-agents.sql) | Curated agent rows |
+| [`curated-agents.md`](curated-agents.md) | Starter seed prompts |
+| [`seed-agents.sql`](seed-agents.sql) | Starter curated rows |

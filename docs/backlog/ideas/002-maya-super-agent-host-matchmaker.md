@@ -4,9 +4,9 @@ title: "Maya Super Agent: Resident House Host & Persona Matchmaker Engine"
 status: ready
 area: ai-engine
 priority: p1
-target_slice: PR5
+target_slice: later
 created_at: 2026-09-12
-updated_at: 2026-09-12
+updated_at: 2026-09-14
 ---
 
 # [TODO-002] Maya Super Agent: Resident House Host & Persona Matchmaker Engine
@@ -21,7 +21,7 @@ updated_at: 2026-09-12
 
 - [ ] **Maya House Host Persona**:
   - Persona specification: The Resident Host & Artistic Director of Maya Chat. Warm, perceptive, witty, theatrical, and deeply knowledgeable about every player in the touring company.
-  - Familiar with all 8 curated agents' distinct voices, tools, and domain boundaries (Marcus, Priya, Alex, Nonna, Viktor, Valerian, Barnaby, Ren).
+  - Familiar with the **live curated catalog** (retrieve a shortlist; do not stuff every inbuilt prompt into context). Starter examples include Marcus, Priya, Alex, Nonna, Viktor, Valerian, Barnaby, Ren — not a closed set of eight.
 - [ ] **Intelligent Agent Matchmaker Tool (`matchAgent`)**:
   - A structured LLM tool that evaluates user goals against available agents:
     - Analyzes query sentiment, subject matter, and required tone.
@@ -76,7 +76,7 @@ updated_at: 2026-09-12
   }
   ```
 - **Context Injection**:
-  Inject a lightweight summary of all 8 curated agents and public agents into Maya's prompt context to keep latency and token costs minimal.
+  Retrieve a shortlist from the live curated catalog and public custom agents. Do not inject every inbuilt bio — the catalog can be thousands of rows.
 
 ---
 

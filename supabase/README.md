@@ -2,7 +2,7 @@
 
 Phase 1 schema lives in `migrations/`. Seed curated agents from `seed.sql` (copy of `docs/seed-agents.sql`). Catalog rows (`models`, `plans`, `plan_models`) are in the first migration.
 
-Do not paste `architecture.md` blindly: chat is Node, embeddings dim is 1024, authorize on `entitlements.plan`, curated access uses `agents.free_tier`.
+Do not paste the archived schema sketch blindly: chat is Node, embeddings dim is 1024, authorize on `entitlements.plan`, curated access uses `agents.free_tier`.
 
 | Env | Project | API URL |
 | :--- | :--- | :--- |

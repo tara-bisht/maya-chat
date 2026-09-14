@@ -2,22 +2,22 @@
 
 Don't talk to a boring AI chatbot. AI with real personality and character.
 
-Web + later mobile product: eight curated agents, custom Studio characters, plan-gated models through one LLM gateway, Stripe Plus/Pro.
+Every conversation is with a named character — first-party inbuilt agents (the catalog can grow) or a custom character you write in Studio. Plan-gated models through one LLM gateway. Stripe Plus/Pro.
 
 ## Docs
 
-Start at [`docs/README.md`](docs/README.md). Implementation sequence: [`docs/implementation-plan.md`](docs/implementation-plan.md). Glossary: [`CONTEXT.md`](CONTEXT.md).
+Start at [`docs/README.md`](docs/README.md). What is shipped: [`docs/NOW.md`](docs/NOW.md). Glossary: [`CONTEXT.md`](CONTEXT.md).
 
 ## Repo
 
 ```
-apps/web            Next.js 15 (lobby + later chat/API)
-packages/shared     Zod, compiler, plan helpers (Phase 1+)
-packages/database   Generated Supabase types (Phase 1)
-supabase/           Local config + migrations (Phase 1)
+apps/web            Next.js 15 (lobby, gallery, House, Studio, API)
+packages/shared     Zod, compiler, plan helpers
+packages/database   Generated Supabase types
+supabase/           Local config + migrations
 ```
 
-## Phase 0
+## Run
 
 ```bash
 pnpm install
@@ -25,7 +25,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000). Paper, Fraunces wordmark, eight playbills. Auth, chat, and Stripe are later PRs.
+Then open [http://localhost:3000](http://localhost:3000).
 
 ## Git
 

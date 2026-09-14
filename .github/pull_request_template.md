@@ -4,7 +4,7 @@
 
 ## Plan id
 
-<!-- PR0–PR6 from docs/implementation-plan.md, or n/a -->
+<!-- Slice from docs/NOW.md (e.g. PR4c), or n/a -->
 
 ## Test plan
 
