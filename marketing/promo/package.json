@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "remotion studio src/index.ts",
+    "studio": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
     "render:muse:v1": "remotion render src/index.ts LaunchMuse out/launch-muse-v1.mp4 --overwrite",
     "render:muse:v2": "remotion render src/index.ts LaunchMuseV2 out/launch-muse-v2.mp4 --overwrite",

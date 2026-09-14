@@ -4,6 +4,7 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "turbo dev",
+    "dev:promo": "pnpm --filter @maya/marketing-promo studio",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
