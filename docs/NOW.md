@@ -24,7 +24,7 @@ Marketing/playbill copy still uses a hardcoded `COMPANY` array ([`TODO-006`](bac
 
 ## Do not start unless named
 
-Rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), conversational casting, Maya host, Expo, voice, catalog seed ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)). Finish the open MVP slice first.
+Rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), conversational casting, Maya host, Expo, voice, catalog seed ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)), ensembles ([TODO-008](backlog/ideas/008-ensembles.md)). Finish the open MVP slice first.
 
 ## Open P0
 

@@ -146,4 +146,4 @@ Record in `.env.example` and a one-line comment on the embedding column when kno
 
 ## Out of this plan
 
-Voice, RevenueCat, real `code_sandbox`, in-app catalog admin, group chat, community marketplace, push, Upstash, rating, remix. See [`backlog/README.md`](backlog/README.md).
+Voice, RevenueCat, real `code_sandbox`, in-app catalog admin, group chat, ensembles ([TODO-008](backlog/ideas/008-ensembles.md)), community marketplace, push, Upstash, rating, remix. See [`backlog/README.md`](backlog/README.md).
