@@ -10,7 +10,7 @@ last_updated: "2026-09-14"
 ---
 ```
 
-These are **initial examples**, not a cap. The first-party catalog can grow to thousands of inbuilt agents. Adding a curated row does not require rewriting the PRD. Product language: [`../CONTEXT.md`](../CONTEXT.md). Executable seed: [`seed-agents.sql`](seed-agents.sql). How to write the next seats (jobs × archetypes): [`catalog/taxonomy.md`](catalog/taxonomy.md). Wave 1 names: [`catalog/wave-1.md`](catalog/wave-1.md).
+These are **initial examples**, not a cap. The first-party catalog can grow to thousands of inbuilt agents. Adding a curated row does not require rewriting the PRD. Product language: [`../CONTEXT.md`](../CONTEXT.md). Executable seed: [`seed-agents.sql`](seed-agents.sql). How to write the next seats (jobs × archetypes): [`catalog/taxonomy.md`](catalog/taxonomy.md). Wave 1 names: [`catalog/wave-1.md`](catalog/wave-1.md). Wave 2 (sages + canon): [`catalog/wave-2.md`](catalog/wave-2.md).
 
 Each starter agent delivers a distinct voice, high-utility answers, a structured behavioral loop, and tool bindings. Users can also create custom characters in Studio.
 

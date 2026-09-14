@@ -12,7 +12,7 @@ Signed-in web: Google auth, gallery, House streaming chat, prompt compiler, Stud
 
 Starter seed is the named first-party players in [`curated-agents.md`](curated-agents.md) plus coming-soon posters on Explore. Curated count is **not** a product constant — the house can hold thousands of inbuilt agents. Free sees `agents.free_tier`; Plus/Pro see every live curated row.
 
-How the company grows (jobs × archetypes, not generic bots): [`catalog/taxonomy.md`](catalog/taxonomy.md). Wave 1 roster: [`catalog/wave-1.md`](catalog/wave-1.md). Schema + seed: [`TODO-007`](backlog/ideas/007-inbuilt-catalog-jobs-voices.md) after the bill is catalog-backed ([`TODO-006`](backlog/ideas/006-catalog-driven-first-party-bill.md)).
+How the company grows (jobs × archetypes, not generic bots): [`catalog/taxonomy.md`](catalog/taxonomy.md). Wave 1 roster: [`catalog/wave-1.md`](catalog/wave-1.md). Wave 2 (sages + canon characters): [`catalog/wave-2.md`](catalog/wave-2.md). Schema + wave 1 seed: [`TODO-007`](backlog/ideas/007-inbuilt-catalog-jobs-voices.md) after the bill is catalog-backed ([`TODO-006`](backlog/ideas/006-catalog-driven-first-party-bill.md)). Wave 2 seed: [`TODO-009`](backlog/ideas/009-inbuilt-catalog-sages-canon.md).
 
 Marketing/playbill copy still uses a hardcoded `COMPANY` array ([`TODO-006`](backlog/ideas/006-catalog-driven-first-party-bill.md)). Runtime chat loads `public.agents`.
 
@@ -24,7 +24,7 @@ Marketing/playbill copy still uses a hardcoded `COMPANY` array ([`TODO-006`](bac
 
 ## Do not start unless named
 
-Rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), conversational casting, Maya host, Expo, voice, catalog seed ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)), ensembles ([TODO-008](backlog/ideas/008-ensembles.md)). Finish the open MVP slice first.
+Rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), conversational casting, Maya host, Expo, voice, catalog seed ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md), [TODO-009](backlog/ideas/009-inbuilt-catalog-sages-canon.md)), ensembles ([TODO-008](backlog/ideas/008-ensembles.md)). Finish the open MVP slice first.
 
 ## Open P0
 

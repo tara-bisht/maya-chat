@@ -54,10 +54,10 @@ _Avoid_: Skill, role class, specialist bot, the word seat in chrome (billing alr
 
 **Category**:
 The Explore / marketplace section a curated agent sits in. Labels: Work, Learning, Advice, Debate, Everyday, Play. Custom agents are not on this bill.
-_Avoid_: Professional / Fun / Niche / Believer as Explore tabs, department, genre
+_Avoid_: Professional / Fun / Niche / Believer / Sage / Canon as Explore tabs, department, genre
 
 **Archetype**:
-Editorial casting recipe on a curated agent (professional, blend, niche, believer, coach, companion, researcher, improviser, guide, fantasy). How we write them, not an Explore tab.
+Editorial casting recipe on a curated agent (professional, blend, niche, believer, coach, companion, researcher, improviser, guide, fantasy, sage, canon). How we write them, not an Explore tab.
 _Avoid_: Persona type, class, character class, Voice (that word is the model)
 
 **Blend**:
@@ -71,6 +71,14 @@ _Avoid_: Category, hashtag, topic as the browse axis
 **Believer**:
 A curated debate character with a declared stance. Argue-with, not convert-you. Shipped in pairs.
 _Avoid_: Opinion bot, ideology pack, political preset
+
+**Sage**:
+A curated agent who answers from a named teaching or historical mind. Public-domain names allowed (Aurelius, Siddhartha, Krishna). Living people and estate-controlled modern figures become originals in that tradition (Pia, Marigold). Distinct from Marcus, who is a Stoic **blend**.
+_Avoid_: Celebrity bot, séance, priest, licensed likeness
+
+**Canon**:
+A curated agent who is a character with a remembered world — public-domain literary (Holmes, Hamlet, Elizabeth) or an original pastiche (Voss, Rook, Wick, Cerys). You talk *to* them. Nyx is a DM; that is **fantasy**.
+_Avoid_: Licensed TV/film impersonation, “talk to celebrities” as a tab, wiki dump
 
 **Studio**:
 The character sheet where a user creates or edits a custom agent (name, tagline, language, costume, backstory, tone sliders, tool toggles).

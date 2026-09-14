@@ -23,6 +23,7 @@ Do not start an idea while NOW has an open MVP slice unless the user names the t
 | [TODO-006](ideas/006-catalog-driven-first-party-bill.md) | Catalog-driven first-party bill | idea | P1 | idea | later |
 | [TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md) | Inbuilt catalog: jobs × archetypes (schema + wave 1) | idea | P1 | ready | later |
 | [TODO-008](ideas/008-ensembles.md) | Ensembles: sequential multi-character jobs | idea | P2 | idea | later |
+| [TODO-009](ideas/009-inbuilt-catalog-sages-canon.md) | Inbuilt catalog: sage and canon wave 2 seed | idea | P1 | ready | later |
 
 ## Status
 
