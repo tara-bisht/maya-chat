@@ -21,6 +21,7 @@ Do not start an idea while NOW has an open MVP slice unless the user names the t
 | [TODO-004](ideas/004-rate-an-agent.md) | Rate an agent (1–5) | idea | P2 | idea | later |
 | [TODO-005](ideas/005-remix-an-agent.md) | Remix an agent into Studio | idea | P2 | idea | later |
 | [TODO-006](ideas/006-catalog-driven-first-party-bill.md) | Catalog-driven first-party bill | idea | P1 | idea | later |
+| [TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md) | Inbuilt catalog: jobs × archetypes (schema + wave 1) | idea | P1 | ready | later |
 
 ## Status
 

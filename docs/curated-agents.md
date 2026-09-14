@@ -10,7 +10,7 @@ last_updated: "2026-09-14"
 ---
 ```
 
-These are **initial examples**, not a cap. The first-party catalog can grow to thousands of inbuilt agents. Adding a curated row does not require rewriting the PRD. Product language: [`../CONTEXT.md`](../CONTEXT.md). Executable seed: [`seed-agents.sql`](seed-agents.sql).
+These are **initial examples**, not a cap. The first-party catalog can grow to thousands of inbuilt agents. Adding a curated row does not require rewriting the PRD. Product language: [`../CONTEXT.md`](../CONTEXT.md). Executable seed: [`seed-agents.sql`](seed-agents.sql). How to write the next seats (jobs × archetypes): [`catalog/taxonomy.md`](catalog/taxonomy.md). Wave 1 names: [`catalog/wave-1.md`](catalog/wave-1.md).
 
 Each starter agent delivers a distinct voice, high-utility answers, a structured behavioral loop, and tool bindings. Users can also create custom characters in Studio.
 
@@ -472,7 +472,7 @@ Your Core Personality Rules:
 | `id` | `UUID` | Stable deterministic or random UUID |
 | `name` | `TEXT` | Full display name (e.g., `Marcus (The Savage Stoic)`) |
 | `tagline` | `TEXT` | Quick one-liner punchline displayed on agent gallery cards |
-| `category` | `ENUM` | `'philosophy'`, `'learning'`, `'productivity'`, `'wellbeing'`, `'lifestyle'`, `'custom'` |
+| `category` | `ENUM` | Live: `'philosophy'`, `'learning'`, `'productivity'`, `'wellbeing'`, `'lifestyle'`, `'custom'`. Planned: `'play'`. Explore labels and archetypes: [`catalog/taxonomy.md`](catalog/taxonomy.md). |
 | `free_tier` | `BOOLEAN` | The Free gate. Seed: true for Marcus and Dr. Priya. Plus/Pro see every curated row. |
 | `avatar_url` | `TEXT` | Pre-rendered vector avatar asset in `/public/avatars/` |
 | `system_prompt` | `TEXT` | Production system prompt string |

@@ -44,6 +44,26 @@ _Avoid_: Free agent limit, first N agents, `curated_agent_limit` as a runtime ga
 The first-party repertory — every curated agent. Gallery copy says **Featured agents**, not “your bots.” Size follows the catalog.
 _Avoid_: Roster of chatbots, AI team, a fixed eight
 
+**Category**:
+The Explore / marketplace section a curated agent sits in. Labels: Work, Learning, Advice, Debate, Everyday, Play. Custom agents are not on this bill.
+_Avoid_: Professional / Fun / Niche / Believer as Explore tabs, department, genre
+
+**Archetype**:
+Editorial casting recipe on a curated agent (professional, blend, niche, believer, coach, companion, researcher, improviser, guide, fantasy). How we write them, not an Explore tab.
+_Avoid_: Persona type, class, character class, Voice (that word is the model)
+
+**Blend**:
+A curated agent whose job and personality would not normally share a room — math × flirty, Stoic × roast. Maya’s signature recipe.
+_Avoid_: Fun agent as a category, quirky skin, personality pack
+
+**Tag**:
+A queryable chip on a curated agent (`f1`, `email`, `capitalism`). Matchmaker and filters use tags; chrome may show a few.
+_Avoid_: Category, hashtag, topic as the browse axis
+
+**Believer**:
+A curated debate character with a declared stance. Argue-with, not convert-you. Shipped in pairs.
+_Avoid_: Opinion bot, ideology pack, political preset
+
 **Studio**:
 The character sheet where a user creates or edits a custom agent (name, tagline, language, costume, backstory, tone sliders, tool toggles).
 _Avoid_: Agent builder IDE, prompt playground
@@ -120,6 +140,10 @@ _Avoid_: Feature tile, white card with a 3px stripe, avatar list row
 The agent’s flood color. Owns the poster and the chat wash. Never the page background or the acid CTA.
 _Avoid_: Theme, skin, brand color per app chrome
 
+**Costume palette**:
+The reused set of flood inks posters pick from. Many agents share a flood. A new character does not require a new ink.
+_Avoid_: Per-character theme token, unique hex per agent
+
 **Voice**:
 The model the agent speaks through. Chat chrome shows **Voice through {alias}**. Not speech audio (that is v1.1).
 _Avoid_: Provider badge, “powered by Claude”
@@ -150,3 +174,7 @@ Chrome is plain. Agent voices stay opinionated. Strings live in `apps/web/lib/ui
 | Seat / Buy a better seat | Plan / Upgrade |
 | Daily curtain / The line dropped | Daily limit reached / Something went wrong |
 | Setting the house… | Loading… |
+| Philosophy (section) | Debate |
+| Productivity (section) | Work |
+| Wellbeing (section) | Advice |
+| Lifestyle (section) | Everyday |

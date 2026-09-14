@@ -7,7 +7,8 @@ export type MarketplaceCategoryId =
   | "philosophy"
   | "productivity"
   | "wellbeing"
-  | "lifestyle";
+  | "lifestyle"
+  | "play";
 
 export type MarketplacePlayer = {
   id: string;
@@ -46,23 +47,28 @@ export const MARKETPLACE_CATEGORIES: readonly {
   },
   {
     id: "philosophy",
-    label: "Philosophy",
-    body: "A roast, then the dichotomy. Or a quiet metaphysician.",
+    label: "Debate",
+    body: "A roast, then the dichotomy. Or someone who actually believes it.",
   },
   {
     id: "productivity",
-    label: "Productivity",
-    body: "The PR is on fire. The panel already hates take-homes.",
+    label: "Work",
+    body: "Emails that get a yes or a no. Decks that aren't forty slides. The PR is on fire.",
   },
   {
     id: "wellbeing",
-    label: "Wellbeing",
+    label: "Advice",
     body: "Sit down. Eat. Then we talk.",
   },
   {
     id: "lifestyle",
-    label: "Lifestyle",
-    body: "A cat who thinks you're the irrational one, and a cinephile who wants the cut.",
+    label: "Everyday",
+    body: "Fandoms, taste, and a cat who thinks you're the irrational one.",
+  },
+  {
+    id: "play",
+    label: "Play",
+    body: "Dungeon doors, yes-and rooms, bits with no job attached.",
   },
 ];
 
