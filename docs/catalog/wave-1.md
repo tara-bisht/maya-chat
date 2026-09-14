@@ -1,6 +1,6 @@
 # Wave 1 inbuilt roster
 
-Named sheets for the next catalog drop. Production system prompts and SQL land with [TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md) after [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Starter prompts already live: [`../curated-agents.md`](../curated-agents.md).
+Named sheets for the next catalog drop. Production system prompts and SQL land with [TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md) after [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Sages and canon characters are wave 2: [`wave-2.md`](wave-2.md). Starter prompts already live: [`../curated-agents.md`](../curated-agents.md).
 
 Promote the four coming-soon posters, then add twelve seats so every archetype has at least one live character. About sixteen new chat-able rows on top of the eight seed — not hundreds.
 

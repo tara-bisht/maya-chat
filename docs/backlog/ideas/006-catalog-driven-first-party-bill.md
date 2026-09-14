@@ -37,4 +37,4 @@ Runtime chat already loads `public.agents`. This is the marketing/playbill count
 
 - [ADR 0002](../../adr/0002-marketplace-is-first-party-bill.md) said live posters stay `COMPANY`. This todo revises that once the bill is catalog-backed.
 - Matchmaker and concierge must retrieve over the catalog, not inject every starter bio.
-- Wave 1 seed ([TODO-007](007-inbuilt-catalog-jobs-voices.md)) waits on this bill. Do not grow `COMPANY` to sixteen rows.
+- Wave 1 seed ([TODO-007](007-inbuilt-catalog-jobs-voices.md)) and wave 2 sage/canon seed ([TODO-009](009-inbuilt-catalog-sages-canon.md)) wait on this bill. Do not grow `COMPANY` to sixteen (or twenty-eight) rows.
