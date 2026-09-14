@@ -4,15 +4,15 @@ title: "Conversational Agent Creator: 'Maya' AI Casting Director"
 status: ready
 area: web
 priority: p1
-target_slice: PR5
+target_slice: later
 created_at: 2026-09-12
-updated_at: 2026-09-12
+updated_at: 2026-09-14
 ---
 
 # [TODO-001] Conversational Agent Creator: "Maya" AI Casting Director
 
 ## 💡 Overview & Motivation
-- **The Problem**: Creating a custom agent via [`apps/web/components/studio/casting-form.tsx`](../../apps/web/components/studio/casting-form.tsx) requires users to manually write system prompt backstories, formulate concise taglines, and manually balance numeric tone sliders (`warmth`, `directness`, `humor`). This creates cognitive friction for casual users and often leads to dry or uninspiring prompts.
+- **The Problem**: Creating a custom agent via [`apps/web/components/studio/casting-form.tsx`](../../../apps/web/components/studio/casting-form.tsx) requires users to manually write system prompt backstories, formulate concise taglines, and manually balance numeric tone sliders (`warmth`, `directness`, `humor`). This creates cognitive friction for casual users and often leads to dry or uninspiring prompts.
 - **The Opportunity**: Introduce **Maya**, the Resident Casting Director. Users chat with Maya in natural language (*"Make me an eccentric Renaissance alchemist who explains quantum physics using potion recipes"*). Maya converses with the user, probes for missing mandatory fields (`name`, core persona boundaries, tone), and interactively synthesizes a complete, production-ready character profile.
 
 ---
@@ -77,7 +77,7 @@ updated_at: 2026-09-12
 - **Entitlement Guards**:
   Respect existing `loadStudioContext()` and `evaluateStudioWrite()`. If a user is at their custom agent cap (`maxCustomAgents`), render the standard `PaywallTicket` before starting the session.
 - **Design Alignment**:
-  Adhere to [`docs/DESIGN.md`](../DESIGN.md): Maya Street Cast aesthetic, Night Wall (`#14110F`), Fraunces serif headers, Playbill ticket borders, and costume tokens.
+  Adhere to [`docs/DESIGN.md`](../../DESIGN.md): Maya Street Cast aesthetic, Night Wall (`#14110F`), Fraunces serif headers, Playbill ticket borders, and costume tokens.
 
 ---
 

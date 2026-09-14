@@ -4,9 +4,9 @@ title: "Global Maya Concierge UI: Command Palette (`⌘K`) & Floating Host Pass"
 status: ready
 area: web
 priority: p2
-target_slice: PR6
+target_slice: later
 created_at: 2026-09-12
-updated_at: 2026-09-12
+updated_at: 2026-09-14
 ---
 
 # [TODO-003] Global Maya Concierge UI: Command Palette (`⌘K`) & Floating Host Pass
@@ -48,7 +48,7 @@ updated_at: 2026-09-12
 ## 🛠️ Implementation Notes & Technical References
 
 - **Design System Alignment**:
-  - Follow [`docs/DESIGN.md`](../DESIGN.md): Night Wall `#14110F`, backdrop blur (`backdrop-blur-md bg-black/60`), Bricolage Grotesque body text, Fraunces serif wordmark, acid yellow `#E2F86E` accents.
+  - Follow [`docs/DESIGN.md`](../../DESIGN.md): Night Wall `#14110F`, backdrop blur (`backdrop-blur-md bg-black/60`), Bricolage Grotesque body text, Fraunces serif wordmark, acid yellow `#E2F86E` accents.
 - **Client State**:
   - Concierge conversation can be session-ephemeral or persisted in local storage so users can reopen `⌘K` and see their recent dialogue with Maya.
 

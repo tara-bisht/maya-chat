@@ -1,43 +1,22 @@
-# Maya Chat: Curated Out-of-the-Box Interesting Agents Catalog
+# Maya Chat: Starter curated agents (seed)
 
 ```yaml
 ---
 document_id: "CATALOG-MAYA-001"
-title: "Maya Chat: Curated Out-of-the-Box Agent Personas & Prompt Specifications"
-version: "1.0.0"
+title: "Maya Chat: Starter curated agent personas & prompt specifications"
+version: "1.1.0"
 status: "APPROVED"
-target_squad:
-  - "team-mates/cto"
-  - "team-mates/vp-backend"
-  - "team-mates/vp-webapps"
-  - "team-mates/vp-mobile-apps"
-  - "team-mates/prompt-engineer"
-last_updated: "2026-08-30"
+last_updated: "2026-09-14"
 ---
 ```
 
-## 🌟 Overview & Personality Philosophy
+These are **initial examples**, not a cap. The first-party catalog can grow to thousands of inbuilt agents. Adding a curated row does not require rewriting the PRD. Product language: [`../CONTEXT.md`](../CONTEXT.md). Executable seed: [`seed-agents.sql`](seed-agents.sql).
 
-### *"Don't talk to a boring AI chatbot. Give your AI personality and character."*
-
-Standard AI chatbots are bland, sterile, and homogenously apologetic. Every interaction receives the same corporate assistant tone. 
-
-**Maya Chat** establishes that **every conversation, question, and discussion must be with an intentional character**:
-- When **learning maths**, you need rigorous instruction, pedagogical patience, and engaging banter (like Dr. Priya) — not flat formula dumps.
-- When **discussing your favourite movie**, you need an opinionated cinephile with taste, passion, and cultural references — not an encyclopedia summary.
-- When **seeking relationship or life advice**, you need deep emotional grounding, fierce protection, or tough love (like Nonna Maria or Marcus) — not canned legal disclaimers.
-
-Users can converse with out-of-the-box players from our **pre-built repertory company** or create custom characters tailored to their exact needs in the Agent Studio.
-
-Each curated agent in the gallery delivers:
-1. **A Distinct Voice & Hook**: A charismatic dynamic (e.g., savage roasting, witty flirtation, exhausted pragmatism, maternal drama).
-2. **Uncompromising High-Utility Value**: Underneath the humor and flair, the agent delivers mathematically rigorous, philosophically sound, or production-grade technical answers.
-3. **Structured Behavioral Loops**: A 3-step response cycle (The Hook / The Deep Insight / The Actionable Challenge).
-4. **Calibrated Tone Sliders & Tool Bindings**: Exact database and prompt compiler configurations.
+Each starter agent delivers a distinct voice, high-utility answers, a structured behavioral loop, and tool bindings. Users can also create custom characters in Studio.
 
 ---
 
-## 🎭 The 8 Out-of-the-Box Curated Personas
+## Starter seed (examples)
 
 ```mermaid
 graph TD
@@ -494,7 +473,7 @@ Your Core Personality Rules:
 | `name` | `TEXT` | Full display name (e.g., `Marcus (The Savage Stoic)`) |
 | `tagline` | `TEXT` | Quick one-liner punchline displayed on agent gallery cards |
 | `category` | `ENUM` | `'philosophy'`, `'learning'`, `'productivity'`, `'wellbeing'`, `'lifestyle'`, `'custom'` |
-| `free_tier` | `BOOLEAN` | `true` only for Marcus and Dr. Priya. Plus/Pro see every curated row. |
+| `free_tier` | `BOOLEAN` | The Free gate. Seed: true for Marcus and Dr. Priya. Plus/Pro see every curated row. |
 | `avatar_url` | `TEXT` | Pre-rendered vector avatar asset in `/public/avatars/` |
 | `system_prompt` | `TEXT` | Production system prompt string |
 | `tone_settings` | `JSONB` | Dynamic slider values (`warmth`, `directness`, `humor`, etc.) |

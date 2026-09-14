@@ -6,7 +6,7 @@ Maya Chat is two people (`tara-bisht` admin, `bishtk435` write) shipping a PR-se
 feature branch  →  pull request  →  CI green  →  squash-merge to main  →  Vercel prod
 ```
 
-Build slices live in [`implementation-plan.md`](implementation-plan.md) (PR0–PR6). Deploy: Vercel preview on the PR, production on `main` ([`technical-plan.md`](technical-plan.md) §15).
+Current slice: [`NOW.md`](NOW.md). Remaining PR write-ups: [`implementation-plan.md`](implementation-plan.md). Deploy: Vercel preview on the PR, production on `main` ([`technical-plan.md`](technical-plan.md) §15).
 
 ---
 
@@ -27,16 +27,18 @@ Build slices live in [`implementation-plan.md`](implementation-plan.md) (PR0–P
 | `hotfix/` | Production break | `hotfix/stripe-webhook-500` |
 
 - Lowercase, hyphens. No `kamal/…`, no `wip`.
-- When the work **is** an implementation-plan slice, put the id in the name (`feat/pr2-marcus-stream`).
-- Open `feat/prN` after `PR(N-1)` is on `main`, unless the packages do not overlap.
+- When the work **is** the open slice in [`NOW.md`](NOW.md), put the id in the name (`feat/pr4c-memory-stripe`).
+- Do not start the next numbered PR until the current one is on `main`, unless the packages do not overlap.
 
-Start every slice from current `main`:
+Agents: isolated worktree per task (git-worktree-workflow skill). Do not switch the primary checkout.
+
+Humans on a dedicated clone may start from current `main`:
 
 ```bash
 git fetch origin
 git switch main
 git pull --ff-only
-git switch -c feat/pr1-auth-rls
+git switch -c feat/pr4c-memory-stripe
 ```
 
 Push the branch (`git push -u origin HEAD`). Do not push `main`.
@@ -64,7 +66,7 @@ Stage the files that belong to this slice. Leave unrelated dirty files unstaged.
 Agents: `/pr-creator` (canonical skill: `.agents/skills/pr-creator`).
 
 - Base: `main`. Title matches the single commit (`feat(auth): …`).
-- Fill the template: summary, plan id (`PR1` or `n/a`), test plan.
+- Fill the template: summary, plan id from [`NOW.md`](NOW.md) (or `n/a`), test plan.
 - Independently reviewable: `pnpm turbo lint typecheck test build` green. Zod if the PR adds a route. RLS if it adds a table.
 - Visual UI: attach screenshots as a **PR comment** (`gh pr comment --attach`). Do not commit screenshot files.
 - Apply one kind label and the matching area labels (below). Request review from the other person.

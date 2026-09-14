@@ -216,7 +216,7 @@ This is the live system in `apps/web`. It **supersedes** the old “Maya House�
 
 The reference object is **a festival lineup wheatpasted onto a city wall after dark.** Overlapping posters. Costume color floods. Cream type. One acid ticket for the move that matters. A 7% film-grain overlay sits on the whole product (`pointer-events: none`) so the night feels printed, not vector-clean.
 
-The lobby (landing, Home/gallery, marketplace, studio, pricing) is the wall: the eight agents *are* the page. `/marketplace` is the public catalog — live posters plus coming-soon posters, grouped by category. Chat requires sign-in. Chat is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
+The lobby (landing, Home/gallery, marketplace, studio, pricing) is the wall: featured agents *are* the page. `/marketplace` is the public catalog — live posters plus coming-soon posters, grouped by category. The first-party catalog can grow; do not treat the starter seed as a closed roster. Chat requires sign-in. Chat is the same night with the posters dropped to a rail and a wash — the character still owns the color, the chrome does not become a beige document.
 
 **North star:** the company is loud. The product looks like a show, not a settings panel.
 

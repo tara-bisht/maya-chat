@@ -66,7 +66,7 @@ Done when `origin` has this branch. Never push `main`.
 Base: `main`. Title: the single commit subject. Body fills [`.github/pull_request_template.md`](../../../.github/pull_request_template.md) with real content (not the HTML comments):
 
 - **Summary** — what changed and why.
-- **Plan id** — `PR0`–`PR6` from `docs/implementation-plan.md` when this is that slice; otherwise `n/a`.
+- **Plan id** — the open slice in `docs/NOW.md` when this is that work; otherwise `n/a`.
 - **Test plan** — tick what was actually run. UI screenshot checkbox is for the comment in step 8, not a committed file.
 - **Notes** — cuts, follow-ups, secrets that stayed out.
 
