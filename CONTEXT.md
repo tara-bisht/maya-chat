@@ -44,6 +44,14 @@ _Avoid_: Free agent limit, first N agents, `curated_agent_limit` as a runtime ga
 The first-party repertory — every curated agent. Gallery copy says **Featured agents**, not “your bots.” Size follows the catalog.
 _Avoid_: Roster of chatbots, AI team, a fixed eight
 
+**Ensemble**:
+A named job made of ordered seats (learn a topic, founder brief). Curated or user-owned. Used as one unit. Each seat is still a 1:1 Conversation with one Agent.
+_Avoid_: Workflow, pipeline, crew, swarm, DAG, multi-agent, orchestration, AI team
+
+**Seat**:
+One place in an Ensemble: which Agent, what this step is for, optional pinned Voice. Chrome shows the agent name and the job (`Assess`, `Quiz`).
+_Avoid_: Skill, role class, specialist bot, the word seat in chrome (billing already uses Plan for that word)
+
 **Category**:
 The Explore / marketplace section a curated agent sits in. Labels: Work, Learning, Advice, Debate, Everyday, Play. Custom agents are not on this bill.
 _Avoid_: Professional / Fun / Niche / Believer as Explore tabs, department, genre
@@ -120,6 +128,14 @@ _Avoid_: session, room, untitled “New Chat” as a DB leftover shown raw
 A Conversation in the agent rail. Same object as Conversation. UI: **Chats**.
 _Avoid_: DM
 
+**Run**:
+One execution of an Ensemble. Snapshot of seats at start so later template edits do not mutate it. Contains one Conversation per seat.
+_Avoid_: Session, pipeline run, job id in chrome, group thread
+
+**Brief**:
+The shared write-up handed seat to seat in a Run (goal, notes, last output). User-editable. Not memory.
+_Avoid_: Global memory, shared embeddings, context dump, ChatGPT-style memory dump
+
 **Lobby**:
 Landing, marketplace, and signed-in Home (gallery), Explore, Studio, Profile: night-wall surfaces before chat.
 _Avoid_: Marketing SaaS layout, quiet beige brochure. Do not name the UI “Dashboard.”
@@ -133,7 +149,7 @@ A first-party character announced on the marketplace who is not a chat-able `age
 _Avoid_: Draft agent, unpublished bot, disabled custom agent
 
 **Playbill**:
-A costume-flood poster for an agent: linocut portrait, Fraunces name, tagline, optional Plus sticker. Tilted, overlapping.
+A costume-flood poster for an agent or ensemble: linocut portrait, Fraunces name, tagline, optional Plus sticker. Tilted, overlapping.
 _Avoid_: Feature tile, white card with a 3px stripe, avatar list row
 
 **Costume**:
@@ -164,6 +180,10 @@ Chrome is plain. Agent voices stay opinionated. Strings live in `apps/web/lib/ui
 |---|---|
 | Wristband / Wristband check | Profile / Sign in |
 | Casting notes / Cast someone | Create agent / Edit agent |
+| Cast a bill / Create lineup | Create ensemble |
+| Workflow / pipeline / crew / swarm | Ensemble / Start |
+| Act I / Role 3 / specialist | Agent name + job (Assess, Quiz) |
+| Shared memory / context dump | Brief |
 | Tonight's company / The lineup | Home / Featured agents |
 | Your roles / On your wall | Your agents |
 | House listing / Also on the wall | From other people |

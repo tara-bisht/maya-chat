@@ -87,6 +87,7 @@ Starter examples (not the cap): Marcus, Dr. Priya, Alex, Nonna Maria, Viktor, Va
 
 - Rating an agent 1–5 ([TODO-004](backlog/ideas/004-rate-an-agent.md)).
 - Remix an agent ([TODO-005](backlog/ideas/005-remix-an-agent.md)).
+- Ensembles: sequential multi-character jobs ([TODO-008](backlog/ideas/008-ensembles.md)). Still not group chat.
 - Community agent marketplace / creator payouts.
 - Multi-agent group chats.
 - Offline local models.
