@@ -1,5 +1,6 @@
 import { PageInner } from "@/components/app/page-frame";
 import { HeroStage } from "@/components/landing/hero-stage";
+import { QuickChatWidget } from "@/components/landing/quick-chat-widget";
 import { HERO } from "@/lib/landing";
 
 function PersonalityMark({ children }: { children: string }) {
@@ -40,6 +41,9 @@ export function Hero() {
         <p className="mx-auto mt-6 max-w-xl text-center font-sans text-lg leading-snug text-cream-dim">
           {HERO.body}
         </p>
+        <div className="mt-10 md:mt-12">
+          <QuickChatWidget />
+        </div>
         <div className="mt-12 md:mt-16">
           <HeroStage />
         </div>

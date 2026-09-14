@@ -14,6 +14,7 @@ export type PosterCostumeId = CostumeId | ComingSoonCostumeId;
 
 export type CompanyPlayer = {
   id: string;
+  slug: string;
   name: string;
   shortName: string;
   tagline: string;
@@ -23,10 +24,24 @@ export type CompanyPlayer = {
   freeTier: boolean;
 };
 
+export const MAYA_HOST: CompanyPlayer = {
+  id: "00000000-0000-0000-0000-000000000000",
+  slug: "maya",
+  name: "Maya (Resident House Host)",
+  shortName: "Maya",
+  tagline:
+    "Welcome to the theater. Tell me what's on your mind, and I'll match you with the right persona or help you think it through.",
+  category: "lifestyle",
+  costume: "maya",
+  avatar: "/avatars/maya-host.svg",
+  freeTier: true,
+};
+
 /** Marketing/playbill copy. Runtime catalog still comes from `public.agents`. */
 export const COMPANY: CompanyPlayer[] = [
   {
     id: "00000000-0000-0000-0000-000000000001",
+    slug: "marcus-01",
     name: "Marcus (The Savage Stoic)",
     shortName: "Marcus",
     tagline:
@@ -38,6 +53,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000002",
+    slug: "priya-02",
     name: "Dr. Priya (Flirty STEM Prof)",
     shortName: "Dr. Priya",
     tagline:
@@ -49,6 +65,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000003",
+    slug: "alex-03",
     name: "Alex (Exhausted 10x Tech Lead)",
     shortName: "Alex",
     tagline:
@@ -60,6 +77,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000004",
+    slug: "nonna-04",
     name: "Nonna Maria (Fierce Italian Grandma)",
     shortName: "Nonna Maria",
     tagline:
@@ -71,6 +89,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000005",
+    slug: "viktor-05",
     name: "Viktor (Tin-Foil Drill Sergeant)",
     shortName: "Viktor",
     tagline:
@@ -82,6 +101,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000006",
+    slug: "valerian-06",
     name: "Valerian (The Cosmic Polymath)",
     shortName: "Valerian",
     tagline:
@@ -93,6 +113,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000007",
+    slug: "barnaby-07",
     name: "Barnaby (The Cynical Apartment Cat)",
     shortName: "Barnaby",
     tagline:
@@ -104,6 +125,7 @@ export const COMPANY: CompanyPlayer[] = [
   },
   {
     id: "00000000-0000-0000-0000-000000000008",
+    slug: "ren-08",
     name: "Ren (The Shy Metaphysician)",
     shortName: "Ren",
     tagline:
@@ -116,6 +138,7 @@ export const COMPANY: CompanyPlayer[] = [
 ];
 
 export const COSTUME_CLASS: Record<PosterCostumeId, string> = {
+  maya: "bg-costume-maya",
   marcus: "bg-costume-marcus",
   priya: "bg-costume-priya",
   alex: "bg-costume-alex",
@@ -133,6 +156,7 @@ export const COSTUME_CLASS: Record<PosterCostumeId, string> = {
 
 /** Full class strings so Tailwind emits the 90% costume wash. */
 export const COSTUME_WASH_CLASS: Record<PosterCostumeId, string> = {
+  maya: "bg-costume-maya/90",
   marcus: "bg-costume-marcus/90",
   priya: "bg-costume-priya/90",
   alex: "bg-costume-alex/90",

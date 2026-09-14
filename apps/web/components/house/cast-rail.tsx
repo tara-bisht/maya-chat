@@ -34,7 +34,7 @@ export function CastRail({
             <div key={member.id} className="mb-1">
               <Link
                 href={houseHref(
-                  member.id,
+                  member.slug || member.id,
                   active
                     ? (activeConversationId ?? member.latestId)
                     : member.latestId,
@@ -72,7 +72,7 @@ export function CastRail({
                   {threads.map((thread) => (
                     <li key={thread.id}>
                       <Link
-                        href={houseHref(member.id, thread.id)}
+                        href={houseHref(member.slug || member.id, thread.id)}
                         className="block truncate py-1 font-sans text-sm text-cream-dim hover:text-cream"
                       >
                         {thread.title}
@@ -81,7 +81,7 @@ export function CastRail({
                   ))}
                   <li>
                     <Link
-                      href={houseHref(member.id)}
+                      href={houseHref(member.slug || member.id)}
                       className="block py-1 font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
                     >
                       New chat

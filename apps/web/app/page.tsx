@@ -1,6 +1,8 @@
 import { PageInner } from "@/components/app/page-frame";
 import { CompanyWall } from "@/components/playbill-card";
 import { Hero } from "@/components/landing/hero";
+import { FrontierModels } from "@/components/landing/frontier-models";
+import { FloatingChatLauncher } from "@/components/landing/floating-chat-launcher";
 import { HouseOpen } from "@/components/landing/house-open";
 import { HouseSteps } from "@/components/landing/house-steps";
 import { LobbyFooter } from "@/components/landing/lobby-footer";
@@ -41,6 +43,8 @@ export default async function Home() {
         </PageInner>
       </section>
 
+      <FrontierModels />
+
       <Usual />
       <Nights />
       <HouseSteps />
@@ -49,6 +53,7 @@ export default async function Home() {
       <Notes />
       <HouseOpen />
       <LobbyFooter />
+      <FloatingChatLauncher />
     </div>
   );
 }

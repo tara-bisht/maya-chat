@@ -69,6 +69,7 @@ export type Database = {
           tools_enabled: string[];
           updated_at: string;
           user_id: string | null;
+          slug: string | null;
         };
         Insert: {
           archived_at?: string | null;
@@ -88,6 +89,7 @@ export type Database = {
           tools_enabled?: string[];
           updated_at?: string;
           user_id?: string | null;
+          slug?: string | null;
         };
         Update: {
           archived_at?: string | null;
@@ -107,6 +109,7 @@ export type Database = {
           tools_enabled?: string[];
           updated_at?: string;
           user_id?: string | null;
+          slug?: string | null;
         };
         Relationships: [];
       };

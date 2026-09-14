@@ -22,6 +22,7 @@ export type ThreadSummary = {
 
 export type CastMember = {
   id: string;
+  slug?: string | null;
   shortName: string;
   costume: CostumeId;
   avatar: string;
@@ -31,6 +32,7 @@ export type CastMember = {
 
 export type HouseAgent = {
   id: string;
+  slug?: string | null;
   name: string;
   shortName: string;
   tagline: string;

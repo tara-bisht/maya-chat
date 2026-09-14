@@ -3,7 +3,7 @@ import type { CastMember, ThreadSummary } from "./types";
 import type { HouseAgentRow } from "./columns";
 import { avatarFor, shortNameFor } from "./public-agent";
 import { parseCostumeId } from "@maya/shared";
-import { COMPANY } from "@/lib/company";
+import { COMPANY, MAYA_HOST } from "@/lib/company";
 
 export type ConversationRow = {
   id: string;
@@ -48,8 +48,10 @@ function hasMessages(row: ConversationRow): boolean {
   return row.messageCount > 0;
 }
 
+const ALL_PLAYERS = [MAYA_HOST, ...COMPANY];
+
 const COMPANY_ORDER = new Map(
-  COMPANY.map((player, index) => [player.id, index]),
+  ALL_PLAYERS.map((player, index) => [player.id, index]),
 );
 
 export function displayThreadTitle(title: string): string {
@@ -118,8 +120,10 @@ export function buildCast(input: {
 
   return ordered.map((agent) => {
     const thread = latest.get(agent.id);
+    const known = ALL_PLAYERS.find((p) => p.id === agent.id);
     return {
       id: agent.id,
+      slug: agent.slug ?? known?.slug ?? null,
       shortName: shortNameFor(agent),
       costume: parseCostumeId(agent.costume_id),
       avatar: avatarFor(agent),

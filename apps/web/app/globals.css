@@ -14,6 +14,7 @@
   --maya-code-well: #0c0a09;
   --maya-on-code: #e4d8c8;
   --maya-overlay: #14110f99;
+  --maya-costume-maya: #ceff00;
   --maya-costume-marcus: #1f5a3c;
   --maya-costume-priya: #9b1b4e;
   --maya-costume-alex: #3a2418;
@@ -63,6 +64,7 @@
   --color-ink-soft: var(--maya-ink-soft);
   --color-code-well: var(--maya-code-well);
   --color-on-code: var(--maya-on-code);
+  --color-costume-maya: var(--maya-costume-maya);
   --color-costume-marcus: var(--maya-costume-marcus);
   --color-costume-priya: var(--maya-costume-priya);
   --color-costume-alex: var(--maya-costume-alex);

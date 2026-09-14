@@ -108,3 +108,11 @@ export {
   type ResolveModelIdInput,
   type ResolveModelIdResult,
 } from "./credits";
+
+export {
+  generateCustomAgentSlug,
+  isAgentSlug,
+  isShortThreadId,
+  shortIdToUuid,
+  uuidToShortId,
+} from "./ids";

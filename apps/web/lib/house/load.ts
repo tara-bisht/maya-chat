@@ -9,10 +9,12 @@ import {
   parseCreditBalance,
   parseMayaPlan,
   resolveModelId,
+  shortIdToUuid,
 } from "@maya/shared";
 import { loadCatalogModels } from "@/lib/credits/load";
 import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
+import { resolveCuratedSlug } from "./slugs";
 import { toHouseAgent } from "./public-agent";
 import {
   buildCast,
@@ -58,11 +60,32 @@ export async function loadHouse(
     conversationId?: string | null;
   },
 ): Promise<HouseLoad> {
-  if (!isUuid(input.agentId)) {
+  let resolvedAgentId = resolveCuratedSlug(input.agentId);
+  if (!resolvedAgentId) {
+    if (isUuid(input.agentId)) {
+      resolvedAgentId = input.agentId;
+    } else {
+      const { data: slugRow } = await supabase
+        .from("agents")
+        .select("id")
+        .eq("slug", input.agentId)
+        .maybeSingle();
+      if (slugRow) {
+        resolvedAgentId = slugRow.id;
+      }
+    }
+  }
+
+  if (!resolvedAgentId || !isUuid(resolvedAgentId)) {
     return { ok: false, reason: "not_found" };
   }
-  if (input.conversationId && !isUuid(input.conversationId)) {
-    return { ok: false, reason: "not_found" };
+
+  let resolvedConversationId = input.conversationId ?? null;
+  if (resolvedConversationId) {
+    resolvedConversationId = shortIdToUuid(resolvedConversationId);
+    if (!isUuid(resolvedConversationId)) {
+      return { ok: false, reason: "not_found" };
+    }
   }
 
   const [
@@ -76,7 +99,7 @@ export async function loadHouse(
     supabase
       .from("agents")
       .select(HOUSE_AGENT_COLUMNS)
-      .eq("id", input.agentId)
+      .eq("id", resolvedAgentId)
       .maybeSingle(),
     supabase
       .from("entitlements")
@@ -92,7 +115,7 @@ export async function loadHouse(
       .from("agents")
       .select(HOUSE_AGENT_COLUMNS)
       .or(
-        `is_curated.eq.true,user_id.eq.${input.userId},id.eq.${input.agentId}`,
+        `is_curated.eq.true,user_id.eq.${input.userId},id.eq.${resolvedAgentId}`,
       ),
     supabase
       .from("profiles")
@@ -145,9 +168,9 @@ export async function loadHouse(
   const threads = threadsForAgent(conversationRows, agent.id);
 
   let conversation: HouseView["conversation"] = null;
-  if (input.conversationId) {
+  if (resolvedConversationId) {
     const summary = conversationRows.find(
-      (item) => item.id === input.conversationId && item.agent_id === agent.id,
+      (item) => item.id === resolvedConversationId && item.agent_id === agent.id,
     );
     if (!summary) {
       return { ok: false, reason: "not_found" };
@@ -173,9 +196,9 @@ export async function loadHouse(
 
   const defaultModelId = catalog?.defaultModelId ?? "qwen-flash";
   const models = catalog?.models ?? [];
-  const conversationModelId = input.conversationId
+  const conversationModelId = resolvedConversationId
     ? ((conversationResult.data ?? []).find(
-        (item) => item.id === input.conversationId,
+        (item) => item.id === resolvedConversationId,
       )?.model_id ?? null)
     : null;
   const allowed = new Set(
