@@ -4,7 +4,7 @@ import { LOBBY_NAV } from "@/lib/landing";
 
 export function LobbyHeader({
   signedIn = false,
-  cta = { href: "#studio", label: "Create an agent" },
+  cta = { href: "/chat", label: "Chat with Maya" },
 }: {
   signedIn?: boolean;
   cta?: { href: string; label: string };
@@ -35,10 +35,10 @@ export function LobbyHeader({
         <nav className="flex items-center justify-end gap-2 justify-self-end md:gap-3">
           {signedIn ? (
             <Link
-              href="/gallery"
+              href="/chat"
               className="px-2 py-2 font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline md:px-3"
             >
-              Home
+              Chat
             </Link>
           ) : (
             <Link

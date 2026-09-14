@@ -1,4 +1,4 @@
-export const DEFAULT_NEXT = "/gallery";
+export const DEFAULT_NEXT = "/chat";
 
 /** Same-origin path only. Reject protocol-relative and off-site next values. */
 export function safeNextPath(raw: string | null | undefined): string {

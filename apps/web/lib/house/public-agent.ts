@@ -8,11 +8,12 @@ import {
   toneSettingsSchema,
   type MayaPlan,
 } from "@maya/shared";
-import { COMPANY } from "@/lib/company";
+import { COMPANY, MAYA_HOST } from "@/lib/company";
 import type { HouseAgent } from "./types";
 import type { HouseAgentRow } from "./columns";
 
-const COMPANY_BY_ID = new Map(COMPANY.map((player) => [player.id, player]));
+const ALL_PLAYERS = [MAYA_HOST, ...COMPANY];
+const COMPANY_BY_ID = new Map(ALL_PLAYERS.map((player) => [player.id, player]));
 
 export function shortNameFor(row: { id: string; name: string }): string {
   return COMPANY_BY_ID.get(row.id)?.shortName ?? row.name;
@@ -45,6 +46,7 @@ export function toHouseAgent(input: {
 
   return {
     id: row.id,
+    slug: row.slug ?? known?.slug ?? null,
     name: row.name,
     shortName: known?.shortName ?? row.name,
     tagline: row.tagline,

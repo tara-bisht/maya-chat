@@ -17,6 +17,7 @@ import { archiveCustomAgent, saveCastingNotes, type StudioActionState } from "@/
 import { PaywallTicket, studioCapCopy } from "@/components/app/paywall-ticket";
 
 const COSTUME_LABEL: Record<CostumeId, string> = {
+  maya: "Maya acid",
   marcus: "Marcus moss",
   priya: "Priya magenta",
   alex: "Alex espresso",

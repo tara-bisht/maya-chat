@@ -1,4 +1,5 @@
 export const COSTUME_IDS = [
+  "maya",
   "marcus",
   "priya",
   "alex",

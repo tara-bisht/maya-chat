@@ -2,6 +2,7 @@ import { COMPANY, type CostumeId } from "@/lib/company";
 
 /** Jump links shared by the lobby header and footer. */
 export const LOBBY_NAV = [
+  { href: "/#models", label: "Models" },
   { href: "/marketplace", label: "Marketplace" },
   { href: "/#house", label: "How it works" },
   { href: "/#studio", label: "Create an agent" },

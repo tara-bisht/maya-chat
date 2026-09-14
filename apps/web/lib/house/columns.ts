@@ -1,6 +1,6 @@
 /** Columns the House may send to the client. Never include `system_prompt`. */
 export const HOUSE_AGENT_COLUMNS =
-  "id, user_id, name, tagline, avatar_url, category, is_curated, is_public, free_tier, language_preset, tone_settings, tools_enabled, costume_id, archived_at" as const;
+  "id, user_id, name, tagline, avatar_url, category, is_curated, is_public, free_tier, language_preset, tone_settings, tools_enabled, costume_id, archived_at, slug" as const;
 
 export type HouseAgentRow = {
   id: string;
@@ -17,4 +17,5 @@ export type HouseAgentRow = {
   tools_enabled: string[];
   costume_id: string;
   archived_at: string | null;
+  slug?: string | null;
 };
