@@ -15,7 +15,7 @@ export const HERO = {
   titleLead: TITLE_LEAD,
   titleMark: TITLE_MARK,
   title: `${TITLE_LEAD}${TITLE_MARK}`,
-  body: "Not another sterile chatbot. Talk to our resident cast of opinionated AI characters — or write your own in the Studio with custom backstory, tone, and tools.",
+  body: "Not another bland chatbot. Chat with specialized AI agents — or create your own with instructions, tone, and tools.",
 } as const;
 
 export type HeroScene = {
@@ -84,7 +84,7 @@ export const HERO_SCENES: HeroScene[] = [
   ),
   heroScene(
     "Nonna Maria",
-    "Wellbeing",
+    "Advice",
     "I skipped lunch again.",
     "Sit. I made sauce. You think the work will love you back if you starve? Eat. Then we talk.",
     "Sit. Eat.",
@@ -121,8 +121,8 @@ export const HERO_SCENES: HeroScene[] = [
 
 export const COMPANY_KICKER = {
   kicker: "Featured",
-  title: "Start with a voice",
-  body: "A few we already wrote. Borrow one tonight. Then open Studio and make the one you actually need.",
+  title: "Start with an agent",
+  body: "A few we already made. Chat with one, or create your own.",
 } as const;
 
 export type NightScene = {
@@ -151,7 +151,7 @@ export const NIGHTS: NightScene[] = [
     id: "advice",
     costume: "nonna",
     player: "Nonna Maria",
-    kicker: "Wellbeing",
+    kicker: "Advice",
     title: "When you need advice",
     body: "You need fierce care or a stoic roast — not a canned corporate disclaimer.",
     prompt: "I skipped lunch again.",
@@ -161,7 +161,7 @@ export const NIGHTS: NightScene[] = [
     id: "code",
     costume: "alex",
     player: "Alex",
-    kicker: "Productivity",
+    kicker: "Work",
     title: "When the PR is on fire",
     body: "You need production edge cases from someone who has been on call too long — not a cheerful autocomplete.",
     prompt: "This PR is 800 lines.",
@@ -172,21 +172,21 @@ export const NIGHTS: NightScene[] = [
 export const NIGHTS_KICKER = {
   kicker: "Scenes",
   title: "Different moments, different personalities",
-  body: "A proof, a pep talk, and a production fire do not share a voice. If none of these fit, you write one.",
+  body: "A proof, a pep talk, and a production fire need different agents. If none of these fit, create one.",
 } as const;
 
 export const HOUSE_KICKER = {
   kicker: "How it works",
   title: "Three steps",
-  body: "Pick a voice or write one. Chat. They keep the thread.",
+  body: "Pick an agent or create one. Chat. They remember.",
 } as const;
 
 export const HOUSE_STEPS = [
   {
     n: "01",
     title: "Pick or create",
-    body: "Start from a featured character, or open Studio and write your own — name, backstory, tone.",
-    pills: ["Name", "Backstory", "Tone"],
+    body: "Start from a featured agent, or create your own — name, instructions, tone.",
+    pills: ["Name", "Instructions", "Tone"],
   },
   {
     n: "02",
@@ -197,7 +197,7 @@ export const HOUSE_STEPS = [
   {
     n: "03",
     title: "They remember",
-    body: "Plus and Pro keep private memory per agent. Free keeps the latest stretch of the thread. Pick the model they speak through.",
+    body: "Plus and Pro keep private memory per agent. Free keeps the latest stretch of the thread. You pick the model.",
     pills: ["Per-agent memory", "Pick the model"],
   },
 ] as const;
@@ -332,22 +332,22 @@ export const USUAL = {
 };
 
 export const HOUSE_OPEN = {
-  kicker: "Tonight",
-  title: "The house is open.",
-  body: "Pick a voice, or write the one you actually need.",
+  kicker: "Get started",
+  title: "Pick an agent. Or create one.",
+  body: "Official specialists for the jobs people already use AI for. Make your own if none fit.",
   cta: { href: "/#studio", label: "Create an agent" },
   secondary: { href: "/#seats", label: "See plans" },
-  stamp: "Tonight · write a voice",
+  stamp: "Maya",
 } as const;
 
 export const STUDIO = {
   kicker: "Create an agent",
   title: "Write the personality",
-  body: "Name, tagline, costume, backstory. Warmth, directness, humor. Language presets include Hinglish and Hindi — real Devanagari. Create characters with genuine point of view, right on the platform.",
+  body: "Name, description, color, instructions. Warmth, directness, humor. Language includes Hinglish and Hindi — real Devanagari. Create agents with a real point of view.",
   cap: "Free: 3 public · Plus: 10 · Pro: unlimited",
   fields: [
     { label: "Name", value: "Yours" },
-    { label: "Tagline", value: "One line they would actually say" },
+    { label: "Description", value: "One line they would actually say" },
     { label: "Language", value: "Global English · Hinglish · Hindi" },
     { label: "Tone", value: "Warmth · Directness · Humor" },
   ],
@@ -372,11 +372,11 @@ export const SEATS_FOOTNOTE =
 export const NOTES = [
   {
     q: "Can I make my own agent?",
-    a: "Yes. That is the point. Name, tagline, costume, backstory, tone. Free keeps three public. Plus gets ten, public or private. Pro is unlimited.",
+    a: "Yes. That is the point. Name, description, instructions, tone. Free keeps three public. Plus gets ten, public or private. Pro is unlimited.",
   },
   {
     q: "What can I do on Free?",
-    a: "Talk to our featured starter characters (Marcus and Dr. Priya), then write three public characters of your own in Studio. Credits reset 00:00 UTC. Models follow the catalog on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
+    a: "Chat with Marcus and Dr. Priya, then create three public agents of your own. Credits reset 00:00 UTC. Models are listed on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
   },
   {
     q: "Do they remember me?",
@@ -388,7 +388,7 @@ export const NOTES = [
   },
   {
     q: "Which models?",
-    a: "The model is the instrument, not the character. Free, Plus, and Pro unlock different voices. Plans lists the current catalog.",
+    a: "You pick the model. Free, Plus, and Pro unlock different models. Plans lists the current catalog.",
   },
 ] as const;
 

@@ -23,7 +23,7 @@ export function parsePlanReason(
 export function planReasonHeading(reason: PlanReason | null): string | null {
   switch (reason) {
     case "locked-agent":
-      return "That voice needs Plus.";
+      return "That agent needs Plus.";
     case "quota":
       return "Out of credits.";
     case "studio-cap":

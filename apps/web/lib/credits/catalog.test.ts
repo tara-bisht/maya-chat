@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CatalogModel } from "./catalog";
-import { pickVoice, voiceThroughLabel } from "./catalog";
+import { modelLabel, pickVoice } from "./catalog";
 
 function model(
   partial: Partial<CatalogModel> & Pick<CatalogModel, "id" | "allowed" | "minPlan">,
@@ -37,8 +37,8 @@ describe("pickVoice", () => {
   });
 });
 
-describe("voiceThroughLabel", () => {
-  it("uses the house chrome string", () => {
-    expect(voiceThroughLabel("qwen-flash")).toBe("Voice through qwen-flash");
+describe("modelLabel", () => {
+  it("names the control the way other AI apps do", () => {
+    expect(modelLabel("qwen-flash")).toBe("Model: qwen-flash");
   });
 });

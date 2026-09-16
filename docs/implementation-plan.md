@@ -16,7 +16,9 @@ depends_on:
 ---
 ```
 
-Build sequence for **remaining** slices. What is true on `main`: [`NOW.md`](NOW.md). System design: [`technical-plan.md`](technical-plan.md). Open work that is not a numbered PR: [`backlog/README.md`](backlog/README.md).
+Build sequence for **remaining** slices. Product identity: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). What is true on `main`: [`NOW.md`](NOW.md). System design: [`technical-plan.md`](technical-plan.md). Open work that is not a numbered PR: [`backlog/README.md`](backlog/README.md).
+
+After PR5, the next *product* slices are Maya host, the launch company on a catalog-backed wall, then conversational create — not Expo, not ensembles.
 
 ---
 

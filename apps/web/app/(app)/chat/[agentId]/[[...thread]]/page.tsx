@@ -7,7 +7,7 @@ import { loadHouse } from "@/lib/house/load";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "House · Maya",
+  title: "Chat · Maya",
 };
 
 export default async function HousePage({

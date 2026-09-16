@@ -12,7 +12,7 @@ describe("MARKETPLACE_COPY", () => {
   it("drops the sign-in line for the signed-in Explore body", () => {
     expect(MARKETPLACE_COPY.body).toContain("Sign in to chat");
     expect(MARKETPLACE_COPY.signedInBody).toBe(
-      "Featured voices now. More on the way.",
+      "Featured agents now. More on the way.",
     );
     expect(MARKETPLACE_COPY.body).not.toMatch(/Eight/i);
   });

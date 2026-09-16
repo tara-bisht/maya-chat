@@ -396,7 +396,7 @@ My boss ignored the extra hours I put in.
 - Agent (`{components.chat-message-agent}`): costume wash, 8px left, name in `{typography.label-caps}`, body `{typography.body-lg}` cream
 - User (`{components.chat-message-user}`): cream ticket, night body, acid offset, attribution `YOU`
 - Tools: `{components.tool-chip}` pending, `{components.tool-chip-done}` stub when done. Real tool ids in mono
-- Model picker: Plex Mono, ink-soft, **Voice through {alias}**. Options from `GET /api/models`
+- Model picker: Plex Mono, ink-soft, **Model: {alias}**. Options from `GET /api/models`
 
 ### Paywall ticket
 
@@ -420,7 +420,7 @@ Mobile tab bar: night, hairline rule on top, 44px items, cream glyphs, acid only
 
 ## Voice & Copy
 
-The visual language stays theatrical (night wall, posters, tickets). Chrome copy is plain so a new user can navigate without a glossary. Agent voices stay opinionated. The send button may not roast.
+The visual language stays theatrical (night wall, posters, tickets). Chrome copy uses the same words as other AI apps so a new user does not need a glossary. Agent *replies* stay opinionated. The send button may not roast.
 
 **Hooks (unchanged)**
 
@@ -433,10 +433,10 @@ The visual language stays theatrical (night wall, posters, tickets). Chrome copy
 - "Home." / "Explore." / "Create agent." / "Profile."
 - "Meet the agents." / "Create an agent."
 - "Sign in." / "Get started."
-- "Start with a voice. Or write yours."
-- "Marcus is listening."
+- "Chat with Priya."
+- "Model: grok"
 - "Alex is on Plus. Marcus and Dr. Priya are free."
-- "Daily limit reached. Fifty messages. Come back tomorrow, or upgrade."
+- "Out of credits today. Come back after 00:00 UTC, switch to a cheaper model, or upgrade."
 - "You have not created an agent yet."
 - "Continue chatting."
 - "Coming soon."
@@ -445,22 +445,23 @@ The visual language stays theatrical (night wall, posters, tickets). Chrome copy
 
 **Forbidden register**
 
+- Voice / Voice through / House / playbill / costume / backstory / tagline (in chrome)
 - Unlock / supercharge / harness / unleash
 - Companion, copilot (in marketing), assistant-with-a-sparkle
 - "What's on your mind?" as a global placeholder
-- Wristband, Casting notes, Daily curtain, Back to the wall, Tonight's company
+- Wristband, Casting notes, Daily curtain, Back to the wall, Tonight's company, The house is open
 - "Oops, something went wrong!" without a next step
 - Emoji in chrome
 
 **Paywall (prices and model names still come from `plans` / `models`)**
 
 - Locked agent: "Alex is on Plus. Marcus and Dr. Priya are free."
-- Quota: "Daily limit reached. {limit} messages. Come back tomorrow, or upgrade."
-- Locked model: "This model is not on your plan. Your models: {allowlist}."
+- Quota: "Out of credits today. Come back after 00:00 UTC, switch to a cheaper model, or upgrade."
+- Locked model: "Upgrade to use this model."
 
-**Empty thread.** The agent's tagline in Fraunces italic cream. Not "Start a conversation with your AI."
+**Empty thread.** The agent's description in Fraunces italic cream. Not "Start a conversation with your AI."
 
-**Errors.** Cream sentence + one ghost action ("Try again"). Stream fail: "The line dropped." No stack traces. No toast pile-up; the ticket sits in the well.
+**Errors.** Cream sentence + one ghost action ("Try again"). Stream fail: "Something went wrong." No stack traces. No toast pile-up; the ticket sits in the well.
 
 ---
 
@@ -537,7 +538,7 @@ Night, full bleed, grain on. Featured posters are a start, not a closed roster �
 
 1. Sticky header. Desktop: floating night ticket (`sticky top-3`), cream 2px edge, 6px acid offset — wordmark left, jump links optically centered, ghost “Sign in” + acid “Create an agent.” right (`#studio`). Sign in and the CTA stay on screen while the wall scrolls. Mobile: sticky top, night fill, hairline rule; one row — wordmark, ghost Sign in, acid CTA. Jump links are not in the mobile bar (they stay in the footer). No hamburger. One acid fill in the chrome. No second Sign in in the hero.
 2. Hero: stacked, H1 centered. `{typography.display}` italic — “Give your AI a personality.” *personality* carries an acid **SVG scribble** underline (hand-drawn stroke, `preserveAspectRatio="none"`, not a rectangle, not a second acid fill). Then one centered `{typography.body-lg}` cream-dim sentence that names the sterile-chatbot contrast and tells you to cast a character or write one. No Studio die-cut. No “Start with a voice. Or write yours.” under the H1. Under the copy: a House window — night fill, cream 2px edge, 8px acid offset. Desktop: centered, `max-w-5xl`, 16:10 frame; rail lists the live company (not three voices) + You ticket + costume-wash reply + dummy composer. Click a rail row to switch the voice. Mobile: same window as a phone stack (chips, well, composer) — not a letterboxed 16:10. First paint shows the full first turn. Later turns may type, then cycle, unless hover/focus or `prefers-reduced-motion`. Wheatpaste stamps (existing Free/Plus recipe) may float on the window. Not a wheatpaste quote fan, not Apple laptop chrome, not a three-column icon row. No model alias. No live chat. No second Sign in in the copy block. No “eight agents.”
-3. `#company`: Fraunces italic “Start with a voice” + featured posters on the staggered wall. No numbered act, no document kicker row. Examples, not the whole product. No three-column icon row.
+3. `#company`: Fraunces italic “Start with an agent” + featured posters on the staggered wall. No numbered act, no document kicker row. Examples, not the whole product. No three-column icon row.
 4. `#usual`: one shared You ticket, then four replies — cream “Assistant” leftover (struck hedge) plus three costume-flood nights (Marcus, Nonna Maria, Barnaby). Title: “Same question. Different night.” Prompt chips swap the question and all four replies. Scripted, not live chat.
 5. `#nights`: three costume-flood scene posters (maths / advice / code), each with a nested House scrap (You ticket + wash). The moment picks the personality; if none fit, you write one. Title only — no numbered act.
 6. `#house`: three cream tickets — pick or create, talk, they remember. Acid hard offset. Cream/stub pills for the meaning already in the body. Hover is the existing ticket lift. Step marks `01`–`03` live on the tickets, not as a section index.
@@ -572,7 +573,7 @@ Night stage. Header: 32px square portrait, Fraunces italic name, model alias, Ab
 
 ### Studio — `(app)/studio`
 
-Title in Fraunces italic: “Create agent” / “Edit agent.” Fields in document order: name, tagline, language preset, costume flood, backstory, tone faders, tool toggles, Public / Private. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE. Free locks Private with “Private agents are Plus.” Cap overage is a paywall ticket, not a toast. `/studio` index redirects to Profile `#your-agents`.
+Title in Fraunces italic: “Create agent” / “Edit agent.” Fields in document order: name, description, language, color, instructions, tone faders, tool toggles, Public / Private. Save is the one acid button. Preview pane is optional (roadmap cut). Feels like a marked-up character sheet on night paper, not an IDE. Free locks Private with “Private agents are Plus.” Cap overage is a paywall ticket, not a toast. `/studio` index redirects to Profile `#your-agents`.
 
 ### Pricing
 
@@ -584,7 +585,7 @@ Night, cream fields. Display name, preferred language, bio, plan, **Your agents*
 
 ### Empty, error, loading
 
-- Empty thread: agent tagline as Fraunces italic cream pull-quote
+- Empty thread: agent description as Fraunces italic cream pull-quote
 - Stream failure: “Something went wrong.” + ghost “Try again.”
 - 429 / 402: paywall ticket, not a toast
 - Loading: night + grain + `{typography.label-caps}` “Loading…”

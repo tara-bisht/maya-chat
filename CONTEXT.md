@@ -1,19 +1,31 @@
 # Maya Chat
 
-A consumer chat product where every conversation is with a named character, not a generic assistant. The company is a touring lineup wheatpasted on a night wall. The first-party catalog can grow to thousands of inbuilt agents; the named starter set is seed, not a cap.
+A consumer chat product where every conversation is with a named character, not a generic assistant. Maya is the host who gets you to that character, or helps you make one. The launch company is a handful of official specialists covering mass use cases; the table can hold more later.
 
 ## Language
 
 **Agent**:
 A named character the user talks to, with a system prompt, tone, tools, and costume. Either curated or custom.
-_Avoid_: Bot, assistant, copilot, persona-as-UI-theme
+_Avoid_: Bot, assistant, copilot, persona-as-UI-theme, job-title SKU (“Resume Bot”)
+
+**Maya**:
+The host character. Matches the user to an Agent, helps them create one, and explains the product. Always free. Not a generic worker.
+_Avoid_: Super agent as the product, orchestrator, default ChatGPT, copilot
+
+**Handoff**:
+Maya sending the user into a 1:1 Chat with an Agent, via an agent card (**Chat with {name}**).
+_Avoid_: Mid-thread engine swap, group thread, delegation bus, shared canvas, Talk to {name}
 
 **Curated agent**:
-A first-party inbuilt character owned by the system (`user_id` is null, `is_curated` is true). Count is catalog data, not a product constant. The house can hold thousands.
+A first-party inbuilt character owned by the system (`user_id` is null, `is_curated` is true). Count is catalog data, not a product constant.
 _Avoid_: Starter bot, default persona, NPC, “the eight agents” as the product
 
+**Launch company**:
+The handful of official curated agents that cover mass use cases at first ship (Maya plus twelve specialists). Named characters, not job-title bots. Architecture can hold more later.
+_Avoid_: Thousands as the launch promise, closed repertory of eight, specialist SKU names on posters
+
 **Starter company**:
-The initial curated examples in [`docs/curated-agents.md`](docs/curated-agents.md) and [`docs/seed-agents.sql`](docs/seed-agents.sql). Useful as examples; not the roster cap.
+The original seed rows in [`docs/curated-agents.md`](docs/curated-agents.md) and [`docs/seed-agents.sql`](docs/seed-agents.sql). Subset of the launch company.
 _Avoid_: Final catalog, closed repertory
 
 **Custom agent**:
@@ -37,19 +49,19 @@ Soft-removal of a custom agent (`archived_at` set). Leaves Home and blocks new t
 _Avoid_: Hard delete, unpublish
 
 **Free-tier agent**:
-A curated agent with `free_tier = true`. Seed: Marcus and Dr. Priya. The flag is the gate, not “2 of N.” Plus and Pro see every curated agent.
+A curated agent with `free_tier = true`. Seed: Maya, Marcus, and Dr. Priya. The flag is the gate, not “2 of N.” Plus and Pro see every curated agent. Maya is always free.
 _Avoid_: Free agent limit, first N agents, `curated_agent_limit` as a runtime gate
 
 **Company**:
-The first-party repertory — every curated agent. Gallery copy says **Featured agents**, not “your bots.” Size follows the catalog.
-_Avoid_: Roster of chatbots, AI team, a fixed eight
+The first-party repertory — every curated agent. Gallery copy says **Featured agents**, not “your bots.” First ship is the **Launch company**; size follows the catalog after that.
+_Avoid_: Roster of chatbots, AI team, a fixed eight, thousands as the headline
 
 **Ensemble**:
 A named job made of ordered seats (learn a topic, founder brief). Curated or user-owned. Used as one unit. Each seat is still a 1:1 Conversation with one Agent.
 _Avoid_: Workflow, pipeline, crew, swarm, DAG, multi-agent, orchestration, AI team
 
 **Seat**:
-One place in an Ensemble: which Agent, what this step is for, optional pinned Voice. Chrome shows the agent name and the job (`Assess`, `Quiz`).
+One place in an Ensemble: which Agent, what this step is for, optional pinned Model. Chrome shows the agent name and the job (`Assess`, `Quiz`).
 _Avoid_: Skill, role class, specialist bot, the word seat in chrome (billing already uses Plan for that word)
 
 **Category**:
@@ -58,7 +70,7 @@ _Avoid_: Professional / Fun / Niche / Believer / Sage / Canon as Explore tabs, d
 
 **Archetype**:
 Editorial casting recipe on a curated agent (professional, blend, niche, believer, coach, companion, researcher, improviser, guide, fantasy, sage, canon). How we write them, not an Explore tab.
-_Avoid_: Persona type, class, character class, Voice (that word is the model)
+_Avoid_: Persona type, class, character class, Voice (retired; the LLM is Model)
 
 **Blend**:
 A curated agent whose job and personality would not normally share a room — math × flirty, Stoic × roast. Maya’s signature recipe.
@@ -81,8 +93,8 @@ A curated agent who is a character with a remembered world — public-domain lit
 _Avoid_: Licensed TV/film impersonation, “talk to celebrities” as a tab, wiki dump
 
 **Studio**:
-The character sheet where a user creates or edits a custom agent (name, tagline, language, costume, backstory, tone sliders, tool toggles).
-_Avoid_: Agent builder IDE, prompt playground
+Where a user creates or edits a custom agent. Default path is talking to Maya; the form is Advanced. Chrome fields: Name, Description, Language, Color, Instructions, Tone, Tools, Model, Public / Private.
+_Avoid_: Agent builder IDE, prompt playground, Agent Forge, Backstory, Costume, Tagline, Voice
 
 **Rating**:
 A signed-in member’s score from 1 to 5 on an agent they can see. One row per `(user_id, agent_id)`. A playbill may show an aggregate later. Not shipped.
@@ -125,8 +137,8 @@ A vector row private to `(user_id, agent_id)`. Plus and Pro only. One agent must
 _Avoid_: Global memory, shared embeddings, ChatGPT-style memory dump
 
 **House**:
-Chat on night paper: attributed dialogue, costume wash on the agent’s turn, cream ticket for the user.
-_Avoid_: ChatGPT chrome, iMessage bubbles, beige document, per-agent app theme
+Internal name for the chat screen (code and design). Chrome: **Chat**.
+_Avoid_: House in chrome, “the house is open,” ChatGPT bubbles, iMessage, beige document
 
 **Conversation**:
 One thread of messages between one user and one agent. Nested under that agent. Table `conversations`. UI: **chat** / **New chat**.
@@ -157,24 +169,28 @@ A first-party character announced on the marketplace who is not a chat-able `age
 _Avoid_: Draft agent, unpublished bot, disabled custom agent
 
 **Playbill**:
-A costume-flood poster for an agent or ensemble: linocut portrait, Fraunces name, tagline, optional Plus sticker. Tilted, overlapping.
-_Avoid_: Feature tile, white card with a 3px stripe, avatar list row
+Internal name for an agent poster (linocut, name, description, optional Plus sticker). Chrome has no word for it — it is the agent card.
+_Avoid_: Playbill, feature tile, white card with a 3px stripe
 
 **Costume**:
-The agent’s flood color. Owns the poster and the chat wash. Never the page background or the acid CTA.
-_Avoid_: Theme, skin, brand color per app chrome
+Internal name for the agent’s flood color. Chrome: **Color**.
+_Avoid_: Costume, costume flood, theme, skin in chrome
 
 **Costume palette**:
 The reused set of flood inks posters pick from. Many agents share a flood. A new character does not require a new ink.
 _Avoid_: Per-character theme token, unique hex per agent
 
-**Voice**:
-The model the agent speaks through. Chat chrome shows **Voice through {alias}**. Not speech audio (that is v1.1).
-_Avoid_: Provider badge, “powered by Claude”
+**Model**:
+The LLM the agent replies with. Chrome: **Model: {alias}** (`grok`, `claude`, `gpt`). Speech audio, if we ship it later, is **Speech** — never Voice.
+_Avoid_: Voice, Voice through, provider badge, “powered by Claude”
+
+**Default model**:
+The suggested model alias on an Agent. The user may change it to any alias on their plan. Never a silent upgrade past the plan.
+_Avoid_: Recommended Voice, auto router, best-model magic
 
 **Model picker**:
-House chrome control listing catalog aliases. Locked rows stamp the plan that unlocks them. Clients send `modelId`, never a gateway slug.
-_Avoid_: Provider dropdown, raw OpenRouter id on the wire
+Chat header control listing catalog aliases. Locked rows stamp the plan that unlocks them. Clients send `modelId`, never a gateway slug.
+_Avoid_: Voice picker, provider dropdown, raw OpenRouter id on the wire, BYOK key field
 
 **Profile**:
 The member’s global profile at `/settings`: name, preferred language, bio, plan, and **Your agents**. Every agent is told the bio. It is not a costume.
@@ -182,14 +198,25 @@ _Avoid_: Wristband, custom instructions, user persona, “account settings” as
 
 ## UI labels
 
-Chrome is plain. Agent voices stay opinionated. Strings live in `apps/web/lib/ui-copy.ts`.
+Chrome uses the same words as other AI apps. Agent *replies* stay opinionated. Strings live in `apps/web/lib/ui-copy.ts`.
 
 | Do not put in chrome | Use |
 |---|---|
+| Voice / Voice through {alias} | Model / Model: {alias} |
+| House / The house is open | Chat |
+| Backstory | Instructions |
+| Costume / Costume flood | Color |
+| Tagline | Description |
+| Playbill | (no label — it is the agent card) |
+| Talk to {name} | Chat with {name} |
+| Memory saver | Memory |
 | Wristband / Wristband check | Profile / Sign in |
-| Casting notes / Cast someone | Create agent / Edit agent |
+| Super agent / Orchestrator / Forge | Maya |
+| Delegate / Route to specialist | Chat with {name} |
+| Casting notes / Cast someone / Agent Forge | Create agent / Edit agent |
 | Cast a bill / Create lineup | Create ensemble |
 | Workflow / pipeline / crew / swarm | Ensemble / Start |
+| Source-to-agent / BYOK | Create agent / Plan |
 | Act I / Role 3 / specialist | Agent name + job (Assess, Quiz) |
 | Shared memory / context dump | Brief |
 | Tonight's company / The lineup | Home / Featured agents |

@@ -17,20 +17,20 @@ import { archiveCustomAgent, saveCastingNotes, type StudioActionState } from "@/
 import { PaywallTicket, studioCapCopy } from "@/components/app/paywall-ticket";
 
 const COSTUME_LABEL: Record<CostumeId, string> = {
-  marcus: "Marcus moss",
-  priya: "Priya magenta",
-  alex: "Alex espresso",
-  nonna: "Nonna tomato",
-  viktor: "Viktor olive",
-  valerian: "Valerian indigo",
-  barnaby: "Barnaby tawny",
-  ren: "Ren slate",
-  custom: "Custom brown",
+  marcus: "Moss",
+  priya: "Magenta",
+  alex: "Espresso",
+  nonna: "Tomato",
+  viktor: "Olive",
+  valerian: "Indigo",
+  barnaby: "Tawny",
+  ren: "Slate",
+  custom: "Brown",
 };
 
 const TOOL_LABEL: Record<StudioTool, string> = {
-  memory_saver: "Memory saver",
-  math_solver: "Math solver",
+  memory_saver: "Memory",
+  math_solver: "Math",
   web_search: "Web search",
 };
 
@@ -155,7 +155,7 @@ export function CastingForm({
 
       {error?.code === "invalid" ? (
         <p className="font-sans text-sm font-semibold text-night">
-          Name, tagline, and backstory are required.
+          Name, description, and instructions are required.
         </p>
       ) : null}
 
@@ -175,7 +175,7 @@ export function CastingForm({
 
       <label className="flex flex-col gap-1">
         <span className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-          Tagline
+          Description
         </span>
         <input
           className={fieldClass}
@@ -209,7 +209,7 @@ export function CastingForm({
 
       <fieldset disabled={archived || pending}>
         <legend className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-          Costume flood
+          Color
         </legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {COSTUME_IDS.map((id) => (
@@ -236,7 +236,7 @@ export function CastingForm({
 
       <label className="flex flex-col gap-1">
         <span className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-          Backstory
+          Instructions
         </span>
         <textarea
           className={`${fieldClass} min-h-40`}
@@ -321,7 +321,7 @@ export function CastingForm({
           >
             <span className="block font-display text-xl italic">Public</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
-              Anyone signed in can chat. They do not see the backstory.
+              Anyone signed in can chat. They do not see the instructions.
             </span>
           </button>
           <button

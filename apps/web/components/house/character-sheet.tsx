@@ -44,7 +44,7 @@ export function CharacterSheet({
         </h2>
         <dl className="mt-5 divide-y divide-night/15 border-y border-night/15">
           <SheetRow label="Category" value={agent.category} />
-          <SheetRow label="Tagline" value={agent.tagline} />
+          <SheetRow label="Description" value={agent.tagline} />
           <SheetRow label="Language" value={languageLabel(agent.languagePreset)} />
           <SheetRow
             label="Tone"
@@ -62,7 +62,7 @@ export function CharacterSheet({
           </div>
           <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:gap-6">
             <dt className="w-28 shrink-0 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-              Costume
+              Color
             </dt>
             <dd>
               <span
@@ -72,7 +72,7 @@ export function CharacterSheet({
             </dd>
           </div>
           {agent.canEdit && agent.backstory ? (
-            <SheetRow label="Backstory" value={agent.backstory} />
+            <SheetRow label="Instructions" value={agent.backstory} />
           ) : null}
         </dl>
         <div className="mt-5 flex flex-wrap gap-4">
