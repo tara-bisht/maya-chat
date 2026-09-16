@@ -156,9 +156,11 @@ For indexing: For high-volume multi-tenancy in pgvector, ensure `hnsw.iterative_
 | **Reviewer** | Engineering Tech Lead |
 | **Date** | 2026-09-10 |
 
+**PR4c (2026-09-17):** Chat retrieve calls `match_agent_memories` with the user JWT. Isolation tests are in `supabase/tests/match_agent_memories.sql`. Service-role `p_user_id` still waits on a worker. Do not apply QA’s `security definer` rewrite.
+
 **Comment:** Two claims, two answers.
 
-1. **`auth.uid()` is NULL under `service_role`.** True, and it matches technical-plan §6.4. Chat uses the user JWT (`createClient()`), so the RPC would work on the request path. Nothing in the app calls `match_agent_memories` yet — retrieve is PR4, and `agent_memories` is empty. Granting `EXECUTE` to `service_role` on a function that filters by `auth.uid()` is unused until a worker exists.
+1. **`auth.uid()` is NULL under `service_role`.** True, and it matches technical-plan §6.4. Chat uses the user JWT (`createClient()`), so the RPC works on the request path. Granting `EXECUTE` to `service_role` on a function that filters by `auth.uid()` is unused until a worker exists.
 
 2. **Global HNSW + tenant filter.** Matches the approved schema. Isolation is `user_id + agent_id` in SQL (plus RLS). Iterative scan / partitioning is a later scale project. Do not rebuild indexes for an empty table.
 

@@ -84,11 +84,22 @@ export function HouseView({ house }: { house: HouseViewData }) {
   });
 
   const busy = status === "submitted" || status === "streaming";
-  const turns: StageTurn[] = messages.map((message) => ({
-    id: message.id,
-    role: message.role === "assistant" ? "assistant" : "user",
-    content: textFromMessage(message),
-  }));
+  const turns: StageTurn[] = messages.flatMap((message, index) => {
+    const content = textFromMessage(message);
+    const last = index === messages.length - 1;
+    if (!content && !(busy && last)) {
+      return [];
+    }
+    return [
+      {
+        id: message.id,
+        role: (message.role === "assistant" ? "assistant" : "user") as
+          | "assistant"
+          | "user",
+        content,
+      },
+    ];
+  });
 
   async function onSend(text: string) {
     if (!house.agent.canChat) {
@@ -249,7 +260,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
                     : lockedVoiceFallbackTitle()
                 }
                 body={lockedVoiceCopy()}
-                href="/#seats"
+                href="/plan?reason=locked-voice"
                 cta={COPY.upgrade}
               />
             </div>

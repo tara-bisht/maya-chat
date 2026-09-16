@@ -60,9 +60,36 @@ export type {
 export {
   compilePrompt,
   compileToneDirectives,
+  intersectTools,
   type CompilePromptInput,
   type CompilePromptMemory,
 } from "./prompt";
+
+export {
+  EMBEDDING_DIM,
+  EMBEDDING_MODEL,
+  MEMORY_CONTENT_MAX,
+  MEMORY_MATCH_COUNT,
+  parseMemorySaverInput,
+  vectorLiteral,
+  type ParseMemorySaverResult,
+} from "./memory";
+
+export {
+  checkoutPlanSchema,
+  entitlementPatchFromSubscription,
+  entitlementStatusFromStripe,
+  parseCheckoutPlan,
+  planIdForPriceId,
+  planTicketCta,
+  unixToIso,
+  type CheckoutPlan,
+  type EntitlementPatch,
+  type ParseCheckoutPlanResult,
+  type PlanTicketCta,
+  type StripePriceRow,
+  type SubscriptionApplyInput,
+} from "./billing";
 
 export {
   CONVERSATION_TITLE_MAX,

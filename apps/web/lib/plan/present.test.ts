@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   highlightedPlan,
+  parseCheckoutFlash,
   parsePlanReason,
   planReasonHeading,
   priceLabel,
@@ -12,6 +13,7 @@ describe("parsePlanReason", () => {
     expect(parsePlanReason("quota")).toBe("quota");
     expect(parsePlanReason("studio-cap")).toBe("studio-cap");
     expect(parsePlanReason("studio-private")).toBe("studio-private");
+    expect(parsePlanReason("locked-voice")).toBe("locked-voice");
   });
 
   it("drops unknown or missing reasons", () => {
@@ -30,6 +32,7 @@ describe("planReasonHeading", () => {
     expect(planReasonHeading("studio-private")).toBe(
       "Private agents are Plus.",
     );
+    expect(planReasonHeading("locked-voice")).toBe("That model is locked.");
     expect(planReasonHeading(null)).toBeNull();
   });
 });
@@ -39,6 +42,14 @@ describe("highlightedPlan", () => {
     expect(highlightedPlan("free")).toBe("plus");
     expect(highlightedPlan("plus")).toBe("pro");
     expect(highlightedPlan("pro")).toBeNull();
+  });
+});
+
+describe("parseCheckoutFlash", () => {
+  it("keeps success and canceled", () => {
+    expect(parseCheckoutFlash("success")).toBe("success");
+    expect(parseCheckoutFlash("canceled")).toBe("canceled");
+    expect(parseCheckoutFlash("paid")).toBeNull();
   });
 });
 

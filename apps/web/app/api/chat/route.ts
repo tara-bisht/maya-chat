@@ -1,6 +1,7 @@
 import {
   convertToModelMessages,
   createUIMessageStreamResponse,
+  stepCountIs,
   streamText,
   toUIMessageStream,
   type UIMessage,
@@ -22,6 +23,8 @@ import {
   loadConversationHistory,
   loadPlanModel,
 } from "@/lib/chat/load-context";
+import { retrieveMemories } from "@/lib/chat/retrieve";
+import { createChatTools } from "@/lib/chat/tools";
 import {
   insertAssistantMessage,
   insertUserMessage,
@@ -102,13 +105,19 @@ export async function POST(request: Request) {
     return chatError("dropped", 500);
   }
 
+  const memories = await retrieveMemories(supabase, {
+    agentId: parsed.data.agentId,
+    text: parsed.text,
+    vectorMemory: planLoad.vectorMemory,
+  });
+
   const system = compilePrompt({
     isCurated: agentLoad.agent.is_curated,
     basePrompt: agentLoad.agent.system_prompt,
     languagePreset: agentLoad.agent.language_preset,
     tone: toneSettingsSchema.safeParse(agentLoad.agent.tone_settings).data,
     userProfile: profile,
-    memories: [],
+    memories,
     toolsEnabled: agentLoad.agent.tools_enabled,
     toolsAllowed: planLoad.toolsAllowed,
   });
@@ -260,12 +269,20 @@ export async function POST(request: Request) {
     }
   }
 
+  const tools = createChatTools(supabase, {
+    userId: user.id,
+    agentId: parsed.data.agentId,
+    toolsEnabled: agentLoad.agent.tools_enabled,
+    toolsAllowed: planLoad.toolsAllowed,
+  });
+
   const result = streamText({
     model: getOpenRouterModel(voice.gatewayId),
     maxOutputTokens: voice.maxOutputTokens,
     system,
     messages: await convertToModelMessages(nextMessages),
     abortSignal: request.signal,
+    ...(tools ? { tools, stopWhen: stepCountIs(5) } : {}),
     onAbort: async () => {
       await settleTurn({ text: "", aborted: true });
     },

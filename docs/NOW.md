@@ -10,7 +10,7 @@ Specialized named agents, a **Model** from any listed lab, personality you can s
 
 ## On `main` today
 
-Signed-in web: Google auth, gallery, streaming chat, prompt compiler, Studio form, AI credits, model picker, catalog-driven seats. Maya host, conversational create, and Stripe Checkout are **not** on `main`. Not Phase 0.
+Signed-in web: Google auth, gallery, streaming chat, prompt compiler, Studio form, AI credits, model picker, catalog-driven seats, Plus/Pro episodic memory, Stripe Checkout and Customer Portal. Maya host and conversational create are **not** on `main`. Not Phase 0.
 
 ## Catalog
 
@@ -22,16 +22,15 @@ Marketing/playbill copy still uses a hardcoded `COMPANY` array. Runtime chat loa
 
 ## Next slice
 
-1. **PR4c** — pgvector retrieve + Stripe Checkout/Portal for Plus and Pro
-2. **PR5** — harden, Sentry, production URL
-3. **Maya host** — matchmaker + handoff; signed-in home starts with her ([TODO-002](backlog/ideas/002-maya-super-agent-host-matchmaker.md))
-4. **Launch company on the wall** — catalog-backed bill ([TODO-006](backlog/ideas/006-catalog-driven-first-party-bill.md)), then Maya + Helena + promote Jules/Meera/Kenji/Sofia ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md))
-5. **Conversational create** — Maya fills the sheet ([TODO-001](backlog/ideas/001-conversational-agent-creator.md))
-6. **PR6** — Expo against the same API (not before PR5)
+1. **PR5** — harden, Sentry, production URL
+2. **Maya host** — matchmaker + handoff; signed-in home starts with her ([TODO-002](backlog/ideas/002-maya-super-agent-host-matchmaker.md))
+3. **Launch company on the wall** — catalog-backed bill ([TODO-006](backlog/ideas/006-catalog-driven-first-party-bill.md)), then Maya + Helena + promote Jules/Meera/Kenji/Sofia ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md))
+4. **Conversational create** — Maya fills the sheet ([TODO-001](backlog/ideas/001-conversational-agent-creator.md))
+5. **PR6** — Expo against the same API (not before PR5)
 
 ## Do not start unless named
 
-`⌘K` Maya ([TODO-003](backlog/ideas/003-global-maya-concierge-ui.md)), rest of wave 1 ([TODO-010](backlog/ideas/010-inbuilt-catalog-wave-1-rest.md)), wave 2 ([TODO-009](backlog/ideas/009-inbuilt-catalog-sages-canon.md)), ensembles ([TODO-008](backlog/ideas/008-ensembles.md)), rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), Expo, speech, source-as-create-input, artifact dock, BYOK. Finish the open MVP spine (PR4c / PR5) before the Maya door.
+`⌘K` Maya ([TODO-003](backlog/ideas/003-global-maya-concierge-ui.md)), rest of wave 1 ([TODO-010](backlog/ideas/010-inbuilt-catalog-wave-1-rest.md)), wave 2 ([TODO-009](backlog/ideas/009-inbuilt-catalog-sages-canon.md)), ensembles ([TODO-008](backlog/ideas/008-ensembles.md)), rating ([TODO-004](backlog/ideas/004-rate-an-agent.md)), remix ([TODO-005](backlog/ideas/005-remix-an-agent.md)), Expo, speech, source-as-create-input, artifact dock, BYOK. Finish the open MVP spine (PR5) before the Maya door.
 
 ## Open P0
 

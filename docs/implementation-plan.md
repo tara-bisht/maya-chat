@@ -68,6 +68,7 @@ After PR5, the next *product* slices are Maya host ([TODO-002](backlog/ideas/002
 | PR3 | `compilePrompt()`, tools, Studio | |
 | PR4a | Credit engine, `plan_models` gate, `modelId` on chat | MAYA-107 / 116 |
 | PR4b | Voice picker, locked models, catalog seats | MAYA-108 |
+| PR4c | pgvector retrieve, `memory_saver`, Stripe Checkout/Portal | MAYA-115 |
 
 Each merged PR was independently reviewable (Zod, RLS, `tsc --noEmit` as applicable).
 
@@ -76,16 +77,6 @@ Each merged PR was independently reviewable (Zod, RLS, `tsc --noEmit` as applica
 ## Remaining
 
 Each PR should be independently reviewable. Do not merge a slice that lacks Zod (if it adds a route), RLS (if it adds a table), or `tsc --noEmit`.
-
-### PR4c — Memory + Stripe (rest of Phase 4)
-
-**Title:** pgvector retrieve, Plus/Pro Checkout
-
-**Touches:** embeddings + `match_agent_memories`, Stripe webhook + `stripe_events`, pricing checkout
-
-**Does:** 402 on Studio over cap. Webhook maps `price_id` → `plans.id`. Picker CTAs can stay `/#seats` until portal exists. Hitch [MAYA-109](backlog/defects/MAYA-109-memory-rpc-service-role-failure.md) and [MAYA-115](backlog/defects/MAYA-115-dual-plan-truth-profiles-vs-entitlements.md) here if cheap.
-
-**Cut:** Yearly prices; Stripe-hosted portal is enough.
 
 ### PR5 — Harden + Web MVP (Phase 5)
 

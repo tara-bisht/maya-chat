@@ -2,7 +2,7 @@
 
 Open work only. Done files live in [`docs/archive/`](../archive/). Current slice: [`docs/NOW.md`](../NOW.md). Product identity: [`docs/PROJECT_DESCRIPTION.md`](../PROJECT_DESCRIPTION.md). Git: [`docs/git.md`](../git.md).
 
-Do not start an idea while NOW has an open MVP slice (PR4c / PR5) unless the user names the todo. P0 defects may interrupt.
+Do not start an idea while NOW has an open MVP slice (PR5) unless the user names the todo. P0 defects may interrupt.
 
 Sequence after the spine: Maya host ([TODO-002](ideas/002-maya-super-agent-host-matchmaker.md)) → catalog-backed wall ([TODO-006](ideas/006-catalog-driven-first-party-bill.md)) → launch company ([TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md)) → conversational create ([TODO-001](ideas/001-conversational-agent-creator.md)). Chrome words: [`CONTEXT.md`](../../CONTEXT.md).
 
@@ -11,9 +11,8 @@ Sequence after the spine: Maya host ([TODO-002](ideas/002-maya-super-agent-host-
 | ID | Title | Kind | Priority | Status | Target |
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | [MAYA-119](defects/MAYA-119-committed-stage-credential-in-env-example.md) | Rotate exposed stage publishable key | defect | P0 | todo | ops |
-| [MAYA-115](defects/MAYA-115-dual-plan-truth-profiles-vs-entitlements.md) | Dual plan truth `profiles.plan` vs `entitlements.plan` | defect | P1 | backlog | PR4c |
 | [MAYA-117](defects/MAYA-117-assistant-persist-best-effort-history-divergence.md) | Assistant persist best-effort diverges stream from DB | defect | P1 | backlog | PR5 |
-| [MAYA-109](defects/MAYA-109-memory-rpc-service-role-failure.md) | `match_agent_memories` RPC / tenant isolation | defect | P2 | backlog | PR4c |
+| [MAYA-109](defects/MAYA-109-memory-rpc-service-role-failure.md) | `match_agent_memories` service-role `p_user_id` for a future worker | defect | P2 | backlog | later |
 | [MAYA-121](defects/MAYA-121-agents-delete-dead-signup-not-idempotent-missing-guards.md) | Signup idempotency and schema guards | defect | P2 | backlog | later |
 | [MAYA-122](defects/MAYA-122-env-validation-sentry-ratelimit-service-role-hygiene.md) | Env validation, Sentry, burst limit | defect | P2 | backlog | PR5 |
 | [MAYA-110](defects/MAYA-110-unbounded-user-conversations-query.md) | Unbounded conversations query on the rail | defect | P3 | backlog | later |

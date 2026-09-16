@@ -132,6 +132,7 @@ export type LoadPlanModelResult =
       toolsAllowed: string[];
       allowedModelIds: string[];
       creditScale: number;
+      vectorMemory: boolean;
     }
   | { ok: false; reason: "dropped" }
   | { ok: false; reason: "forbidden_model"; allowedModelIds: string[] };
@@ -148,7 +149,7 @@ export async function loadPlanModel(
   const [planResult, allowResult, modelsResult, settingsResult] = await Promise.all([
     supabase
       .from("plans")
-      .select("default_model_id, tools_allowed")
+      .select("default_model_id, tools_allowed, vector_memory")
       .eq("id", planId)
       .maybeSingle(),
     supabase.from("plan_models").select("model_id").eq("plan_id", planId),
@@ -225,6 +226,7 @@ export async function loadPlanModel(
     toolsAllowed: planResult.data.tools_allowed ?? [],
     allowedModelIds: allowedIds,
     creditScale: creditScale > 0 ? creditScale : CREDIT_SCALE_DEFAULT,
+    vectorMemory: planResult.data.vector_memory === true,
   };
 }
 

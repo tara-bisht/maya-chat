@@ -49,7 +49,9 @@ export const COPY = {
   plan: "Plan",
   credits: "Credits",
   managePlan: "Manage plan",
-  portalClosed: "Billing portal is not open yet.",
+  checkoutSuccess:
+    "Checkout finished. Your plan updates when Stripe confirms.",
+  checkoutCanceled: "Checkout was canceled.",
   everyAgentReads: "Every agent can read this.",
   bioHelp: "500 characters. What they should already know about you.",
   agentMissing: "That agent is not available.",
