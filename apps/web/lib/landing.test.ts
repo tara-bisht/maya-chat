@@ -27,10 +27,10 @@ describe("HERO", () => {
     expect(HERO.title).toBe("AI with a personality.");
   });
 
-  it("sells writing a character, not a closed roster", () => {
+  it("sells creating an agent, not a closed roster", () => {
     expect(HERO.body).not.toMatch(/eight/i);
-    expect(HERO.body).toMatch(/write/i);
-    expect(HERO.body).toMatch(/Studio/i);
+    expect(HERO.body).toMatch(/create/i);
+    expect(HERO.body).toMatch(/agent/i);
   });
 });
 

@@ -16,7 +16,9 @@ depends_on:
 ---
 ```
 
-Build sequence for **remaining** slices. What is true on `main`: [`NOW.md`](NOW.md). System design: [`technical-plan.md`](technical-plan.md). Open work that is not a numbered PR: [`backlog/README.md`](backlog/README.md).
+Build sequence for **remaining** slices. Product identity: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). What is true on `main`: [`NOW.md`](NOW.md). System design: [`technical-plan.md`](technical-plan.md). Open work that is not a numbered PR: [`backlog/README.md`](backlog/README.md).
+
+After PR5, the next *product* slices are Maya host ([TODO-002](backlog/ideas/002-maya-super-agent-host-matchmaker.md)), the catalog-backed wall ([TODO-006](backlog/ideas/006-catalog-driven-first-party-bill.md)), the launch handful ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)), then conversational create ([TODO-001](backlog/ideas/001-conversational-agent-creator.md)). Not Expo, not ensembles, not `⌘K`.
 
 ---
 
@@ -25,7 +27,7 @@ Build sequence for **remaining** slices. What is true on `main`: [`NOW.md`](NOW.
 | Decision | Lock |
 | :--- | :--- |
 | Curated catalog | Unbounded. Starter seed: [`seed-agents.sql`](seed-agents.sql) + [`curated-agents.md`](curated-agents.md). Not a cap of eight. |
-| Free gate | `agents.free_tier`. Seed: Marcus + Dr. Priya. Plus/Pro see every curated row. Not “first N rows.” Free may also cast 3 public custom agents. |
+| Free gate | `agents.free_tier`. Seed: Maya, Marcus, Dr. Priya. Plus/Pro see every curated row. Not “first N rows.” Free may also create 3 public custom agents. |
 | Categories | Live CHECK: `learning`, `philosophy`, `productivity`, `wellbeing`, `lifestyle`, `custom`. Explore labels and planned `play`: [`catalog/taxonomy.md`](catalog/taxonomy.md). Nonna = `wellbeing`. Barnaby = `lifestyle`. |
 | Tone sliders | Locked on curated agents. Compiler overlays sliders for **custom** agents only. |
 | Tools vs plan | Register `agents.tools_enabled ∩ plans.tools_allowed`. Strip tool-policy text when a tool is not allowed. |
@@ -146,4 +148,4 @@ Record in `.env.example` and a one-line comment on the embedding column when kno
 
 ## Out of this plan
 
-Voice, RevenueCat, real `code_sandbox`, in-app catalog admin, group chat, ensembles ([TODO-008](backlog/ideas/008-ensembles.md)), community marketplace, push, Upstash, rating, remix. See [`backlog/README.md`](backlog/README.md).
+Speech audio, RevenueCat, real `code_sandbox`, in-app catalog admin, group chat, ensembles ([TODO-008](backlog/ideas/008-ensembles.md)), rest of wave 1 ([TODO-010](backlog/ideas/010-inbuilt-catalog-wave-1-rest.md)), community marketplace, push, Upstash, rating, remix. See [`backlog/README.md`](backlog/README.md).

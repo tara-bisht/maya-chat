@@ -1,8 +1,10 @@
 # Backlog
 
-Open work only. Done files live in [`docs/archive/`](../archive/). Current slice: [`docs/NOW.md`](../NOW.md). Git: [`docs/git.md`](../git.md).
+Open work only. Done files live in [`docs/archive/`](../archive/). Current slice: [`docs/NOW.md`](../NOW.md). Product identity: [`docs/PROJECT_DESCRIPTION.md`](../PROJECT_DESCRIPTION.md). Git: [`docs/git.md`](../git.md).
 
-Do not start an idea while NOW has an open MVP slice unless the user names the todo. P0 defects may interrupt.
+Do not start an idea while NOW has an open MVP slice (PR4c / PR5) unless the user names the todo. P0 defects may interrupt.
+
+Sequence after the spine: Maya host ([TODO-002](ideas/002-maya-super-agent-host-matchmaker.md)) → catalog-backed wall ([TODO-006](ideas/006-catalog-driven-first-party-bill.md)) → launch company ([TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md)) → conversational create ([TODO-001](ideas/001-conversational-agent-creator.md)). Chrome words: [`CONTEXT.md`](../../CONTEXT.md).
 
 ## Open index
 
@@ -15,15 +17,16 @@ Do not start an idea while NOW has an open MVP slice unless the user names the t
 | [MAYA-121](defects/MAYA-121-agents-delete-dead-signup-not-idempotent-missing-guards.md) | Signup idempotency and schema guards | defect | P2 | backlog | later |
 | [MAYA-122](defects/MAYA-122-env-validation-sentry-ratelimit-service-role-hygiene.md) | Env validation, Sentry, burst limit | defect | P2 | backlog | PR5 |
 | [MAYA-110](defects/MAYA-110-unbounded-user-conversations-query.md) | Unbounded conversations query on the rail | defect | P3 | backlog | later |
-| [TODO-001](ideas/001-conversational-agent-creator.md) | Conversational agent creator (Maya casting) | idea | P1 | ready | later |
-| [TODO-002](ideas/002-maya-super-agent-host-matchmaker.md) | Maya host + catalog matchmaker | idea | P1 | ready | later |
-| [TODO-003](ideas/003-global-maya-concierge-ui.md) | Global Maya concierge UI (`⌘K`) | idea | P2 | ready | later |
+| [TODO-002](ideas/002-maya-super-agent-host-matchmaker.md) | Maya host + matchmaker | idea | P1 | ready | after PR5 |
+| [TODO-006](ideas/006-catalog-driven-first-party-bill.md) | Catalog-driven first-party bill | idea | P1 | ready | after PR5 |
+| [TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md) | Launch company: Maya, Helena, promote coming soon | idea | P1 | ready | after TODO-006 |
+| [TODO-001](ideas/001-conversational-agent-creator.md) | Conversational create agent (Maya) | idea | P1 | ready | after TODO-002 |
+| [TODO-003](ideas/003-global-maya-concierge-ui.md) | Maya from anywhere (`⌘K`) | idea | P2 | idea | later |
+| [TODO-010](ideas/010-inbuilt-catalog-wave-1-rest.md) | Inbuilt catalog: rest of wave 1 | idea | P1 | idea | later |
+| [TODO-009](ideas/009-inbuilt-catalog-sages-canon.md) | Inbuilt catalog: sage and canon wave 2 | idea | P1 | idea | later |
+| [TODO-008](ideas/008-ensembles.md) | Ensembles: sequential multi-character jobs | idea | P2 | idea | later |
 | [TODO-004](ideas/004-rate-an-agent.md) | Rate an agent (1–5) | idea | P2 | idea | later |
 | [TODO-005](ideas/005-remix-an-agent.md) | Remix an agent into Studio | idea | P2 | idea | later |
-| [TODO-006](ideas/006-catalog-driven-first-party-bill.md) | Catalog-driven first-party bill | idea | P1 | idea | later |
-| [TODO-007](ideas/007-inbuilt-catalog-jobs-voices.md) | Inbuilt catalog: jobs × archetypes (schema + wave 1) | idea | P1 | ready | later |
-| [TODO-008](ideas/008-ensembles.md) | Ensembles: sequential multi-character jobs | idea | P2 | idea | later |
-| [TODO-009](ideas/009-inbuilt-catalog-sages-canon.md) | Inbuilt catalog: sage and canon wave 2 seed | idea | P1 | ready | later |
 
 ## Status
 

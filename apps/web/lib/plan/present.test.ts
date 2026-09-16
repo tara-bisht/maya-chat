@@ -24,7 +24,7 @@ describe("parsePlanReason", () => {
 
 describe("planReasonHeading", () => {
   it("names the wall the user just hit", () => {
-    expect(planReasonHeading("locked-agent")).toBe("That voice needs Plus.");
+    expect(planReasonHeading("locked-agent")).toBe("That agent needs Plus.");
     expect(planReasonHeading("quota")).toBe("Out of credits.");
     expect(planReasonHeading("studio-cap")).toBe("Agent limit reached.");
     expect(planReasonHeading("studio-private")).toBe(

@@ -31,8 +31,8 @@ export type MarketplaceSection = {
 export const MARKETPLACE_COPY = {
   kicker: "Explore",
   title: "Agents",
-  body: "Featured voices now. More on the way. Sign in to chat — or write yours in Studio.",
-  signedInBody: "Featured voices now. More on the way.",
+  body: "Featured agents now. More on the way. Sign in to chat — or create your own.",
+  signedInBody: "Featured agents now. More on the way.",
 } as const;
 
 export const MARKETPLACE_CATEGORIES: readonly {

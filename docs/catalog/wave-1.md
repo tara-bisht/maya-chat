@@ -1,10 +1,10 @@
 # Wave 1 inbuilt roster
 
-Named sheets for the next catalog drop. Production system prompts and SQL land with [TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md) after [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Sages and canon characters are wave 2: [`wave-2.md`](wave-2.md). Starter prompts already live: [`../curated-agents.md`](../curated-agents.md).
+Named sheets for catalog growth after the launch handful. Jules, Meera, Kenji, Sofia, and Helena land with [TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md). The rest of this file lands with [TODO-010](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md) after [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Sages and canon are wave 2: [`wave-2.md`](wave-2.md). Starter prompts: [`../curated-agents.md`](../curated-agents.md).
 
-Promote the four coming-soon posters, then add twelve seats so every archetype has at least one live character. About sixteen new chat-able rows on top of the eight seed — not hundreds.
+Launch company first (Maya + twelve specialists). Then the remaining seats in this file so every archetype has at least one live character — not hundreds.
 
-Free-tier stays Marcus + Priya unless we explicitly add a Work tasting seat (Helena). Costumes reuse the existing flood palette; no new CSS tokens in this wave.
+Free-tier stays Maya + Marcus + Priya unless we explicitly add another tasting seat. Colors reuse the existing palette; no new CSS tokens in this wave.
 
 Each sheet needs a behavioral loop as sharp as Marcus (roast → dichotomy → prescription). A specialist with no personality is a failed sheet.
 
@@ -168,7 +168,7 @@ Later (not this wave): techno-optimist, degrowth romantic, EA stickler, localist
 - **Tools:** `memory_saver`
 - **Costume:** reuse `priya` (magenta)
 - **Loop:** Flood (quantity) → Cluster → Three keepers with why, plus one you should kill
-- **Depends on:** `play` in the category CHECK (TODO-007).
+- **Depends on:** `play` in the category CHECK (TODO-010).
 
 ### Nyx — dungeon master
 
@@ -177,7 +177,7 @@ Later (not this wave): techno-optimist, degrowth romantic, EA stickler, localist
 - **Tools:** `memory_saver`
 - **Costume:** reuse `kenji` (dusk)
 - **Loop:** Scene in the room → Call the roll / the cost → Advance the night; remember the party
-- **Rails:** TTRPG/story. Fade to black on explicit sex. No minors in sexual scenes. Depends on `play` (TODO-007).
+- **Rails:** TTRPG/story. Fade to black on explicit sex. No minors in sexual scenes. Depends on `play` (TODO-010).
 
 ---
 

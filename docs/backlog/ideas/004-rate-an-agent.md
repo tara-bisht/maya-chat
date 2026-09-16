@@ -6,14 +6,14 @@ area: web
 priority: p2
 target_slice: later
 created_at: 2026-09-14
-updated_at: 2026-09-14
+updated_at: 2026-09-17
 ---
 
 # [TODO-004] Rate an agent (1–5)
 
 ## Overview
 
-- **What:** A signed-in member can score an agent they can see, 1 through 5. One rating per `(user_id, agent_id)`. Playbills may later show an aggregate.
+- **What:** A signed-in member can score an agent they can see, 1 through 5. One rating per `(user_id, agent_id)`. Agent cards may later show an aggregate.
 - **Why:** Signal which inbuilt and public custom agents actually land, without turning Explore into a store ranking.
 
 Words: [`CONTEXT.md`](../../../CONTEXT.md) (**Rating**). Do not start while [`docs/NOW.md`](../../NOW.md) has an open MVP slice unless named.
@@ -22,13 +22,13 @@ Words: [`CONTEXT.md`](../../../CONTEXT.md) (**Rating**). Do not start while [`do
 
 - [ ] Signed-in user rates a visible agent (curated, or public custom, or a custom they own).
 - [ ] Upsert one row per user per agent; changing the score replaces the previous one.
-- [ ] Playbill can show an aggregate (count + mean) without exposing who voted.
+- [ ] Agent card can show an aggregate (count + mean) without exposing who voted.
 - [ ] Non-goals: ranking feed, pay-to-boost, rating a private agent you do not own, anonymous ratings.
 
 ## Touches
 
 - `supabase/migrations/` — `agent_ratings` (or equivalent) + RLS
-- `apps/web/components/` — playbill control
+- `apps/web/components/` — agent-card control
 - `packages/shared/` — Zod for the score
 
 ## Notes

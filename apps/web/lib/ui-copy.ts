@@ -57,9 +57,9 @@ export const COPY = {
   agentLimit: "Agent limit reached.",
   privatePlus: "Private agents are Plus.",
   privatePlusBody: "Upgrade to Plus to make this agent private.",
-  publicHint: "Anyone signed in can chat. They do not see the backstory.",
+  publicHint: "Anyone signed in can chat. They do not see the instructions.",
   privateHint: "Only you can chat with this agent.",
-  studioInvalid: "Name, tagline, and backstory are required.",
+  studioInvalid: "Name, description, and instructions are required.",
   signInTitle: "Sign in.",
   signInHelp: "Continue with Google. Apple lands later.",
   authErrorTitle: "Sign-in did not finish.",
@@ -83,7 +83,7 @@ export function lockedAgentCopy(shortName: string): string {
 }
 
 export function quotaCopy(): string {
-  return "Out of credits today. Come back after 00:00 UTC, switch to a lighter voice, or upgrade.";
+  return "Out of credits today. Come back after 00:00 UTC, switch to a cheaper model, or upgrade.";
 }
 
 export function monthlyQuotaCopy(): string {
@@ -98,11 +98,11 @@ export function lockedVoiceTitle(
 }
 
 export function lockedVoiceCopy(): string {
-  return "Upgrade to use this voice.";
+  return "Upgrade to use this model.";
 }
 
 export function lockedVoiceFallbackTitle(): string {
-  return "That voice is locked";
+  return "That model is locked";
 }
 
 export function creditsLeftLabel(remaining: number): string {

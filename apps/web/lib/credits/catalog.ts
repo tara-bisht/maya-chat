@@ -28,6 +28,6 @@ export function pickVoice(model: CatalogModel): VoicePick {
   return { ok: false, reason: "forbidden_model", model };
 }
 
-export function voiceThroughLabel(alias: string): string {
-  return `Voice through ${alias}`;
+export function modelLabel(alias: string): string {
+  return `Model: ${alias}`;
 }

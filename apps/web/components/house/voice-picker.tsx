@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { CatalogModel } from "@/lib/credits/catalog";
-import { pickVoice, voiceThroughLabel } from "@/lib/credits/catalog";
+import { modelLabel, pickVoice } from "@/lib/credits/catalog";
 import { planLabel } from "@/lib/ui-copy";
 
 export function VoicePicker({
@@ -23,7 +23,7 @@ export function VoicePicker({
   const listId = useId();
   const selected =
     models.find((item) => item.id === selectedModelId) ?? null;
-  const triggerLabel = voiceThroughLabel(selected?.id ?? selectedModelId);
+  const triggerLabel = modelLabel(selected?.id ?? selectedModelId);
 
   useEffect(() => {
     if (!open) {
@@ -66,7 +66,7 @@ export function VoicePicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
-        aria-label={`${triggerLabel}. Change voice`}
+        aria-label={`${triggerLabel}. Change model`}
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
       >
@@ -92,7 +92,7 @@ export function VoicePicker({
         <ul
           id={listId}
           role="listbox"
-          aria-label="Voice"
+          aria-label="Models"
           className="absolute top-9 left-0 z-40 max-h-80 w-[min(20rem,calc(100vw-2rem))] overflow-y-auto border border-rule bg-night py-1 shadow-[6px_6px_0_#F6EFE4]"
         >
           {models.map((item) => {

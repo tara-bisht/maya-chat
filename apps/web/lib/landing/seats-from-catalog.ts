@@ -71,7 +71,7 @@ const SEAT_CHROME: Record<
 };
 
 const TOOL_LABEL: Record<string, string> = {
-  memory_saver: "Memory saver",
+  memory_saver: "Memory",
   math_solver: "math solver",
   web_search: "web search",
 };
@@ -188,16 +188,16 @@ function toolsBullet(tools: readonly string[]): string {
 function agentBullets(plan: CatalogPlanRow): string[] {
   if (plan.curated_agent_limit != null) {
     const max = plan.max_custom_agents ?? plan.curated_agent_limit;
-    return [`Starter voices + ${max} of yours, public`];
+    return [`Starter agents + ${max} of yours, public`];
   }
   if (plan.max_custom_agents == null) {
     return [
-      "Every featured voice",
+      "Every featured agent",
       "Unlimited custom agents, public or private",
     ];
   }
   return [
-    "Every featured voice",
+    "Every featured agent",
     `${plan.max_custom_agents} custom agents, public or private`,
   ];
 }

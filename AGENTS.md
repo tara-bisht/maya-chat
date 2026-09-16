@@ -1,9 +1,10 @@
 # Maya Chat
 
-Consumer chat: every conversation is with a named character.
+Consumer chat: every conversation is with a named character. Maya is the host who gets you there.
 
 | Question | Read |
 | :--- | :--- |
+| What the product is | [`docs/PROJECT_DESCRIPTION.md`](docs/PROJECT_DESCRIPTION.md) |
 | Words | [`CONTEXT.md`](CONTEXT.md) |
 | Screens and tokens | [`docs/DESIGN.md`](docs/DESIGN.md) |
 | Shipped / next slice | [`docs/NOW.md`](docs/NOW.md) |

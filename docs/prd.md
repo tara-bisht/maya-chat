@@ -15,7 +15,7 @@ monetization: "Free / Plus / Pro — plan-gated, configurable model catalog via 
 ---
 ```
 
-Words: [`../CONTEXT.md`](../CONTEXT.md). Seed prices and model allowlists: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Starter prompts: [`curated-agents.md`](curated-agents.md). Status: [`NOW.md`](NOW.md).
+Product identity (Maya is host, launch company is a handful, Voice from any listed lab): [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). Words: [`../CONTEXT.md`](../CONTEXT.md). Starter prompts: [`curated-agents.md`](curated-agents.md). Status: [`NOW.md`](NOW.md). Follow the project description if this file and that one disagree on identity.
 
 ## 1. Executive Summary & Product Vision
 
