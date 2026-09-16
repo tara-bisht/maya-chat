@@ -1,6 +1,6 @@
 # Inbuilt catalog: jobs × archetypes
 
-How first-party characters are *written* and how they *sit on the wall*. Starter prompts: [`../curated-agents.md`](../curated-agents.md). Wave 1 names: [`wave-1.md`](wave-1.md). Wave 2 (sages + canon): [`wave-2.md`](wave-2.md). Words: [`../../CONTEXT.md`](../../CONTEXT.md). Schema + wave 1 seed: [`../backlog/ideas/007-inbuilt-catalog-jobs-voices.md`](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md). Wave 2 seed: [`../backlog/ideas/009-inbuilt-catalog-sages-canon.md`](../backlog/ideas/009-inbuilt-catalog-sages-canon.md).
+How first-party characters are *written* and how they *sit on the wall*. Starter prompts: [`../curated-agents.md`](../curated-agents.md). Launch handful: [`../backlog/ideas/007-inbuilt-catalog-jobs-voices.md`](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md). Rest of wave 1: [`../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md`](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md). Wave 2: [`../backlog/ideas/009-inbuilt-catalog-sages-canon.md`](../backlog/ideas/009-inbuilt-catalog-sages-canon.md). Words: [`../../CONTEXT.md`](../../CONTEXT.md).
 
 The company can grow to thousands. It does not grow by adding generic specialists (“Email Writer”). Every inbuilt agent is a named character: a **job** they are good at, plus an **archetype** you would not get from a bland assistant.
 
@@ -17,7 +17,7 @@ Professional / Fun / Niche / Believer / Sage / Canon are **archetypes**, not Exp
 
 ## Browse (Explore)
 
-Keep the live category ids. Relabel four. Add `play` in the schema slice ([TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md)). Studio stays `custom` and off this bill.
+Keep the live category ids. Relabel four. Add `play` in the schema slice ([TODO-010](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md)). Studio stays `custom` and off this bill.
 
 | `category` id | Explore label | Jobs on the wall |
 | :--- | :--- | :--- |
@@ -26,10 +26,10 @@ Keep the live category ids. Relabel four. Add `play` in the schema slice ([TODO-
 | `wellbeing` | Advice | Burnout, habits, relationships, grounding |
 | `philosophy` | Debate | Stoics, ethics, ideology, believer characters, teaching sages |
 | `lifestyle` | Everyday | Taste, fandoms, casual niche (F1, cricket, food, cinema) |
-| `play` | Play | Fantasy, games, talk-to-a-character, entertainment bits (schema: TODO-007) |
+| `play` | Play | Fantasy, games, talk-to-a-character, entertainment bits (schema: TODO-010) |
 | `custom` | — | Studio only |
 
-Viktor is seed-`productivity` (fitness/discipline). Recategorize to `wellbeing` when wave 1 seeds so he does not sit under Work.
+Viktor is seed-`productivity` (fitness/discipline). Recategorize to `wellbeing` when the rest of wave 1 seeds ([TODO-010](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md)) so he does not sit under Work.
 
 ## Archetypes (editorial)
 
@@ -120,6 +120,6 @@ A sage with no behavioral loop is Wikipedia in a toga. A canon sheet that reads 
 1. Catalog-backed wall ([TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md)) before a large seed. Do not grow `COMPANY` in TypeScript.
 2. Costume is a **palette** of reused floods (~24 inks). Seed characters keep their current floods. A new row picks a palette id; it does not add a CSS variable.
 3. Gallery selects an explicit column list. Never `system_prompt` to the client.
-4. Free-tier stays a tasting menu (`free_tier` flag). Wave 1 and wave 2 default: Marcus + Priya.
-5. Matchmaker becomes load-bearing around ~20 live seats ([TODO-002](../backlog/ideas/002-maya-super-agent-host-matchmaker.md)).
-6. Wave 2 seed ([TODO-009](../backlog/ideas/009-inbuilt-catalog-sages-canon.md)) waits on the catalog-backed bill and the TODO-007 schema (`sage` / `canon` on the archetype enum). Do not fold sages into the wave 1 SQL.
+4. Free-tier stays a tasting menu (`free_tier` flag). Default: Maya + Marcus + Priya.
+5. Maya host ([TODO-002](../backlog/ideas/002-maya-super-agent-host-matchmaker.md)) ships with the launch handful, not after ~20 seats.
+6. Wave 2 seed ([TODO-009](../backlog/ideas/009-inbuilt-catalog-sages-canon.md)) waits on the catalog-backed bill and the [TODO-010](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md) schema (`sage` / `canon` on the archetype enum). Do not fold sages into the launch company.

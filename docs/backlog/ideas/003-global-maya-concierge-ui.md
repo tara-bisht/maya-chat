@@ -1,66 +1,43 @@
 ---
 id: TODO-003
-title: "Global Maya Concierge UI: Command Palette (`⌘K`) & Floating Host Pass"
-status: ready
+title: "Maya from anywhere (`⌘K`)"
+status: idea
 area: web
 priority: p2
 target_slice: later
 created_at: 2026-09-12
-updated_at: 2026-09-14
+updated_at: 2026-09-17
 ---
 
-# [TODO-003] Global Maya Concierge UI: Command Palette (`⌘K`) & Floating Host Pass
+# [TODO-003] Maya from anywhere (`⌘K`)
 
-## 💡 Overview & Motivation
-- **The Problem**: Confining Maya to a single landing page or standalone route restricts utility. Users deep inside a conversation or browsing the gallery shouldn't have to leave what they are doing just to ask Maya for a recommendation, check daily allowance usage, or explore other agents.
-- **The Opportunity**: Introduce an ambient, universally accessible interface for Maya. Users can press `⌘K` / `Ctrl+K` or tap a persistent "Host Pass" icon to summon a slide-over concierge drawer without losing context.
+## Overview
 
----
+- **What:** After Maya is a real chat ([TODO-002](002-maya-super-agent-host-matchmaker.md)), let people summon her from any signed-in screen with `⌘K` / `Ctrl+K` or a header control. Overlay; do not destroy the chat they were in. Recommendation cards still say **Chat with {name}** and **Create agent**.
+- **Why:** Useful once the host exists. Not the first Maya.
 
-## 🎯 Acceptance Criteria & Scope
+Do not start while PR4c / PR5 are open, and do not start before TODO-002. This is not the door.
 
-- [ ] **Universal Keyboard Shortcut (`⌘K` / `Ctrl+K`)**:
-  - Global hotkey listener mounted in the application shell that toggles the Maya Concierge interface.
-  - Automatically disables when typing in text inputs/textareas unless explicitly targeted.
-- [ ] **Persistent Night-Wall Host Badge**:
-  - A subtle theatrical ticket badge in the navigation rail / header adhering to Maya Street Cast tokens (`#14110F`, acid yellow accent, Fraunces font).
-- [ ] **Non-Destructive Slide-Over Drawer / Modal**:
-  - Opens as an overlay that preserves scroll positions, draft chat inputs, and route states behind it.
-  - Smooth animation, fully responsive on both desktop and mobile viewport dimensions.
-- [ ] **Interactive Rich Response Cards**:
-  - When Maya recommends an agent via `recommendAgent` tool call, render an interactive Playbill Card with costume badge and a "Talk to [Agent] ➡️" button.
-  - Clicking an agent recommendation seamlessly navigates to `/chat/[agentId]` and closes the drawer.
-  - When Maya suggests creating a custom agent, render a "Step into Studio 🎬" action button.
+## Acceptance
 
----
+- [ ] Global shortcut, ignored while typing in a field unless targeted.
+- [ ] Overlay keeps scroll, composer draft, and route.
+- [ ] Reuses TODO-002 tools. Cards: **Chat with {name}**, **Create agent**.
+- [ ] Non-goals: replacing Maya’s own chat; Host Pass / ticket badge as the product name; shipping this instead of TODO-002.
 
-## 🧩 Affected Components & Files
+## Touches
 
-- **Frontend / Client Components**:
-  - `apps/web/components/maya/maya-concierge-modal.tsx` — slide-over drawer and modal container.
-  - `apps/web/components/maya/maya-host-badge.tsx` — navigation trigger button.
-  - `apps/web/components/maya/maya-recommendation-card.tsx` — rich interactive Playbill recommendation card.
-  - `apps/web/components/app/app-shell.tsx` — mounts global keyboard listener and modal.
-  - `apps/web/hooks/use-maya-concierge.ts` — React hook managing open/closed state and chat history.
+- `apps/web/components/maya/`
+- `apps/web/components/app/app-shell.tsx`
 
----
+## Notes
 
-## 🛠️ Implementation Notes & Technical References
+- Chrome stays plain. No Host Pass, no “Step into Studio.”
+- Design: Street Cast tokens. Do not add backdrop-blur as a new look.
 
-- **Design System Alignment**:
-  - Follow [`docs/DESIGN.md`](../../DESIGN.md): Night Wall `#14110F`, backdrop blur (`backdrop-blur-md bg-black/60`), Bricolage Grotesque body text, Fraunces serif wordmark, acid yellow `#E2F86E` accents.
-- **Client State**:
-  - Concierge conversation can be session-ephemeral or persisted in local storage so users can reopen `⌘K` and see their recent dialogue with Maya.
+## Checklist
 
----
-
-## 📋 Execution Checklist
-
-- [ ] Step 1: Create feature branch `feat/maya-concierge-ui` from `main`
-- [ ] Step 2: Implement `apps/web/hooks/use-maya-concierge.ts` and `useHotkeys` listener for `⌘K`
-- [ ] Step 3: Build `apps/web/components/maya/maya-concierge-modal.tsx` with streaming chat UI
-- [ ] Step 4: Build `apps/web/components/maya/maya-recommendation-card.tsx` for rich agent cards
-- [ ] Step 5: Mount `MayaHostBadge` in the desktop rail and mobile header
-- [ ] Step 6: Test keyboard shortcuts, ESC to close, backdrop dismiss, and navigation transitions
-- [ ] Step 7: Run `pnpm turbo lint typecheck test`
-- [ ] Step 8: Open PR and squash-merge to `main`
+- [ ] Worktree + branch per [`git.md`](../../git.md)
+- [ ] Implement after TODO-002
+- [ ] `pnpm turbo lint typecheck test`
+- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index

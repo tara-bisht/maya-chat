@@ -1,30 +1,30 @@
 ---
 id: TODO-006
 title: "Catalog-driven first-party bill"
-status: idea
+status: ready
 area: web
 priority: p1
-target_slice: later
+target_slice: after PR5
 created_at: 2026-09-14
-updated_at: 2026-09-14
+updated_at: 2026-09-17
 ---
 
 # [TODO-006] Catalog-driven first-party bill
 
 ## Overview
 
-- **What:** Landing, Explore, and the public marketplace bill read live curated agents from `public.agents` (plus coming-soon posters), not a hardcoded eight-row `COMPANY` in `apps/web/lib/company.ts`.
-- **Why:** Docs now treat the inbuilt catalog as unbounded. The wall cannot stay an eight-row TypeScript array.
+- **What:** Landing, Explore, and the public marketplace bill read live curated agents from `public.agents` (plus coming-soon posters), not a hardcoded `COMPANY` array in `apps/web/lib/company.ts`.
+- **Why:** The launch company (Maya + twelve specialists) cannot grow if the wall is a TypeScript snapshot. Runtime chat already loads `public.agents`.
 
-Runtime chat already loads `public.agents`. This is the marketing/playbill counterpart. Do not implement in a docs-only PR.
+Do not start while PR4c / PR5 are open unless named. Do not implement in a docs-only PR. Launch seed ([TODO-007](007-inbuilt-catalog-jobs-voices.md)) waits on this bill.
 
 ## Acceptance
 
 - [ ] Featured / Explore / marketplace live posters come from curated, non-archived `agents` rows (explicit column list; never `system_prompt`).
-- [ ] Coming-soon posters stay a separate catalog (today `COMING_SOON` in `bill.ts`) until they become `agents` rows.
-- [ ] Adding a curated seed row is enough for it to appear on the wall after deploy of data, without editing `COMPANY`.
-- [ ] Pagination or category queries so thousands of rows do not load on first paint ([MAYA-103](../../archive/issues/MAYA-103-unbounded-public-agents-scan.md) pattern).
-- [ ] Non-goals: in-app catalog admin, importing thousands of prompts in this slice, stuffing every inbuilt prompt into a matchmaker context ([TODO-002](002-maya-super-agent-host-matchmaker.md) must retrieve).
+- [ ] Coming-soon posters stay a separate catalog until they become `agents` rows ([TODO-007](007-inbuilt-catalog-jobs-voices.md) promotes Jules, Meera, Kenji, Sofia).
+- [ ] Adding a curated seed row is enough for it to appear on the wall after data deploy, without editing `COMPANY`.
+- [ ] Pagination or category queries so a large catalog does not load on first paint ([MAYA-103](../../archive/issues/MAYA-103-unbounded-public-agents-scan.md) pattern).
+- [ ] Non-goals: in-app catalog admin; importing the rest of wave 1 in this slice ([TODO-010](010-inbuilt-catalog-wave-1-rest.md)); stuffing every inbuilt prompt into Maya ([TODO-002](002-maya-super-agent-host-matchmaker.md) must retrieve).
 
 ## Touches
 
@@ -35,6 +35,13 @@ Runtime chat already loads `public.agents`. This is the marketing/playbill count
 
 ## Notes
 
-- [ADR 0002](../../adr/0002-marketplace-is-first-party-bill.md) said live posters stay `COMPANY`. This todo revises that once the bill is catalog-backed.
-- Matchmaker and concierge must retrieve over the catalog, not inject every starter bio.
-- Wave 1 seed ([TODO-007](007-inbuilt-catalog-jobs-voices.md)) and wave 2 sage/canon seed ([TODO-009](009-inbuilt-catalog-sages-canon.md)) wait on this bill. Do not grow `COMPANY` to sixteen (or twenty-eight) rows.
+- [ADR 0002](../../adr/0002-marketplace-is-first-party-bill.md) said live posters stay `COMPANY`. This todo revises that.
+- First ship is the launch handful, not thousands. Architecture can hold more later.
+- Sequence: PR5 → this → [TODO-007](007-inbuilt-catalog-jobs-voices.md). Maya host ([TODO-002](002-maya-super-agent-host-matchmaker.md)) can ship in parallel.
+
+## Checklist
+
+- [ ] Worktree + branch per [`git.md`](../../git.md)
+- [ ] Implement (tests: wall from `agents`, no `system_prompt` on the client)
+- [ ] `pnpm turbo lint typecheck test`
+- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index

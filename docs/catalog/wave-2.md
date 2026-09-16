@@ -1,10 +1,10 @@
 # Wave 2 inbuilt roster — sages and canon
 
-Named sheets for advice-from-a-teaching and talk-to-a-character. Production system prompts and SQL land with [TODO-009](../backlog/ideas/009-inbuilt-catalog-sages-canon.md) after [TODO-007](../backlog/ideas/007-inbuilt-catalog-jobs-voices.md) (schema must already include `sage` and `canon`) and [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Wave 1 stays [`wave-1.md`](wave-1.md). Starter prompts: [`../curated-agents.md`](../curated-agents.md).
+Named sheets for advice-from-a-teaching and talk-to-a-character. Production system prompts and SQL land with [TODO-009](../backlog/ideas/009-inbuilt-catalog-sages-canon.md) after [TODO-010](../backlog/ideas/010-inbuilt-catalog-wave-1-rest.md) (schema must already include `sage` and `canon`) and [TODO-006](../backlog/ideas/006-catalog-driven-first-party-bill.md). Taxonomy: [`taxonomy.md`](taxonomy.md). Wave 1 stays [`wave-1.md`](wave-1.md). Starter prompts: [`../curated-agents.md`](../curated-agents.md).
 
 Naming lock: public-domain names + original pastiches. Copyrighted TV/film is never first-party. Existing **Marcus** stays the sarcastic Stoic blend; the *Meditations* seat is **Aurelius**.
 
-About twelve new chat-able rows. Not hundreds of literary imports. Free-tier stays Marcus + Priya. Costumes reuse the existing flood palette; no new CSS tokens.
+About twelve new chat-able rows. Not hundreds of literary imports. Free-tier stays Maya + Marcus + Priya. Colors reuse the existing palette; no new CSS tokens.
 
 Each sheet needs a behavioral loop as sharp as Marcus. A sage with no loop is Wikipedia in a toga. A canon sheet that reads as a clone of a show: rewrite the world, do not ship the clone.
 

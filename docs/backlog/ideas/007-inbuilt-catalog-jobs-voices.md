@@ -1,50 +1,49 @@
 ---
 id: TODO-007
-title: "Inbuilt catalog: jobs × archetypes (schema + wave 1)"
+title: "Launch company: Maya, Helena, promote coming soon"
 status: ready
 area: web
 priority: p1
-target_slice: later
+target_slice: after TODO-006
 created_at: 2026-09-14
-updated_at: 2026-09-14
+updated_at: 2026-09-17
 ---
 
-# [TODO-007] Inbuilt catalog: jobs × archetypes
+# [TODO-007] Launch company: Maya, Helena, promote coming soon
 
 ## Overview
 
-- **What:** Make the first-party company grow as named characters across jobs (email, F1, debate, fantasy, research) without generic “Email Writer” bots. Schema for `play` + `archetype` (including `sage` and `canon`) + `tags` + costume palette, then seed wave 1 from [`docs/catalog/wave-1.md`](../../catalog/wave-1.md). Wave 2 seed is [TODO-009](009-inbuilt-catalog-sages-canon.md).
-- **Why:** The starter eight plus four coming-soon posters do not cover the jobs people actually do with AI. Taxonomy is already written ([`docs/catalog/taxonomy.md`](../../catalog/taxonomy.md)). This todo is the data and seed.
+- **What:** Put the first-ship official company on the wall: **Maya** (host, always free) plus **twelve named specialists**. Promote Jules, Meera, Kenji, Sofia from coming-soon. Seed **Helena** (Work writing). Do not seed the rest of wave 1.
+- **Why:** Mass jobs need a person on a poster. The lock is a handful, not thousands and not job-title SKUs.
 
-Depends on [TODO-006](006-catalog-driven-first-party-bill.md): do not grow `COMPANY` in TypeScript. Do not start while NOW has an open MVP slice unless this todo is named.
+Depends on [TODO-006](006-catalog-driven-first-party-bill.md). Maya host behavior is [TODO-002](002-maya-super-agent-host-matchmaker.md) — seed the Maya row here if 002 has not. Do not start while PR4c / PR5 are open unless named. Rest of wave 1: [TODO-010](010-inbuilt-catalog-wave-1-rest.md). Wave 2: [TODO-009](009-inbuilt-catalog-sages-canon.md).
+
+Launch specialists: Marcus, Priya, Alex, Helena, Kenji, Meera, Sofia, Nonna, Viktor, Jules, Barnaby, Ren. Valerian may stay live as extra; he is not required to explain the product.
 
 ## Acceptance
 
-- [ ] `agents.category` CHECK includes `play`. Explore labels: Work / Learning / Advice / Debate / Everyday / Play ([taxonomy](../../catalog/taxonomy.md)).
-- [ ] Curated rows have editorial `archetype` and `tags text[]`. The enum includes wave 1 values **and** `sage` / `canon` so wave 2 does not migrate twice. Gallery never selects `system_prompt`.
-- [ ] Costume floods are a reused palette; wave 1 adds no per-character CSS variables.
-- [ ] Wave 1 seed: promote Jules, Meera, Kenji, Sofia; add Helena, Rafi, Theo, Lila, Pace, Aunty Shanti, Cato, Rosa, Helios, Quill, Spark, Nyx. Helios ships with believer rails; drop only if we decide the bit is too hot.
-- [ ] Cato ships with Rosa. Viktor recategorizes to `wellbeing`. Free-tier stays Marcus + Priya unless Helena is explicitly opened.
-- [ ] Each new sheet has a behavioral loop as sharp as Marcus. Production prompts live in [`curated-agents.md`](../../curated-agents.md) (or `docs/catalog/` split) plus seed SQL.
-- [ ] Non-goals: thousands of imported prompts, in-app catalog admin, matchmaker ([TODO-002](002-maya-super-agent-host-matchmaker.md) follows once the wall is dense), NSFW companions, expanding Free to the whole wave, wave 2 sage/canon seed ([TODO-009](009-inbuilt-catalog-sages-canon.md)).
+- [ ] Maya is a curated row, `free_tier = true`, chat-able. Prompt: host, not a specialist worker.
+- [ ] Jules, Meera, Kenji, Sofia are live `agents` rows (no Coming soon stamp). Helena is seeded as a named Work-writing character, not “Email Bot.”
+- [ ] Free-tier: Maya, Marcus, Priya. Plus/Pro see the whole launch company. Locked posters stay readable.
+- [ ] Named people only. If a brief says “YC Pitch Critic” or “Full-Stack Architect,” map to a person already in this list (Alex, Helena, Kenji) — do not poster the SKU.
+- [ ] Each new sheet has a behavioral loop as sharp as Marcus. Production prompts in [`curated-agents.md`](../../curated-agents.md) plus seed SQL. Gallery never selects `system_prompt`.
+- [ ] Reuse the color palette. No new CSS token per name.
+- [ ] Non-goals: rest of wave 1 (Rafi, Theo, Lila, Pace, Aunty Shanti, Cato, Rosa, Helios, Quill, Spark, Nyx) — that is [TODO-010](010-inbuilt-catalog-wave-1-rest.md); sage/canon ([TODO-009](009-inbuilt-catalog-sages-canon.md)); living-person seats; expanding Free to the whole company.
 
 ## Touches
 
-- `supabase/migrations/` (category CHECK, archetype, tags, listing_status or coming-soon stay static)
-- `packages/shared` `AGENT_CATEGORIES`
-- `apps/web/lib/marketplace/bill.ts` (Play section once players exist)
 - `docs/seed-agents.sql` / `docs/curated-agents.md`
-- Costume palette tokens in `DESIGN.md` + CSS — reuse, do not mint one ink per name
+- `apps/web/lib/marketplace/bill.ts` — drop promoted names from `COMING_SOON` (or they disappear once they are `agents` rows)
+- Avatars under `/public/avatars/` — linocut, no celebrity likeness
 
 ## Notes
 
-- Sequence: TODO-006 → this schema → wave 1 seed → [TODO-009](009-inbuilt-catalog-sages-canon.md) wave 2 → TODO-002 matchmaker.
-- Believer rails: [`taxonomy.md`](../../catalog/taxonomy.md). Helios is conspiracy-as-comedy, paired with Valerian. Sage/canon rails and naming lock live on the same page; do not seed those rows here.
-- Pagination / per-category fetch: [MAYA-103](../../archive/issues/MAYA-103-unbounded-public-agents-scan.md) via TODO-006.
+- Sequence: TODO-006 → this → TODO-001. Schema for `play` / `archetype` / `tags` waits on [TODO-010](010-inbuilt-catalog-wave-1-rest.md) unless a launch row truly needs it.
+- Filename still says `voices`; chrome says **agent**. Do not rename this file (links).
 
 ## Checklist
 
 - [ ] Worktree + branch per [`git.md`](../../git.md)
-- [ ] Implement (tests where the slice needs them)
+- [ ] Implement (tests: free-tier Maya/Marcus/Priya, promoted rows chat-able)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, move this file to archive and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
