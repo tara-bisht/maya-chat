@@ -12,7 +12,7 @@ export type GalleryViewer = {
   credits: CreditBalance | null;
 };
 
-export const RECENT_CHAT_LIMIT = 8;
+export const RECENT_CHAT_LIMIT = 12;
 
 export type RecentConversation = {
   id: string;

@@ -3,9 +3,9 @@ import { MAYA_HOME_HREF } from "@maya/shared";
 import {
   APP_NAV,
   COPY,
-  MOBILE_NAV,
   creditsLeftLabel,
   creditsRailLabel,
+  creditsResetLabel,
   lockedVoiceTitle,
   navIsActive,
   planHref,
@@ -16,17 +16,6 @@ import {
 describe("APP_NAV", () => {
   it("sends Explore to the signed-in catalog", () => {
     expect(APP_NAV.map((item) => item.href)).toEqual([
-      MAYA_HOME_HREF,
-      "/explore",
-      `${MAYA_HOME_HREF}?intent=create`,
-      "/settings",
-    ]);
-  });
-});
-
-describe("MOBILE_NAV", () => {
-  it("includes Explore beside Home, Create, and Profile", () => {
-    expect(MOBILE_NAV.map((item) => item.href)).toEqual([
       MAYA_HOME_HREF,
       "/explore",
       `${MAYA_HOME_HREF}?intent=create`,
@@ -52,6 +41,7 @@ describe("rail chrome", () => {
   it("names collapse and expand in plain chrome", () => {
     expect(COPY.collapseRail).toBe("Collapse");
     expect(COPY.expandRail).toBe("Expand");
+    expect(COPY.olderChats).toBe("Older chats");
   });
 });
 
@@ -75,5 +65,21 @@ describe("plan chrome", () => {
     expect(lockedVoiceTitle("Claude", "pro")).toBe("Claude is on Pro");
     expect(creditsLeftLabel(1484)).toBe("1,484 left");
     expect(creditsRailLabel(1484, 1500)).toBe("1,484 left of 1,500");
+  });
+});
+
+describe("creditsResetLabel", () => {
+  it("formats resetsAt in local time", () => {
+    expect(
+      creditsResetLabel("2026-09-12T00:00:00.000Z", {
+        locale: "en-US",
+        timeZone: "UTC",
+      }),
+    ).toBe("Resets 12:00 AM");
+  });
+
+  it("falls back to UTC copy when the stamp is missing", () => {
+    expect(creditsResetLabel()).toBe("Resets 00:00 UTC");
+    expect(creditsResetLabel("nope")).toBe("Resets 00:00 UTC");
   });
 });

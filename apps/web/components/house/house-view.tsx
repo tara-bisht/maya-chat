@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import {
@@ -10,11 +9,9 @@ import {
   type HostTicket,
   type HostRoute,
 } from "@maya/shared";
-import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
-import { ChatNav } from "@/components/app/chat-nav";
-import { CreditMeter } from "@/components/app/credit-meter";
-import { NAV_ICONS } from "@/components/app/nav-icons";
+import { useAppShell } from "@/components/app/app-shell-context";
+import { MenuIcon } from "@/components/app/nav-icons";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
 import type { CatalogModel } from "@/lib/credits/catalog";
 import {
@@ -27,13 +24,10 @@ import {
 } from "@/lib/house/copy";
 import { houseHref } from "@/lib/house/href";
 import type { HouseView as HouseViewData } from "@/lib/house/types";
-import { COPY, MOBILE_NAV, navIsActive } from "@/lib/ui-copy";
-import { MAYA_HOME_HREF } from "@maya/shared";
+import { COPY } from "@/lib/ui-copy";
 import { CharacterSheet } from "./character-sheet";
 import { Composer } from "./composer";
-import { RecentsRail } from "./recents-rail";
 import { Transcript, type StageTurn } from "./transcript";
-import { VoicePicker } from "./voice-picker";
 import { commitProposedAgent } from "@/lib/studio/actions";
 
 type MayaUIMessage = UIMessage<unknown, { ticket: HostTicket }>;
@@ -92,20 +86,19 @@ export function HouseView({
   intentCreate?: boolean;
   autoReplay?: boolean;
 }) {
-  const pathname = usePathname();
   const router = useRouter();
+  const { menuOpen, openMenu, setAboutOpener } = useAppShell();
   const conversationIdRef = useRef(house.conversation?.id ?? null);
   const [hostRoute, setHostRoute] = useState<HostRoute>(
     house.conversation?.hostRoute ?? "open",
   );
-  const [roster, setRoster] = useState(house.roster);
+  const [, setRoster] = useState(house.roster);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [createdIds, setCreatedIds] = useState<Record<string, string>>({});
   const [createError, setCreateError] = useState<string | null>(null);
   const [ticketBusy, setTicketBusy] = useState(false);
   const replayed = useRef(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [nightsOpen, setNightsOpen] = useState(false);
   const [selectedModelId, setSelectedModelId] = useState(house.selectedModelId);
   const selectedModelIdRef = useRef(selectedModelId);
   selectedModelIdRef.current = selectedModelId;
@@ -203,6 +196,11 @@ export function HouseView({
     setWellError("forbidden_model");
     clearError();
   }
+
+  useEffect(() => {
+    setAboutOpener(house.agent.id, () => setSheetOpen(true));
+    return () => setAboutOpener(null, null);
+  }, [house.agent.id, setAboutOpener]);
 
   useEffect(() => {
     if (!autoReplay || replayed.current || busy) {
@@ -383,61 +381,36 @@ export function HouseView({
     Boolean(error && !showQuota && !showLocked && !showForbidden);
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-night text-cream">
-      <ChatNav />
-      <div className="flex min-w-0 flex-1 flex-col pb-14 lg:pb-0">
-        <header className="flex items-center gap-3 border-b border-rule px-4 py-3">
-          <Link
-            href={MAYA_HOME_HREF}
-            className="font-display text-2xl text-cream italic lg:hidden"
-          >
-            Maya
-          </Link>
-          <AgentPortrait
-            name={house.agent.shortName}
-            costume={house.agent.costume}
-            avatar={house.agent.avatar}
-            size="rail"
-          />
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-display text-2xl leading-none text-cream italic">
-              {house.agent.shortName}
-            </p>
-            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2">
-              <VoicePicker
-                models={house.models}
-                selectedModelId={selectedModelId}
-                disabled={!house.agent.canChat}
-                onSelect={selectAllowedVoice}
-                onLocked={selectLockedVoice}
-              />
-              {house.credits ? (
-                <CreditMeter credits={house.credits} variant="compact" />
-              ) : null}
-            </div>
-          </div>
-          <button
-            type="button"
-            className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline lg:hidden"
-            onClick={() => setNightsOpen(true)}
-          >
-            Chats
-          </button>
-          <button
-            type="button"
-            className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-            onClick={() => setSheetOpen(true)}
-          >
-            About
-          </button>
-          <AccountMenu
-            displayName={house.displayName}
-            plan={house.plan}
-            dense
-          />
-        </header>
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-night text-cream">
+      <header className="flex shrink-0 items-center gap-2 border-b border-rule px-3 py-1.5 lg:hidden">
+        <button
+          type="button"
+          className="flex h-10 w-10 shrink-0 items-center justify-center text-cream"
+          aria-label={COPY.menu}
+          aria-expanded={menuOpen}
+          onClick={openMenu}
+        >
+          <MenuIcon />
+        </button>
+        <AgentPortrait
+          name={house.agent.shortName}
+          costume={house.agent.costume}
+          avatar={house.agent.avatar}
+          size="rail"
+        />
+        <p className="min-w-0 flex-1 truncate font-display text-xl leading-none text-cream italic">
+          {house.agent.shortName}
+        </p>
+        <button
+          type="button"
+          className="px-2 font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
+          onClick={() => setSheetOpen(true)}
+        >
+          {COPY.about}
+        </button>
+      </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {showLocked ? (
             <div className="flex flex-1 items-center justify-center px-4 py-10">
               <PaywallTicket
@@ -524,81 +497,19 @@ export function HouseView({
             placeholder={listening}
             disabled={false}
             busy={busy}
+            models={house.models}
+            selectedModelId={selectedModelId}
+            onSelectModel={selectAllowedVoice}
+            onLockedModel={selectLockedVoice}
             onSend={onSend}
           />
         ) : null}
-      </div>
-
-      <RecentsRail
-        activeAgentId={house.agent.id}
-        activeConversationId={house.conversation?.id ?? null}
-        roster={roster}
-        recents={house.recents}
-      />
 
       <CharacterSheet
         agent={house.agent}
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
       />
-
-      <nav
-        aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-rule bg-night lg:hidden"
-      >
-        {MOBILE_NAV.map((item) => {
-          const active = navIsActive(item.href, pathname);
-          const Icon = NAV_ICONS[item.id];
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex h-14 flex-1 flex-col items-center justify-center gap-0.5 font-sans text-[11px] font-semibold ${
-                active ? "text-cream" : "text-ink-soft"
-              }`}
-            >
-              <Icon />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {nightsOpen ? (
-        <div
-          className="fixed inset-0 z-30 bg-[color:var(--maya-overlay)] lg:hidden"
-          onClick={() => setNightsOpen(false)}
-        >
-          <aside
-            className="absolute inset-y-0 right-0 w-[min(20rem,calc(100%-2rem))] overflow-y-auto bg-night p-4"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-              {COPY.recentChats}
-            </p>
-            <ul className="mt-4 space-y-2">
-              {house.recents.map((chat) => (
-                <li key={chat.conversationId}>
-                  <Link
-                    href={chat.href}
-                    className="block font-sans text-sm text-cream"
-                    onClick={() => setNightsOpen(false)}
-                  >
-                    {chat.agentName} · {chat.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={houseHref(house.agent.id)}
-              className="mt-4 inline-block font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-              onClick={() => setNightsOpen(false)}
-            >
-              {COPY.newChat}
-            </Link>
-          </aside>
-        </div>
-      ) : null}
     </div>
   );
 }

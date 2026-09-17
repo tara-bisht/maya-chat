@@ -84,7 +84,7 @@ export function Transcript({
   if (turns.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4">
-        <p className="max-w-measure font-display text-center text-3xl leading-tight text-cream italic">
+        <p className="max-w-measure font-display text-center text-2xl leading-tight text-cream italic">
           {tagline}
         </p>
         {hostEmpty && onChip ? (
@@ -93,7 +93,7 @@ export function Transcript({
               <button
                 key={chip.label}
                 type="button"
-                className="rounded-md bg-cream px-3 py-2 font-sans text-sm font-semibold text-night shadow-[4px_4px_0_#FF4D2E]"
+                className="rounded-md bg-cream px-3 py-1.5 font-sans text-sm font-semibold text-night shadow-[3px_3px_0_#FF4D2E]"
                 onClick={() => onChip(chip.text)}
               >
                 {chip.label}
@@ -108,14 +108,14 @@ export function Transcript({
   const label = agentName.toLocaleUpperCase();
 
   return (
-    <div className="mx-auto flex w-full max-w-measure flex-col gap-6 px-4 py-6">
+    <div className="mx-auto flex w-full max-w-measure flex-col gap-3 px-4 py-4">
       {turns.map((turn, index) => {
         const last = index === turns.length - 1;
         if (turn.role === "assistant") {
           return (
             <article
               key={turn.id}
-              className={`rounded-md px-4 py-3 ${COSTUME_WASH_CLASS[costume]}`}
+              className={`rounded-md px-3 py-2 ${COSTUME_WASH_CLASS[costume]}`}
             >
               <p className="flex items-baseline justify-between gap-4 font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
                 <span>{label}</span>
@@ -124,7 +124,7 @@ export function Transcript({
               {turn.content ? (
                 <MarkdownBody
                   text={turn.content}
-                  className="mt-2 font-sans text-lg leading-relaxed text-cream"
+                  className="mt-1.5 font-sans text-base leading-snug text-cream"
                 />
               ) : null}
               {turn.ticket && tickets ? (
@@ -138,14 +138,14 @@ export function Transcript({
         return (
           <article
             key={turn.id}
-            className="rounded-md bg-cream px-4 py-3 text-night shadow-[4px_4px_0_#FF4D2E]"
+            className="rounded-md bg-cream px-3 py-2 text-night shadow-[3px_3px_0_#FF4D2E]"
           >
             <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase">
               You
             </p>
             <MarkdownBody
               text={turn.content}
-              className="mt-2 font-sans text-lg leading-relaxed"
+              className="mt-1.5 font-sans text-base leading-snug"
             />
           </article>
         );

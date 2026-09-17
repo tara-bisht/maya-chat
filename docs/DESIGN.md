@@ -125,7 +125,7 @@ components:
     backgroundColor: "{colors.acid}"
     textColor: "{colors.on-acid}"
     rounded: "{rounded.md}"
-    size: 44px
+    size: 40px
   input-field:
     backgroundColor: "{colors.cream-dim}"
     textColor: "{colors.night}"
@@ -134,7 +134,7 @@ components:
   textarea-composer:
     backgroundColor: "{colors.cream-dim}"
     textColor: "{colors.night}"
-    typography: "{typography.body-lg}"
+    typography: "{typography.body-md}"
     rounded: "{rounded.md}"
   playbill-poster:
     textColor: "{colors.cream}"
@@ -163,12 +163,12 @@ components:
   chat-message-user:
     backgroundColor: "{colors.cream}"
     textColor: "{colors.night}"
-    typography: "{typography.body-lg}"
+    typography: "{typography.body-md}"
     rounded: "{rounded.md}"
-    shadow: "4px 4px 0 {colors.acid}"
+    shadow: "3px 3px 0 {colors.acid}"
   chat-message-agent:
     textColor: "{colors.cream}"
-    typography: "{typography.body-lg}"
+    typography: "{typography.body-md}"
   model-picker:
     textColor: "{colors.ink-soft}"
     typography: "{typography.code-sm}"
@@ -291,8 +291,8 @@ Inter, Geist, Satoshi, Plus Jakarta, Space Grotesk, Poppins, Montserrat, and IBM
 - `{typography.headline-lg}` — Fraunces italic 32px / 600 on posters (`Dr. Priya`).
 - `{typography.headline-md}` — Fraunces italic 28px. Auth title, nested titles.
 - `{typography.headline-sm}` — Fraunces italic 24px. Footer wordmark, empty-state quotes.
-- `{typography.body-lg}` — Bricolage 18px. Landing body, chat transcript.
-- `{typography.body-md}` — Bricolage 16px. App body.
+- `{typography.body-lg}` — Bricolage 18px. Landing body.
+- `{typography.body-md}` — Bricolage 16px. App body, chat transcript.
 - `{typography.body-sm}` — Bricolage 14px / 600. Taglines, secondary sentences, ghost links.
 - `{typography.label-md}` — Bricolage 14px / 600. Buttons. Sentence case.
 - `{typography.label-caps}` — Bricolage 11px / 800 / +0.08em. `YOU`, `MARCUS`, `PLUS`, `FREE`, `PHILOSOPHY`, timestamps.
@@ -306,7 +306,7 @@ The wordmark is the word *Maya* in Fraunces italic, cream on night (night on cre
 
 8px rhythm. Chat and paywall prose sit in `{spacing.measure}` (42rem). The **lobby is full-bleed** — do not trap the landing in a blog column. Outer margin `{spacing.margin-mobile}` / `{spacing.margin-desktop}` (16 / 32).
 
-**Desktop shell (app).** Signed-in **chat** is three strips on night: a thin left app nav (default `{72px}`, expands to `{spacing.rail}`), the stage (transcript + composer), and a right recents rail (`{spacing.rail}`) with Your-agents portraits on top and chats below. Lobby pages (Explore, Studio, Plan, Profile) keep the left nav only. This is nav + history, not a third inspector.
+**Desktop shell (app).** Signed-in pages share **two strips** on night: a left rail (default `{spacing.rail}`, collapses to `{72px}`) and a full-height stage. The rail holds app nav, New chat, recents (one live thread per agent), credits with local reset time, and the profile control. There is no desktop header and no right recents rail. Lobby pages (Explore, Studio, Plan, Profile) use the same rail. This is nav + history, not a third inspector.
 
 **Gallery / landing wall.** CSS grid: 1 column mobile, 2 tablet, 4 desktop. Gap 32px. Odd columns on large screens drop `2rem` (`translate-y-8`) so the wall staggers. Each poster carries its own tilt. Not a perfectly aligned card row. Not a horizontal “logo strip.”
 
@@ -314,9 +314,11 @@ Poster tilts (index 0–7, degrees): `-2.8, 2.4, -1.6, 3.2, -2.2, 1.8, -3.1, 2.1
 
 **Studio.** Single column character sheet on night, cream fields, costume floods as the picker. Max 40rem.
 
-**Mobile.** Bottom tabs on night. Acid only on the active label. Composer above the home indicator. 44px minimum. Landing chrome stays one row (wordmark, ghost Sign in, acid CTA). Jump links live in the footer, not under the bar. No hamburger.
+**Mobile (signed-in).** No bottom tabs. A hamburger opens a full-height left drawer that matches the desktop rail: app nav, New chat, recents, credits, profile. Chat keeps a 44px top bar (menu, portrait, name, About) so the transcript can use the rest of the viewport. Composer sits above the home indicator. 44px minimum touch.
 
-**Composer.** Anchored, cream-dim fill, 1px rule, acid send square. Not a floating glass pill.
+**Mobile (marketing landing).** One row (wordmark, ghost Sign in, acid CTA). Jump links live in the footer, not under the bar. No hamburger.
+
+**Composer.** Anchored, cream-dim fill, 1px rule, 10px radius, acid send square. Model picker lives inside the well, popover opens up. Not a floating glass pill. Not `rounded-full`.
 
 ---
 
@@ -395,10 +397,10 @@ YOU
 My boss ignored the extra hours I put in.
 ```
 
-- Agent (`{components.chat-message-agent}`): costume wash, 8px left, name in `{typography.label-caps}`, body `{typography.body-lg}` cream
-- User (`{components.chat-message-user}`): cream ticket, night body, acid offset, attribution `YOU`
+- Agent (`{components.chat-message-agent}`): costume wash, name in `{typography.label-caps}`, body `{typography.body-md}` cream, tight padding
+- User (`{components.chat-message-user}`): cream ticket, night body, 3px acid offset, attribution `YOU`
 - Tools: `{components.tool-chip}` pending, `{components.tool-chip-done}` stub when done. Real tool ids in mono
-- Model picker: Plex Mono, ink-soft, **Model: {alias}**. Options from `GET /api/models`
+- Model picker: Plex Mono, inside the composer well. Options from `GET /api/models`. Do not put Model, credits, or account in a chat header.
 
 ### Paywall ticket
 
@@ -414,7 +416,7 @@ My boss ignored the extra hours I put in.
 
 ### Navigation
 
-`{components.nav-rail}`: night, stacked 32px square portraits, cream names, last-thread in ink-soft. Active agent: costume wash or 3px costume rail + cream name. Nested threads indent 16px. Unread: 6px acid `{rounded.full}` dot.
+`{components.nav-rail}`: night. Top: wordmark + collapse, then Home / Explore / Create agent / Profile, then New chat. Mid: recents — 32px square portraits, cream names, last-thread in ink-soft, one row per agent, latest-first. Chevron nests older threads (indent 16px). Active: 3px costume rail + cream name. Bottom: credits (remaining + local reset) then profile; the profile control opens a menu (Profile, Your agents, Plan, Sign out). Unread: 6px acid `{rounded.full}` dot.
 
 Mobile tab bar: night, hairline rule on top, 44px items, cream glyphs, acid only on the active label.
 
@@ -557,9 +559,9 @@ Primary CTA: “Create an agent.” Secondary: “Sign in.” Free plan: “Get 
 
 ### Gallery — `(app)/gallery`
 
-Signed-in home. Left sidebar (icon + label nav, recents, your agents) is **collapsible** on desktop (`{spacing.rail}` expanded, 72px collapsed, persisted in `localStorage`). Collapse is an icon button in the rail header, not a labeled footer row. Recents are **one row per agent** — that agent's latest live thread — not a ChatGPT list of transcripts. Older threads stay nested under the agent in House. Header: greeting left; right is two groups — acid **Create agent**, then the account cluster (Free **Upgrade** glued to a 40px avatar). Credits live on the rail footer and in House, not in the lobby header. Mobile: top bar (wordmark, Upgrade on Free, avatar, menu), bottom nav (Home / Explore / Create / Profile) with icons, menu drawer. Main column: Continue chatting, Featured agents, Your agents, From other people. Sticky in-page tabs skip empty sections and underline the active one (cream, not a second acid fill). Section titles are Fraunces italic with no kicker + rule stack. Locked curated posters keep the Plus sticker and stay fully readable. Opening a card opens **that agent's** latest thread — not a global chat. Signed-in posters sit on a straight grid like the landing company wall (no wheatpaste tilt). Public `/marketplace` still tilts.
+Signed-in home is Maya’s chat inside the shared two-strip shell. Left rail is **collapsible** on desktop (`{spacing.rail}` expanded, 72px collapsed, persisted in `localStorage`). Default expanded so recents are readable. Collapse is an icon button in the rail header, not a labeled footer row. Recents are **one row per agent** — that agent's latest live thread — not a ChatGPT list of transcripts. Older threads nest under the agent on expand. No desktop greeting header; Create agent is a nav row. Credits live on the rail footer (remaining + local reset time). Profile is the rail footer control and opens the account menu. Mobile: no bottom nav. A hamburger opens a left drawer with the same rail contents (nav, New chat, recents, credits, profile). Chat keeps a 44px top bar (menu, portrait, name, About) so the well can use the full remaining height. Locked curated posters keep the Plus sticker and stay fully readable. Opening a recents row opens **that agent's** latest thread. Signed-in Explore posters sit on a straight grid like the landing company wall (no wheatpaste tilt). Public `/marketplace` still tilts.
 
-Profile menu: avatar initial, dropdown with Profile, Your agents, Upgrade/Plan, Sign out. Free shows **Upgrade** beside the avatar; Plus/Pro keep the plan name in the menu, not as a header sibling. Both go to in-app `/plan`. Authenticated paywalls never link the landing `/#seats`.
+Profile menu: avatar, dropdown with Profile, Your agents, Upgrade/Plan, Sign out. Plan name lives in the menu, not as a header sibling. Both Upgrade and Plan go to in-app `/plan`. Authenticated paywalls never link the landing `/#seats`.
 
 ### Explore — `(app)/explore`
 
@@ -569,9 +571,9 @@ Empty custom list: “You have not created an agent yet.” + acid “Create age
 
 Custom stamps: Public / Private.
 
-### Chat — `(app)/chat/[conversationId]`
+### Chat — `(app)/chat/[agentId]`
 
-Night stage. Header: 32px square portrait, Fraunces italic name, model alias, About, the same plan chip + profile menu as the lobby (Upgrade hidden on small screens). Transcript is attributed dialogue in `{spacing.measure}`. Composer anchored. Quota and 403 render as `{components.paywall-ticket}` in the well.
+Night stage, no desktop header. Identity is the highlighted recents row, `YOU` / agent `label-caps` on turns, and the empty-state tagline. Transcript is attributed dialogue in `{spacing.measure}` at `{typography.body-md}`. Composer anchored with the model picker inside the well. About is a character-sheet overlay from the recents overflow (desktop) or the mobile top bar. Quota and 403 render as `{components.paywall-ticket}` in the well.
 
 ### Studio — `(app)/studio`
 
@@ -606,6 +608,7 @@ Same tokens via NativeWind. Bottom tabs. Chat is a stack. No rail; agents are th
 - **Do** hard offset shadows. **Don't** blur, glass, mesh gradient, or `shadow-sm`.
 - **Do** Bricolage + Fraunces italic + Plex Mono. **Don't** Inter, Geist, or IBM Plex Sans for Latin UI.
 - **Do** nest conversations under agents. **Don't** a ChatGPT sidebar of untitled chats.
+- **Do** keep Model, credits, and account out of a chat header. **Don't** a third inspector or a right recents rail.
 - **Do** typeset chat as attributed dialogue. **Don't** iMessage / WhatsApp bubbles.
 - **Do** keep grain at ~7%. **Don't** skip it for a “clean” dark UI.
 - **Do** stamp Free/Plus on still-visible posters. **Don't** grey-out locked agents until they are unreadable.

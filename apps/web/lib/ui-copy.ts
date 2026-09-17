@@ -13,17 +13,6 @@ export const APP_NAV = [
   { id: "profile" as const, href: "/settings", label: "Profile" },
 ] as const;
 
-export const MOBILE_NAV = [
-  { id: "home" as const, href: MAYA_HOME_HREF, label: "Home" },
-  { id: "explore" as const, href: "/explore", label: "Explore" },
-  {
-    id: "create" as const,
-    href: `${MAYA_HOME_HREF}?intent=create`,
-    label: "Create",
-  },
-  { id: "profile" as const, href: "/settings", label: "Profile" },
-] as const;
-
 export const COPY = {
   loading: "Loading…",
   dropped: "Something went wrong.",
@@ -56,6 +45,7 @@ export const COPY = {
   featuredBody: "Marcus and Dr. Priya are free. The others need Plus.",
   yourAgentsEmpty: "You have not created an agent yet.",
   recentChats: "Chats",
+  olderChats: "Older chats",
   newChat: "New chat",
   plan: "Plan",
   credits: "Credits",
@@ -140,8 +130,24 @@ export function creditsRailLabel(remaining: number, limit: number): string {
   return `${creditsLeftLabel(remaining)} of ${limit.toLocaleString("en-US")}`;
 }
 
-export function creditsResetLabel(): string {
-  return "Resets 00:00 UTC";
+export function creditsResetLabel(
+  resetsAt?: string | null,
+  options?: { locale?: string; timeZone?: string },
+): string {
+  if (!resetsAt) {
+    return "Resets 00:00 UTC";
+  }
+  const date = new Date(resetsAt);
+  if (Number.isNaN(date.getTime())) {
+    return "Resets 00:00 UTC";
+  }
+  const time = date.toLocaleTimeString(options?.locale ?? undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: options?.timeZone,
+  });
+  return `Resets ${time}`;
 }
 
 export function creditsMonthLabel(remaining: number, limit: number): string {

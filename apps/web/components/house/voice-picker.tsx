@@ -15,12 +15,16 @@ export function VoicePicker({
   models,
   selectedModelId,
   disabled = false,
+  tone = "night",
+  placement = "down",
   onSelect,
   onLocked,
 }: {
   models: CatalogModel[];
   selectedModelId: string;
   disabled?: boolean;
+  tone?: "night" | "ticket";
+  placement?: "up" | "down";
   onSelect: (modelId: string) => void;
   onLocked: (model: CatalogModel) => void;
 }) {
@@ -171,9 +175,14 @@ export function VoicePicker({
     }
   };
 
+  const triggerTone =
+    tone === "ticket"
+      ? "text-night/55 hover:text-night"
+      : "text-ink-soft hover:text-cream";
+
   if (models.length === 0) {
     return (
-      <p className="h-8 font-mono text-xs leading-8 text-ink-soft">
+      <p className={`h-8 font-mono text-xs leading-8 ${triggerTone}`}>
         {triggerLabel}
       </p>
     );
@@ -189,7 +198,7 @@ export function VoicePicker({
       <button
         ref={triggerRef}
         type="button"
-        className="flex h-8 max-w-full items-center gap-1.5 font-mono text-xs text-ink-soft hover:text-cream disabled:opacity-40"
+        className={`flex h-8 max-w-full items-center gap-1.5 font-mono text-xs disabled:opacity-40 ${triggerTone}`}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
@@ -218,7 +227,9 @@ export function VoicePicker({
 
       {open ? (
         <div
-          className="absolute top-9 left-0 z-40 flex max-h-96 w-[min(24rem,calc(100vw-2rem))] flex-col border border-rule bg-night shadow-[6px_6px_0_#F6EFE4]"
+          className={`absolute left-0 z-40 flex max-h-96 w-[min(24rem,calc(100vw-2rem))] flex-col border border-rule bg-night shadow-[6px_6px_0_#F6EFE4] ${
+            placement === "up" ? "bottom-full mb-2" : "top-9"
+          }`}
         >
           {/* Sticky search input at top of popover */}
           <div className="sticky top-0 z-20 shrink-0 border-b border-rule bg-night p-2">

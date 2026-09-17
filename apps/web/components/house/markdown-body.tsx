@@ -28,7 +28,7 @@ export function MarkdownBody({
         ]}
         components={{
           p: ({ children }) => (
-            <p className="mb-3 last:mb-0 whitespace-pre-wrap">{children}</p>
+            <p className="mb-2 last:mb-0 whitespace-pre-wrap">{children}</p>
           ),
           a: ({ href, children }) => (
             <a
@@ -41,10 +41,10 @@ export function MarkdownBody({
             </a>
           ),
           ul: ({ children }) => (
-            <ul className="mb-3 list-disc space-y-1 pl-5 last:mb-0">{children}</ul>
+            <ul className="mb-2 list-disc space-y-1 pl-5 last:mb-0">{children}</ul>
           ),
           ol: ({ children }) => (
-            <ol className="mb-3 list-decimal space-y-1 pl-5 last:mb-0">
+            <ol className="mb-2 list-decimal space-y-1 pl-5 last:mb-0">
               {children}
             </ol>
           ),

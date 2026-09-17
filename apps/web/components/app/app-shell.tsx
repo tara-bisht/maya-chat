@@ -8,11 +8,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
   const chrome = await loadLobbyChrome(user.id);
 
   return (
-    <AppShellChrome
-      viewer={chrome.viewer}
-      recents={chrome.recents}
-      custom={chrome.custom}
-    >
+    <AppShellChrome viewer={chrome.viewer} recents={chrome.recents}>
       {children}
     </AppShellChrome>
   );
