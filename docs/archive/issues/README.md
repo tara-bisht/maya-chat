@@ -31,6 +31,7 @@ While the foundation demonstrates sound multi-tenant security principles (RLS, P
 | **[MAYA-106](./MAYA-106-prompt-compiler-bio-tone-ignored.md)** | Architecture | **P1** | **Done** (#9) | AI / Prompt Engine | Custom tone sliders & user bio ignored during prompt construction |
 | **[MAYA-107](./MAYA-107-model-selection-inoperative.md)** | Architecture | **P1** | **Done** (PR4a+4b) | API / Model Routing | Model selection per plan is inoperative; chat hardcoded to default model |
 | **[MAYA-108](./MAYA-108-landing-pricing-catalog-drift.md)** | Spec Drift | **P2** | **Done** (PR4b) | Marketing / Landing | Pricing & model lists on landing page are hardcoded, bypassing SQL catalog |
+| **[MAYA-115](./MAYA-115-dual-plan-truth-profiles-vs-entitlements.md)** | Architecture | **P1** | **Done** (PR4c) | Database / Catalog | Dual plan truth `profiles.plan` vs `entitlements.plan` |
 | **[MAYA-109](./MAYA-109-memory-rpc-service-role-failure.md)** | Bug / Database | **P2** | **Backlog** | Database / pgvector | `match_agent_memories` RPC fails for service role & lacks tenant index isolation |
 | **[MAYA-110](./MAYA-110-unbounded-user-conversations-query.md)** | Performance | **P3** | **Backlog** | House / Threads | Unbounded, unpaginated conversation query degrades with user tenure |
 | **[MAYA-111](./MAYA-111-chat-prompt-rpc-leaks-public-custom-prompts.md)** | Security | **P0** | **Done** (#15) | Database / RPC | `chat_agent_prompt` leaks any public custom system prompt to any authenticated user |

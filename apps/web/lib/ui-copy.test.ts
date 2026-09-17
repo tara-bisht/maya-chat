@@ -56,6 +56,8 @@ describe("plan chrome", () => {
     expect(planLabel("plus")).toBe("Plus");
     expect(planLabel("pro")).toBe("Pro");
     expect(planHref()).toBe("/plan");
+    expect(COPY.checkoutSuccess).toContain("Stripe confirms");
+    expect(COPY.checkoutCanceled).toBe("Checkout was canceled.");
   });
 
   it("uses the first letter, or Y when the name is empty", () => {

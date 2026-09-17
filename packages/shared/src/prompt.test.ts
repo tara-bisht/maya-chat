@@ -96,4 +96,27 @@ describe("compilePrompt", () => {
     );
     expect(compiled).not.toContain("web_search");
   });
+
+  it("renders dated episodic memories between profile and tools", () => {
+    const compiled = compilePrompt({
+      isCurated: true,
+      basePrompt: "You are Marcus.",
+      userProfile: { displayName: "Kamal" },
+      memories: [
+        { content: "Skipped legs twice.", createdAt: "2026-09-01" },
+        { content: "  " },
+        { content: "Hates burpees." },
+      ],
+      toolsEnabled: ["memory_saver"],
+      toolsAllowed: ["memory_saver"],
+    });
+
+    const profile = compiled.indexOf("<user_profile>");
+    const memory = compiled.indexOf("<episodic_memory>");
+    const tools = compiled.indexOf("Tool policy:");
+    expect(memory).toBeGreaterThan(profile);
+    expect(tools).toBeGreaterThan(memory);
+    expect(compiled).toContain("2026-09-01: Skipped legs twice.");
+    expect(compiled).toContain("Hates burpees.");
+  });
 });

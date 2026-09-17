@@ -1,9 +1,7 @@
 import type { CSSProperties } from "react";
 import type { PlanTicket } from "@/lib/plan/load";
 import { priceLabel } from "@/lib/plan/present";
-
-const CHECKOUT_TITLE = "Stripe checkout lands in PR4c.";
-const CHECKOUT_LABEL = "Checkout opens soon";
+import { BillingCta } from "./billing-cta";
 
 function agentsLine(ticket: PlanTicket): string {
   const scope = ticket.id === "free" ? "public" : "public or private";
@@ -89,29 +87,16 @@ function PlanTicketCard({ ticket }: { ticket: PlanTicket }) {
       <p className="mt-1 font-mono text-xs leading-relaxed text-night/80">
         {ticket.models.length > 0 ? ticket.models.join(" · ") : "—"}
       </p>
-      {ticket.current ? null : (
-        <p className="mt-6">
-          {ticket.highlighted ? (
-            <button
-              type="button"
-              disabled
-              title={CHECKOUT_TITLE}
-              className="inline-flex h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#14110F] disabled:opacity-40"
-            >
-              {CHECKOUT_LABEL}
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled
-              title={CHECKOUT_TITLE}
-              className="font-sans text-sm font-semibold text-night/40"
-            >
-              {CHECKOUT_LABEL}
-            </button>
-          )}
-        </p>
-      )}
+      {ticket.cta ? (
+        <BillingCta
+          kind={ticket.cta.kind}
+          planId={ticket.id === "free" ? undefined : ticket.id}
+          label={ticket.cta.label}
+          highlighted={
+            ticket.highlighted || (ticket.current && ticket.id === "pro")
+          }
+        />
+      ) : null}
     </article>
   );
 }

@@ -124,7 +124,7 @@ Canonical tables (see [`archive/architecture.md`](archive/architecture.md) §3):
 **Additions required before build** (full SQL in [`technical-plan.md`](technical-plan.md) §6):
 
 - `models`, `plans`, `plan_models` — configurable catalog (see [`technical-plan.md`](technical-plan.md) §6)
-- `entitlements` — Stripe (later RevenueCat) writes `plan` ∈ `free|plus|pro`; optional `profiles.plan` cache
+- `entitlements` — Stripe (later RevenueCat) writes `plan` ∈ `free|plus|pro`
 - `usage_events` — daily AI credit cap from `plans.daily_credit_limit`
 - `match_agent_memories(...)` RPC with HNSW
 - indexes on `(user_id, agent_id)` and `(conversation_id, created_at)`
@@ -166,7 +166,7 @@ Seed aliases and plan allowlists: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION
 
 The archived schema sketch assumed OpenAI `text-embedding-3-small` at 1536 dims. That is **superseded**.
 
-At Day 0 pick **one** embedding model on OpenRouter, pin `dimensions` if the API allows (prefer 1024), bake `vector(N)` into the migration. Never mix dims in one column. Migration currently has `vector(1024)`; confirm the embedding model in the memory PR.
+Pinned: OpenRouter `openai/text-embedding-3-small`, `dimensions: 1024` (column `agent_memories.embedding`). Never mix dims in one column. This model does not document query/passage prefixes; do not add them.
 
 If the embedding vendor documents query/passage prefixes, the writer and retriever must both use them.
 
@@ -193,7 +193,7 @@ Agents only receive tools listed in `agents.tools_enabled`. Never register the f
 | iOS / Android | Not required for Web MVP | RevenueCat → same `entitlements` row |
 | Prices | Plus $9 / Pro $19 (seed) | **Stripe price ids live on `plans` rows**, not in client code. Env may hold secrets only. |
 
-Webhook (service role) sets `entitlements.plan` by looking up `plans.stripe_price_id_*`. Optional `profiles.plan` cache. Chat authorization reads `entitlements` + `plans` + `plan_models`, never a client `isPro` flag.
+Webhook (service role) sets `entitlements.plan` by looking up `plans.stripe_price_id_*`. There is no `profiles.plan` cache. Chat authorization reads `entitlements` + `plans` + `plan_models`, never a client `isPro` flag.
 
 ---
 

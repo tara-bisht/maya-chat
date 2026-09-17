@@ -1,0 +1,15 @@
+-- Manual SQL checks for episodic memory isolation.
+-- Requires two JWTs. Do not run as postgres without
+-- `select set_config('request.jwt.claim.sub', '<user-uuid>', true);`
+-- and `set role authenticated;`.
+--
+-- Expected:
+-- 1. User A inserts a memory for agent 1 with a 1024-d embedding.
+--    match_agent_memories(agent_1, that vector) as user A returns the row.
+-- 2. User B with the same agent 1 query returns 0 rows.
+-- 3. User A querying agent 2 (different character) returns 0 rows even
+--    when cosine similarity would be high.
+-- 4. Rows with embedding is null are skipped.
+-- 5. service_role calling match_agent_memories without auth.uid() returns
+--    0 rows (invoker + auth.uid()). Worker p_user_id is later (MAYA-109).
+-- 6. authenticated cannot select another tenant's agent_memories (RLS).

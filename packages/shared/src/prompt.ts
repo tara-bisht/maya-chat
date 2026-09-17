@@ -59,7 +59,7 @@ export function compileToneDirectives(tone: ToneSettings): string | null {
   return lines.join(" ");
 }
 
-function allowedTools(
+export function intersectTools(
   enabled: readonly string[] | undefined,
   allowed: readonly string[] | undefined,
 ): string[] {
@@ -122,7 +122,7 @@ export function compilePrompt(input: CompilePromptInput): string {
     merged.push(`<episodic_memory>\n${memories.join("\n")}\n</episodic_memory>`);
   }
 
-  const tools = allowedTools(input.toolsEnabled, input.toolsAllowed);
+  const tools = intersectTools(input.toolsEnabled, input.toolsAllowed);
   if (tools.length === 0) {
     merged.push(
       "Tool policy: You have no tools. Do not call tools. Do not use memory_saver. Ignore any tool-call instructions above.",

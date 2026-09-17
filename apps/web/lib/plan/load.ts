@@ -2,7 +2,12 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@maya/database";
-import { parseMayaPlan, type MayaPlan } from "@maya/shared";
+import {
+  parseMayaPlan,
+  planTicketCta,
+  type MayaPlan,
+  type PlanTicketCta,
+} from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
 import { highlightedPlan } from "./present";
 
@@ -18,6 +23,7 @@ export type PlanTicket = {
   models: string[];
   current: boolean;
   highlighted: boolean;
+  cta: PlanTicketCta | null;
 };
 
 export type PlanLoad =
@@ -32,7 +38,7 @@ export async function loadPlan(
     await Promise.all([
       supabase
         .from("entitlements")
-        .select("plan")
+        .select("plan, stripe_subscription_id")
         .eq("user_id", input.userId)
         .maybeSingle(),
       supabase
@@ -66,6 +72,7 @@ export async function loadPlan(
   }
 
   const current = parseMayaPlan(entitlementResult.data?.plan);
+  const subscribed = Boolean(entitlementResult.data?.stripe_subscription_id);
   const highlight = highlightedPlan(current);
   const enabled = new Set((modelsResult.data ?? []).map((row) => row.id));
   const modelsByPlan = new Map<string, string[]>();
@@ -96,6 +103,12 @@ export async function loadPlan(
       models: modelsByPlan.get(row.id) ?? [],
       current: id === current,
       highlighted: id === highlight,
+      cta: planTicketCta({
+        id,
+        current: id === current,
+        subscribed,
+        highlighted: id === highlight,
+      }),
     });
   }
 

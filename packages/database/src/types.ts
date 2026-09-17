@@ -444,7 +444,6 @@ export type Database = {
           display_name: string | null;
           global_bio: string | null;
           id: string;
-          plan: string | null;
           preferred_language: string;
           preferred_model_id: string | null;
           updated_at: string;
@@ -454,7 +453,6 @@ export type Database = {
           display_name?: string | null;
           global_bio?: string | null;
           id: string;
-          plan?: string | null;
           preferred_language?: string;
           preferred_model_id?: string | null;
           updated_at?: string;
@@ -464,7 +462,6 @@ export type Database = {
           display_name?: string | null;
           global_bio?: string | null;
           id?: string;
-          plan?: string | null;
           preferred_language?: string;
           preferred_model_id?: string | null;
           updated_at?: string;
@@ -478,6 +475,24 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      stripe_events: {
+        Row: {
+          id: string;
+          processed_at: string;
+          type: string;
+        };
+        Insert: {
+          id: string;
+          processed_at?: string;
+          type: string;
+        };
+        Update: {
+          id?: string;
+          processed_at?: string;
+          type?: string;
+        };
+        Relationships: [];
       };
       usage_events: {
         Row: {

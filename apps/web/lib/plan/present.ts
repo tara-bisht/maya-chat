@@ -5,6 +5,7 @@ export const PLAN_REASONS = [
   "quota",
   "studio-cap",
   "studio-private",
+  "locked-voice",
 ] as const;
 
 export type PlanReason = (typeof PLAN_REASONS)[number];
@@ -30,6 +31,8 @@ export function planReasonHeading(reason: PlanReason | null): string | null {
       return "Agent limit reached.";
     case "studio-private":
       return "Private agents are Plus.";
+    case "locked-voice":
+      return "That model is locked.";
     default:
       return null;
   }
@@ -42,6 +45,15 @@ export function highlightedPlan(current: MayaPlan): MayaPlan | null {
   }
   if (current === "plus") {
     return "pro";
+  }
+  return null;
+}
+
+export function parseCheckoutFlash(
+  value: string | null | undefined,
+): "success" | "canceled" | null {
+  if (value === "success" || value === "canceled") {
+    return value;
   }
   return null;
 }

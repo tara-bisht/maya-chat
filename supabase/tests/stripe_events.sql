@@ -1,0 +1,12 @@
+-- Manual SQL checks for Stripe event idempotency and plan truth.
+--
+-- Expected:
+-- 1. service_role insert into stripe_events succeeds.
+--    Second insert with the same id raises unique_violation (23505).
+-- 2. authenticated insert into stripe_events is denied (no GRANT, RLS).
+-- 3. authenticated select stripe_events is denied.
+-- 4. public.profiles no longer has a plan column.
+-- 5. handle_new_user inserts entitlements.plan = 'free' and does not
+--    write a plan onto profiles.
+-- 6. Updating entitlements.plan as service_role does not create a
+--    profiles.plan cache (column gone).
