@@ -60,6 +60,16 @@ describe("playbillFromAgent", () => {
     expect(playbill).not.toHaveProperty("system_prompt");
   });
 
+  it("stamps curated agents as free", () => {
+    const playbill = playbillFromAgent(
+      row({
+        is_curated: true,
+        free_tier: false,
+      }),
+    );
+    expect(playbill.stamp).toBe("free");
+  });
+
   it("maps a custom row to its costume and a House stamp", () => {
     const playbill = playbillFromAgent(
       row({

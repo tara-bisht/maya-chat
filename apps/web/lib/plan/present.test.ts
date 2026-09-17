@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  formatModelsSummary,
   highlightedPlan,
   parseCheckoutFlash,
   parsePlanReason,
@@ -64,3 +65,28 @@ describe("priceLabel", () => {
     expect(priceLabel(950)).toBe("$9.50");
   });
 });
+
+describe("formatModelsSummary", () => {
+  it("returns dash for empty model list", () => {
+    expect(formatModelsSummary([])).toBe("—");
+  });
+
+  it("joins small model lists with dots", () => {
+    expect(formatModelsSummary(["gpt", "claude"])).toBe("gpt · claude");
+  });
+
+  it("returns free summary when more than 10 models on free plan", () => {
+    const list = Array.from({ length: 15 }, (_, i) => `model-${i}`);
+    expect(formatModelsSummary(list, "free")).toBe(
+      "50+ models across 10 top labs (under $20/1M output tokens)",
+    );
+  });
+
+  it("returns paid summary when more than 10 models on plus/pro plan", () => {
+    const list = Array.from({ length: 15 }, (_, i) => `model-${i}`);
+    expect(formatModelsSummary(list, "plus")).toBe(
+      "All 50+ models including frontier models (GPT-6 Astra, Claude Fable 5.1, Opus 5)",
+    );
+  });
+});
+

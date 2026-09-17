@@ -60,7 +60,7 @@ function stampFromRow(row: GalleryAgentRow): PlaybillStamp {
   if (!row.is_curated) {
     return row.is_public ? "house" : "private";
   }
-  return row.free_tier ? "free" : "plus";
+  return "free";
 }
 
 export function playbillFromAgent(

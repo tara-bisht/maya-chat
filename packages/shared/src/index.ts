@@ -162,6 +162,8 @@ export {
 
 export {
   CREDIT_SCALE_DEFAULT,
+  EXPENSIVE_MODEL_OUTPUT_USD_THRESHOLD,
+  LAB_PROVIDERS,
   MODEL_ID_MAX,
   TYPICAL_COMPLETION_TOKENS,
   TYPICAL_PROMPT_TOKENS,
@@ -177,9 +179,11 @@ export {
   parseModelId,
   parseReserveChatTurn,
   parseSettleChatTurn,
+  plansForModelRate,
   resolveModelId,
   usdFromTokens,
   type CreditBalance,
+  type LabProviderId,
   type ReserveChatTurnResult,
   type ResolveModelIdInput,
   type ResolveModelIdResult,

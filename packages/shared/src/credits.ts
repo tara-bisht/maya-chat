@@ -46,6 +46,30 @@ export function minPlanFor(
   return best;
 }
 
+export const EXPENSIVE_MODEL_OUTPUT_USD_THRESHOLD = 20;
+
+export function plansForModelRate(outputUsdPerMillion: number): MayaPlan[] {
+  if (outputUsdPerMillion > EXPENSIVE_MODEL_OUTPUT_USD_THRESHOLD) {
+    return ["plus", "pro"];
+  }
+  return ["free", "plus", "pro"];
+}
+
+export const LAB_PROVIDERS = [
+  { id: "openai", displayName: "OpenAI", rank: 1 },
+  { id: "anthropic", displayName: "Anthropic", rank: 2 },
+  { id: "google", displayName: "Google", rank: 3 },
+  { id: "deepseek", displayName: "DeepSeek", rank: 4 },
+  { id: "xai", displayName: "xAI", rank: 5 },
+  { id: "meta", displayName: "Meta", rank: 6 },
+  { id: "mistral", displayName: "Mistral", rank: 7 },
+  { id: "qwen", displayName: "Qwen", rank: 8 },
+  { id: "moonshot", displayName: "Moonshot AI", rank: 9 },
+  { id: "cohere", displayName: "Cohere", rank: 10 },
+] as const;
+
+export type LabProviderId = (typeof LAB_PROVIDERS)[number]["id"];
+
 export function creditsFromUsd(
   costUsd: number,
   scale = CREDIT_SCALE_DEFAULT,

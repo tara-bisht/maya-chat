@@ -51,7 +51,7 @@ function heroScene(
     shortName: player.shortName,
     costume: player.costume,
     avatar: player.avatar,
-    freeTier: player.freeTier,
+    freeTier: true,
     kicker,
     quote,
     prompt,
@@ -344,7 +344,7 @@ export const STUDIO = {
   kicker: "Create an agent",
   title: "Write the personality",
   body: "Name, description, color, instructions. Warmth, directness, humor. Language includes Hinglish and Hindi — real Devanagari. Create agents with a real point of view.",
-  cap: "Free: 3 public · Plus: 10 · Pro: unlimited",
+  cap: "Unlimited custom agents, public or private",
   fields: [
     { label: "Name", value: "Yours" },
     { label: "Description", value: "One line they would actually say" },
@@ -363,7 +363,7 @@ export { FALLBACK_SEATS as SEATS } from "./landing/seats-from-catalog";
 export const SEATS_KICKER = {
   kicker: "Pricing",
   title: "Plans",
-  body: "Free lets you start and build. Plus opens the full wall and private characters. Pro is unlimited Studio.",
+  body: "Chat with official specialists and create unlimited custom agents on any plan. Upgrade for frontier models, memory, and more credits.",
 } as const;
 
 export const SEATS_FOOTNOTE =
@@ -372,11 +372,11 @@ export const SEATS_FOOTNOTE =
 export const NOTES = [
   {
     q: "Can I make my own agent?",
-    a: "Yes. That is the point. Name, description, instructions, tone. Free keeps three public. Plus gets ten, public or private. Pro is unlimited.",
+    a: "Yes. That is the point. Name, description, instructions, tone. Create unlimited custom agents, public or private on any plan.",
   },
   {
     q: "What can I do on Free?",
-    a: "Chat with Marcus and Dr. Priya, then create three public agents of your own. Credits reset 00:00 UTC. Models are listed on Plans. No memory, no private agents, no tools. Then upgrade, or come back tomorrow.",
+    a: "Chat with all official specialists, create unlimited custom agents (public or private), and use 50+ frontier AI models under $20/1M output tokens. Credits reset 00:00 UTC.",
   },
   {
     q: "Do they remember me?",
@@ -388,7 +388,7 @@ export const NOTES = [
   },
   {
     q: "Which models?",
-    a: "You pick the model. Free, Plus, and Pro unlock different models. Plans lists the current catalog.",
+    a: "Pick from 50+ models across 10 top labs. All models under $20/1M output tokens are available on Free. Top-tier frontier models (> $20/1M) are available on Plus and Pro.",
   },
 ] as const;
 

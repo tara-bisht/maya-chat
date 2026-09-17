@@ -62,3 +62,20 @@ export function priceLabel(monthlyCents: number): string {
   const dollars = monthlyCents / 100;
   return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
 }
+
+export function formatModelsSummary(
+  models: readonly string[],
+  planId?: string,
+): string {
+  if (models.length === 0) {
+    return "—";
+  }
+  if (models.length > 10) {
+    if (planId === "free") {
+      return "50+ models across 10 top labs (under $20/1M output tokens)";
+    }
+    return "All 50+ models including frontier models (GPT-6 Astra, Claude Fable 5.1, Opus 5)";
+  }
+  return models.join(" · ");
+}
+

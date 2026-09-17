@@ -1,4 +1,5 @@
 import { parseMayaPlan, type MayaPlan } from "@maya/shared";
+import { isExpensiveModel, SEED_MODELS } from "@/lib/openrouter/catalog";
 
 export type SeatCtaKind = "acid" | "ghost";
 
@@ -84,8 +85,8 @@ export const FALLBACK_CATALOG: CatalogSeatsInput = {
       monthly_price_cents: 0,
       yearly_price_cents: null,
       daily_credit_limit: 1500,
-      max_custom_agents: 3,
-      curated_agent_limit: 2,
+      max_custom_agents: null,
+      curated_agent_limit: null,
       vector_memory: false,
       tools_allowed: [],
     },
@@ -95,7 +96,7 @@ export const FALLBACK_CATALOG: CatalogSeatsInput = {
       monthly_price_cents: 900,
       yearly_price_cents: 9000,
       daily_credit_limit: 4000,
-      max_custom_agents: 10,
+      max_custom_agents: null,
       curated_agent_limit: null,
       vector_memory: true,
       tools_allowed: ["memory_saver", "math_solver"],
@@ -112,37 +113,24 @@ export const FALLBACK_CATALOG: CatalogSeatsInput = {
       tools_allowed: ["memory_saver", "math_solver", "web_search"],
     },
   ],
-  models: [
-    { id: "qwen-flash", sort_order: 10, is_enabled: true },
-    { id: "gemini-flash", sort_order: 15, is_enabled: true },
-    { id: "grok-fast", sort_order: 20, is_enabled: true },
-    { id: "deepseek", sort_order: 30, is_enabled: true },
-    { id: "qwen", sort_order: 40, is_enabled: true },
-    { id: "grok", sort_order: 50, is_enabled: true },
-    { id: "gpt", sort_order: 60, is_enabled: true },
-    { id: "claude", sort_order: 70, is_enabled: true },
-    { id: "kimi", sort_order: 80, is_enabled: true },
-  ],
+  models: SEED_MODELS.map((model) => ({
+    id: model.alias,
+    sort_order: model.sortOrder,
+    is_enabled: true,
+  })),
   planModels: [
-    { plan_id: "free", model_id: "qwen-flash" },
-    { plan_id: "free", model_id: "gemini-flash" },
-    { plan_id: "free", model_id: "grok-fast" },
-    { plan_id: "plus", model_id: "qwen-flash" },
-    { plan_id: "plus", model_id: "gemini-flash" },
-    { plan_id: "plus", model_id: "grok-fast" },
-    { plan_id: "plus", model_id: "deepseek" },
-    { plan_id: "plus", model_id: "qwen" },
-    { plan_id: "plus", model_id: "grok" },
-    { plan_id: "plus", model_id: "gpt" },
-    { plan_id: "pro", model_id: "qwen-flash" },
-    { plan_id: "pro", model_id: "gemini-flash" },
-    { plan_id: "pro", model_id: "grok-fast" },
-    { plan_id: "pro", model_id: "deepseek" },
-    { plan_id: "pro", model_id: "qwen" },
-    { plan_id: "pro", model_id: "grok" },
-    { plan_id: "pro", model_id: "gpt" },
-    { plan_id: "pro", model_id: "claude" },
-    { plan_id: "pro", model_id: "kimi" },
+    ...SEED_MODELS.filter((model) => !isExpensiveModel(model)).map((model) => ({
+      plan_id: "free",
+      model_id: model.alias,
+    })),
+    ...SEED_MODELS.map((model) => ({
+      plan_id: "plus",
+      model_id: model.alias,
+    })),
+    ...SEED_MODELS.map((model) => ({
+      plan_id: "pro",
+      model_id: model.alias,
+    })),
   ],
 };
 
@@ -185,20 +173,10 @@ function toolsBullet(tools: readonly string[]): string {
   return `${labels.slice(0, -1).join(", ")}, and ${last}`;
 }
 
-function agentBullets(plan: CatalogPlanRow): string[] {
-  if (plan.curated_agent_limit != null) {
-    const max = plan.max_custom_agents ?? plan.curated_agent_limit;
-    return [`Starter agents + ${max} of yours, public`];
-  }
-  if (plan.max_custom_agents == null) {
-    return [
-      "Every featured agent",
-      "Unlimited custom agents, public or private",
-    ];
-  }
+function agentBullets(): string[] {
   return [
     "Every featured agent",
-    `${plan.max_custom_agents} custom agents, public or private`,
+    "Unlimited custom agents, public or private",
   ];
 }
 
@@ -247,7 +225,7 @@ export function seatsFromCatalog(input: CatalogSeatsInput): Seat[] {
       cta: chrome.cta,
       bullets: [
         `${plan.daily_credit_limit.toLocaleString("en-US")} credits a day`,
-        ...agentBullets(plan),
+        ...agentBullets(),
         plan.vector_memory ? "Private per-agent memory" : "No vector memory",
         toolsBullet(plan.tools_allowed),
       ],

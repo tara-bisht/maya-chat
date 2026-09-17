@@ -49,7 +49,7 @@ export async function saveCastingNotes(
     return { ok: false, code: "invalid" };
   }
 
-  const desiredPublic = context.planId === "free" ? true : parsed.data.isPublic;
+  const desiredPublic = parsed.data.isPublic;
   const toolsEnabled = allowedStudioTools(
     parsed.data.toolsEnabled,
     context.toolsAllowed,

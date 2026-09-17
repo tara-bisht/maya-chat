@@ -1,16 +1,9 @@
 import type { CSSProperties } from "react";
 import type { PlanTicket } from "@/lib/plan/load";
-import { priceLabel } from "@/lib/plan/present";
+import { formatModelsSummary, priceLabel } from "@/lib/plan/present";
 import { BillingCta } from "./billing-cta";
 
-function agentsLine(ticket: PlanTicket): string {
-  const scope = ticket.id === "free" ? "public" : "public or private";
-  if (ticket.maxCustomAgents === null) {
-    return `Unlimited custom agents, ${scope}`;
-  }
-  const noun = ticket.maxCustomAgents === 1 ? "agent" : "agents";
-  return `${ticket.maxCustomAgents} custom ${noun}, ${scope}`;
-}
+const AGENTS_LINE = "Unlimited custom agents, public or private";
 
 function cadenceLabel(ticket: PlanTicket): string | null {
   if (ticket.monthlyCents === 0) {
@@ -73,7 +66,7 @@ function PlanTicketCard({ ticket }: { ticket: PlanTicket }) {
           {ticket.monthlyCredits.toLocaleString("en-US")} a month
         </li>
         <li className="font-sans text-sm leading-snug text-night/80">
-          {agentsLine(ticket)}
+          {AGENTS_LINE}
         </li>
         <li className="font-sans text-sm leading-snug text-night/80">
           {ticket.vectorMemory
@@ -85,7 +78,7 @@ function PlanTicketCard({ ticket }: { ticket: PlanTicket }) {
         Models
       </p>
       <p className="mt-1 font-mono text-xs leading-relaxed text-night/80">
-        {ticket.models.length > 0 ? ticket.models.join(" · ") : "—"}
+        {formatModelsSummary(ticket.models, ticket.id)}
       </p>
       {ticket.cta ? (
         <BillingCta
