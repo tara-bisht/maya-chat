@@ -134,14 +134,15 @@ export async function loadHouse(
 
   let backstory: string | null = null;
   if (row.user_id === input.userId && !row.is_curated) {
-    const promptResult = await supabase.rpc("chat_agent_prompt", {
-      p_agent_id: row.id,
+    // MAYA-111: chat_agent_prompt is service_role only; owners use this RPC.
+    const sheetResult = await supabase.rpc("own_custom_agent_sheet", {
+      p_id: row.id,
     });
-    if (promptResult.error) {
-      logDropped("house", { prompt: promptResult.error });
+    if (sheetResult.error) {
+      logDropped("house", { sheet: sheetResult.error });
       return { ok: false, reason: "dropped" };
     }
-    backstory = promptResult.data ?? null;
+    backstory = sheetResult.data?.system_prompt ?? null;
   }
 
   const agent = toHouseAgent({
