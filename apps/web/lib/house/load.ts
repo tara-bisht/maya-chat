@@ -15,10 +15,13 @@ import { logDropped } from "@/lib/supabase/dropped";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "./columns";
 import { toHouseAgent } from "./public-agent";
 import {
+  HOUSE_RECENTS_LIMIT,
   buildCast,
+  buildRoster,
   displayThreadTitle,
   threadsForAgent,
   toConversationRow,
+  toHouseRecents,
   type ConversationQueryRow,
 } from "./threads";
 import type { HouseView, HydratedTurn } from "./types";
@@ -87,7 +90,8 @@ export async function loadHouse(
       .from("conversations")
       .select("id, agent_id, title, updated_at, model_id, messages(count)")
       .eq("user_id", input.userId)
-      .order("updated_at", { ascending: false }),
+      .order("updated_at", { ascending: false })
+      .limit(HOUSE_RECENTS_LIMIT),
     supabase
       .from("agents")
       .select(HOUSE_AGENT_COLUMNS)
@@ -211,6 +215,14 @@ export async function loadHouse(
         viewerId: input.userId,
         conversations: conversationRows,
         activeAgentId: agent.id,
+      }),
+      roster: buildRoster({
+        agents: agentRows,
+        viewerId: input.userId,
+      }),
+      recents: toHouseRecents({
+        conversations: conversationRows,
+        agents: agentRows,
       }),
       conversation,
     },

@@ -129,6 +129,7 @@ export const COSTUME_CLASS: Record<PosterCostumeId, string> = {
   meera: "bg-costume-meera",
   kenji: "bg-costume-kenji",
   sofia: "bg-costume-sofia",
+  maya: "bg-costume-maya",
 };
 
 /** Full class strings so Tailwind emits the 90% costume wash. */
@@ -146,4 +147,5 @@ export const COSTUME_WASH_CLASS: Record<PosterCostumeId, string> = {
   meera: "bg-costume-meera/90",
   kenji: "bg-costume-kenji/90",
   sofia: "bg-costume-sofia/90",
+  maya: "bg-costume-maya/90",
 };

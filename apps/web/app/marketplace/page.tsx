@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { MAYA_HOME_HREF } from "@maya/shared";
 import { LobbyFooter } from "@/components/landing/lobby-footer";
 import { LobbyHeader } from "@/components/landing/lobby-header";
 import { MarketplaceBill } from "@/components/marketplace/wall";
@@ -33,7 +34,10 @@ export default async function MarketplacePage() {
     <div className="min-h-screen overflow-x-clip bg-night text-cream">
       <LobbyHeader
         signedIn={false}
-        cta={{ href: "/login?next=/gallery", label: "Get started" }}
+        cta={{
+          href: `/login?next=${encodeURIComponent(MAYA_HOME_HREF)}`,
+          label: "Get started",
+        }}
       />
       <MarketplaceBill
         sections={sections}

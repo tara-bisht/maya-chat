@@ -1,5 +1,9 @@
-# Maya is the host, not the worker
+# Maya is the host who can answer
 
-The business wants a “super agent” at the front door. The product is still specialized named characters, not a generic assistant. **Maya is an always-free host:** she matches you to an Agent, helps you create one, and hands off into a 1:1 House conversation. She does not do Alex’s job, debug the repo, or grade the midterm.
+The business wants a “super agent” at the front door. Chrome still says **Maya**, never Super Agent. Signed-in Home is her chat, not a marketplace wall.
 
-The rejected alternative is Maya as default ChatGPT who sometimes delegates inside one mega-thread. That would erase the specialist loop we already built. Handoff is a playbill card, then `/chat/{agent}` — not a shared canvas or a second runtime.
+**Maya is an always-free host who can do the work.** She answers. Official specialists stay 1:1 chats. When someone on **Your agents** is clearly better, she pauses once so the member can keep going here or switch. When nobody on Your agents owns the job, she answers first, then may offer to **Add** an official agent or **Create agent**.
+
+The rejected alternative is Maya as a mega-thread that delegates to other voices inside one canvas. Handoff is still a card, then `/chat/{agent}` — not a shared canvas or a second runtime in her well.
+
+Your agents = Maya (always) + official agents the member added + custom agents they own. She does not advertise the whole company on every turn.

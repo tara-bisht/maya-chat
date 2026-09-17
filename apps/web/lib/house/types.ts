@@ -29,6 +29,23 @@ export type CastMember = {
   latestId: string | null;
 };
 
+export type RosterMember = {
+  id: string;
+  shortName: string;
+  costume: CostumeId;
+  avatar: string;
+};
+
+export type HouseRecent = {
+  conversationId: string;
+  agentId: string;
+  agentName: string;
+  costume: CostumeId;
+  avatar: string;
+  title: string;
+  href: string;
+};
+
 export type HouseAgent = {
   id: string;
   name: string;
@@ -43,6 +60,7 @@ export type HouseAgent = {
   isCurated: boolean;
   isPublic: boolean;
   freeTier: boolean;
+  isHost: boolean;
   canEdit: boolean;
   canChat: boolean;
   backstory: string | null;
@@ -64,5 +82,7 @@ export type HouseView = {
   credits: CreditBalance | null;
   threads: ThreadSummary[];
   cast: CastMember[];
+  roster: RosterMember[];
+  recents: HouseRecent[];
   conversation: HouseConversation | null;
 };

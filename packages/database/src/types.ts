@@ -60,6 +60,7 @@ export type Database = {
           free_tier: boolean;
           id: string;
           is_curated: boolean;
+          is_host: boolean;
           is_public: boolean;
           language_preset: string;
           name: string;
@@ -79,6 +80,7 @@ export type Database = {
           free_tier?: boolean;
           id?: string;
           is_curated?: boolean;
+          is_host?: boolean;
           is_public?: boolean;
           language_preset?: string;
           name: string;
@@ -98,6 +100,7 @@ export type Database = {
           free_tier?: boolean;
           id?: string;
           is_curated?: boolean;
+          is_host?: boolean;
           is_public?: boolean;
           language_preset?: string;
           name?: string;
@@ -109,6 +112,32 @@ export type Database = {
           user_id?: string | null;
         };
         Relationships: [];
+      };
+      agent_roster: {
+        Row: {
+          agent_id: string;
+          created_at: string;
+          user_id: string;
+        };
+        Insert: {
+          agent_id: string;
+          created_at?: string;
+          user_id: string;
+        };
+        Update: {
+          agent_id?: string;
+          created_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "agent_roster_agent_id_fkey";
+            columns: ["agent_id"];
+            isOneToOne: false;
+            referencedRelation: "agents";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       catalog_settings: {
         Row: {
@@ -129,6 +158,7 @@ export type Database = {
         Row: {
           agent_id: string;
           created_at: string;
+          host_route: string;
           id: string;
           model_id: string | null;
           title: string;
@@ -138,6 +168,7 @@ export type Database = {
         Insert: {
           agent_id: string;
           created_at?: string;
+          host_route?: string;
           id?: string;
           model_id?: string | null;
           title?: string;
@@ -147,6 +178,7 @@ export type Database = {
         Update: {
           agent_id?: string;
           created_at?: string;
+          host_route?: string;
           id?: string;
           model_id?: string | null;
           title?: string;
@@ -609,6 +641,7 @@ export type Database = {
           free_tier: boolean;
           id: string;
           is_curated: boolean;
+          is_host: boolean;
           is_public: boolean;
           language_preset: string;
           name: string;

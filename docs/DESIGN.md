@@ -25,6 +25,7 @@ colors:
   costume-barnaby: "#8A3F16"
   costume-ren: "#3A4A58"
   costume-custom: "#5C4636"
+  costume-maya: "#5C1E32"
   costume-jules: "#4A1638"
   costume-meera: "#1A3F3A"
   costume-kenji: "#2E2450"
@@ -266,6 +267,7 @@ Error uses acid. Do not invent a second error red. Selection is acid fill, night
 | Meera | `{colors.costume-meera}` | `#1A3F3A` pine | `--maya-costume-meera` |
 | Kenji | `{colors.costume-kenji}` | `#2E2450` dusk | `--maya-costume-kenji` |
 | Sofia | `{colors.costume-sofia}` | `#7A4A12` brass | `--maya-costume-sofia` |
+| Maya | `{colors.costume-maya}` | `#5C1E32` burgundy | `--maya-costume-maya` |
 
 **Code well** `{colors.code-well}` (`#0C0A09`) with `{colors.on-code}`. Overlay `{colors.overlay}`. No backdrop blur.
 
@@ -304,7 +306,7 @@ The wordmark is the word *Maya* in Fraunces italic, cream on night (night on cre
 
 8px rhythm. Chat and paywall prose sit in `{spacing.measure}` (42rem). The **lobby is full-bleed** — do not trap the landing in a blog column. Outer margin `{spacing.margin-mobile}` / `{spacing.margin-desktop}` (16 / 32).
 
-**Desktop shell (app).** `{spacing.rail}` (~268px) cast rail on night, cream names, costume portrait squares. Nested threads under the agent. The stage is the rest. No third inspector column in v1.
+**Desktop shell (app).** Signed-in **chat** is three strips on night: a thin left app nav (default `{72px}`, expands to `{spacing.rail}`), the stage (transcript + composer), and a right recents rail (`{spacing.rail}`) with Your-agents portraits on top and chats below. Lobby pages (Explore, Studio, Plan, Profile) keep the left nav only. This is nav + history, not a third inspector.
 
 **Gallery / landing wall.** CSS grid: 1 column mobile, 2 tablet, 4 desktop. Gap 32px. Odd columns on large screens drop `2rem` (`translate-y-8`) so the wall staggers. Each poster carries its own tilt. Not a perfectly aligned card row. Not a horizontal “logo strip.”
 

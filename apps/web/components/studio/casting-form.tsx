@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import {
-  COSTUME_IDS,
+  STUDIO_COSTUME_IDS,
   DEFAULT_TONE,
   LANGUAGE_PRESETS,
   STUDIO_TOOLS,
@@ -26,6 +26,7 @@ const COSTUME_LABEL: Record<CostumeId, string> = {
   barnaby: "Tawny",
   ren: "Slate",
   custom: "Brown",
+  maya: "Burgundy",
 };
 
 const TOOL_LABEL: Record<StudioTool, string> = {
@@ -212,7 +213,7 @@ export function CastingForm({
           Color
         </legend>
         <div className="mt-3 flex flex-wrap gap-2">
-          {COSTUME_IDS.map((id) => (
+          {STUDIO_COSTUME_IDS.map((id) => (
             <button
               key={id}
               type="button"

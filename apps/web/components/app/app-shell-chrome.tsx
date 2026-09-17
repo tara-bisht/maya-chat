@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MAYA_HOME_HREF } from "@maya/shared";
 import type { Playbill } from "@/lib/gallery/playbill";
 import type { GalleryViewer, RecentChat } from "@/lib/gallery/recents";
 import {
@@ -20,8 +21,6 @@ import {
   MenuIcon,
   NAV_ICONS,
 } from "./nav-icons";
-import { RecentChatsList } from "./recent-chats";
-import { SidebarAgents } from "./your-agents-list";
 
 const RAIL_STORAGE_KEY = "maya.navRail";
 
@@ -61,7 +60,7 @@ function RailBrand({
 }) {
   return (
     <Link
-      href="/gallery"
+      href={MAYA_HOME_HREF}
       onClick={onClick}
       className={`font-display text-cream italic ${
         collapsed ? "text-2xl" : "text-3xl"
@@ -117,22 +116,16 @@ function NavLinks({
 }
 
 function SidebarBody({
-  recents,
-  custom,
   pathname,
   collapsed,
   showBrand,
   onNavigate,
 }: {
-  recents: RecentChat[];
-  custom: Playbill[];
   pathname: string;
   collapsed: boolean;
   showBrand: boolean;
   onNavigate?: () => void;
 }) {
-  const gutter = collapsed ? "" : "px-2";
-
   return (
     <>
       {showBrand ? (
@@ -145,30 +138,7 @@ function SidebarBody({
         collapsed={collapsed}
         onClick={onNavigate}
       />
-      <div
-        className={`mt-4 min-h-0 flex-1 overflow-y-auto pb-4 ${gutter}`}
-      >
-        {collapsed ? null : (
-          <p className="px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-            {COPY.recentChats}
-          </p>
-        )}
-        <div className={collapsed ? "" : "mt-1.5"}>
-          <RecentChatsList recents={recents} iconOnly={collapsed} />
-        </div>
-        {collapsed ? (
-          recents.length > 0 && custom.length > 0 ? (
-            <div className="mx-3 my-2 h-px bg-rule" aria-hidden />
-          ) : null
-        ) : (
-          <p className="mt-4 px-2 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-            {COPY.yourAgents}
-          </p>
-        )}
-        <div className={collapsed ? "" : "mt-1.5"}>
-          <SidebarAgents agents={custom} iconOnly={collapsed} />
-        </div>
-      </div>
+      <div className="mt-4 min-h-0 flex-1" />
     </>
   );
 }
@@ -195,8 +165,6 @@ function RailToggle({
 
 export function AppShellChrome({
   viewer,
-  recents,
-  custom,
   children,
 }: {
   viewer: GalleryViewer;
@@ -239,8 +207,6 @@ export function AppShellChrome({
           <RailToggle collapsed={collapsed} onToggle={toggleRail} />
         </div>
         <SidebarBody
-          recents={recents}
-          custom={custom}
           pathname={pathname}
           collapsed={collapsed}
           showBrand={false}
@@ -257,7 +223,7 @@ export function AppShellChrome({
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <header className="flex shrink-0 items-center gap-3 border-b border-rule bg-night px-4 py-3 lg:px-8">
           <Link
-            href="/gallery"
+            href={MAYA_HOME_HREF}
             className="font-display text-2xl text-cream italic lg:hidden"
           >
             Maya
@@ -337,8 +303,6 @@ export function AppShellChrome({
               </button>
             </div>
             <SidebarBody
-              recents={recents}
-              custom={custom}
               pathname={pathname}
               collapsed={false}
               showBrand

@@ -2,11 +2,14 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
+import { ChatNav } from "@/components/app/chat-nav";
 import { CreditMeter } from "@/components/app/credit-meter";
+import { NAV_ICONS } from "@/components/app/nav-icons";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
 import type { CatalogModel } from "@/lib/credits/catalog";
 import {
@@ -19,10 +22,11 @@ import {
 } from "@/lib/house/copy";
 import { houseHref } from "@/lib/house/href";
 import type { HouseView as HouseViewData } from "@/lib/house/types";
-import { COPY } from "@/lib/ui-copy";
-import { CastRail } from "./cast-rail";
+import { COPY, MOBILE_NAV, navIsActive } from "@/lib/ui-copy";
+import { MAYA_HOME_HREF } from "@maya/shared";
 import { CharacterSheet } from "./character-sheet";
 import { Composer } from "./composer";
+import { RecentsRail } from "./recents-rail";
 import { Transcript, type StageTurn } from "./transcript";
 import { VoicePicker } from "./voice-picker";
 
@@ -53,6 +57,7 @@ type WellError =
   | null;
 
 export function HouseView({ house }: { house: HouseViewData }) {
+  const pathname = usePathname();
   const conversationIdRef = useRef(house.conversation?.id ?? null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [nightsOpen, setNightsOpen] = useState(false);
@@ -172,19 +177,14 @@ export function HouseView({ house }: { house: HouseViewData }) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-night text-cream">
-      <CastRail
-        activeAgentId={house.agent.id}
-        activeConversationId={house.conversation?.id ?? null}
-        cast={house.cast}
-        threads={house.threads}
-      />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <ChatNav />
+      <div className="flex min-w-0 flex-1 flex-col pb-14 lg:pb-0">
         <header className="flex items-center gap-3 border-b border-rule px-4 py-3">
           <Link
-            href="/gallery"
-            className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline lg:hidden"
+            href={MAYA_HOME_HREF}
+            className="font-display text-2xl text-cream italic lg:hidden"
           >
-            Home
+            Maya
           </Link>
           <AgentPortrait
             name={house.agent.shortName}
@@ -272,6 +272,8 @@ export function HouseView({ house }: { house: HouseViewData }) {
                 costume={house.agent.costume}
                 streaming={status === "streaming"}
                 tagline={house.agent.tagline}
+                hostEmpty={house.agent.isHost}
+                onChip={onSend}
               />
               {showDropped ? (
                 <p className="mx-auto max-w-measure px-4 pb-6 font-sans text-base text-cream">
@@ -302,11 +304,40 @@ export function HouseView({ house }: { house: HouseViewData }) {
         ) : null}
       </div>
 
+      <RecentsRail
+        activeAgentId={house.agent.id}
+        activeConversationId={house.conversation?.id ?? null}
+        roster={house.roster}
+        recents={house.recents}
+      />
+
       <CharacterSheet
         agent={house.agent}
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
       />
+
+      <nav
+        aria-label="Primary"
+        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-rule bg-night lg:hidden"
+      >
+        {MOBILE_NAV.map((item) => {
+          const active = navIsActive(item.href, pathname);
+          const Icon = NAV_ICONS[item.id];
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex h-14 flex-1 flex-col items-center justify-center gap-0.5 font-sans text-[11px] font-semibold ${
+                active ? "text-cream" : "text-ink-soft"
+              }`}
+            >
+              <Icon />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
 
       {nightsOpen ? (
         <div
@@ -314,21 +345,21 @@ export function HouseView({ house }: { house: HouseViewData }) {
           onClick={() => setNightsOpen(false)}
         >
           <aside
-            className="absolute inset-y-0 left-0 w-[min(20rem,calc(100%-2rem))] overflow-y-auto bg-night p-4"
+            className="absolute inset-y-0 right-0 w-[min(20rem,calc(100%-2rem))] overflow-y-auto bg-night p-4"
             onClick={(event) => event.stopPropagation()}
           >
             <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
-              Chats with {house.agent.shortName}
+              {COPY.recentChats}
             </p>
             <ul className="mt-4 space-y-2">
-              {house.threads.map((thread) => (
-                <li key={thread.id}>
+              {house.recents.map((chat) => (
+                <li key={chat.conversationId}>
                   <Link
-                    href={houseHref(house.agent.id, thread.id)}
+                    href={chat.href}
                     className="block font-sans text-sm text-cream"
                     onClick={() => setNightsOpen(false)}
                   >
-                    {thread.title}
+                    {chat.agentName} · {chat.title}
                   </Link>
                 </li>
               ))}
@@ -338,7 +369,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
               className="mt-4 inline-block font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
               onClick={() => setNightsOpen(false)}
             >
-              New chat
+              {COPY.newChat}
             </Link>
           </aside>
         </div>

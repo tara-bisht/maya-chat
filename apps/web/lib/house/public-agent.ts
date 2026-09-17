@@ -57,6 +57,7 @@ export function toHouseAgent(input: {
     isCurated: row.is_curated,
     isPublic: row.is_public,
     freeTier: row.free_tier,
+    isHost: row.is_host,
     canEdit,
     canChat: canUseAgent({
       planId,
