@@ -18,7 +18,7 @@ depends_on:
 
 Build sequence for **remaining** slices. Product identity: [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md). What is true on `main`: [`NOW.md`](NOW.md). System design: [`technical-plan.md`](technical-plan.md). Open work that is not a numbered PR: [`backlog/README.md`](backlog/README.md).
 
-After PR5, the next *product* slices are Maya host ([TODO-002](backlog/ideas/002-maya-super-agent-host-matchmaker.md)), the catalog-backed wall ([TODO-006](backlog/ideas/006-catalog-driven-first-party-bill.md)), the launch handful ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)), then conversational create ([TODO-001](backlog/ideas/001-conversational-agent-creator.md)). Not Expo, not ensembles, not `⌘K`.
+After PR5, the next *product* slices are the catalog-backed wall ([TODO-006](backlog/ideas/006-catalog-driven-first-party-bill.md)), the launch handful ([TODO-007](backlog/ideas/007-inbuilt-catalog-jobs-voices.md)), then conversational create ([TODO-001](backlog/ideas/001-conversational-agent-creator.md)). Maya host ([TODO-002](archive/ideas/002-maya-super-agent-host-matchmaker.md)) shipped in PR40+PR41. Not Expo, not ensembles, not `⌘K`.
 
 ---
 
@@ -57,7 +57,7 @@ After PR5, the next *product* slices are Maya host ([TODO-002](backlog/ideas/002
 
 ---
 
-## Shipped (PR0–PR4b)
+## Shipped (PR0–PR43)
 
 | ID | What | Notes |
 | :--- | :--- | :--- |
@@ -69,6 +69,10 @@ After PR5, the next *product* slices are Maya host ([TODO-002](backlog/ideas/002
 | PR4a | Credit engine, `plan_models` gate, `modelId` on chat | MAYA-107 / 116 |
 | PR4b | Voice picker, locked models, catalog seats | MAYA-108 |
 | PR4c | pgvector retrieve, `memory_saver`, Stripe Checkout/Portal | MAYA-115 |
+| PR40 | Maya as signed-in home, recents rail, host seed | TODO-002 part 1 |
+| PR41 | Roster routing, pause/switch tickets, Add/Create agent tickets | TODO-002 complete |
+| PR42 | Load custom agent prompt via owner sheet | fix |
+| PR43 | 50+ frontier models and universal curated agent access | feat |
 
 Each merged PR was independently reviewable (Zod, RLS, `tsc --noEmit` as applicable).
 
