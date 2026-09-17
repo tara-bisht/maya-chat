@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageInner } from "@/components/app/page-frame";
 import { SEATS_FOOTNOTE, SEATS_KICKER, type Seat } from "@/lib/landing";
 import { LandingHeading } from "@/components/landing/section-kicker";
+import { formatModelsSummary } from "@/lib/plan/present";
 
 function SeatTicket({ seat }: { seat: Seat }) {
   const stampClass =
@@ -49,7 +50,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
         Models
       </p>
       <p className="mt-1 font-mono text-xs leading-relaxed text-night/80">
-        {seat.models.join(" · ")}
+        {formatModelsSummary(seat.models, seat.id)}
       </p>
       <p className="mt-6">
         {seat.cta.kind === "acid" ? (

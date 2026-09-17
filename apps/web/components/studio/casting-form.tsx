@@ -48,19 +48,17 @@ export type CastingFormDefaults = Partial<StudioUpsert> & {
 export function CastingForm({
   agentId,
   defaults,
-  planId,
   planDisplayName,
   maxCustomAgents,
   toolsAllowed,
 }: {
   agentId: string | null;
   defaults?: CastingFormDefaults;
-  planId: "free" | "plus" | "pro";
+  planId?: "free" | "plus" | "pro";
   planDisplayName: string;
   maxCustomAgents: number | null;
   toolsAllowed: string[];
 }) {
-  const canPrivate = planId !== "free";
   const archived = defaults?.archived === true;
   const allowedTools = STUDIO_TOOLS.filter((tool) => toolsAllowed.includes(tool));
 
@@ -77,9 +75,7 @@ export function CastingForm({
   const [toolsEnabled, setToolsEnabled] = useState<StudioTool[]>(
     defaults?.toolsEnabled ?? [],
   );
-  const [isPublic, setIsPublic] = useState(
-    canPrivate ? (defaults?.isPublic ?? true) : true,
-  );
+  const [isPublic, setIsPublic] = useState(defaults?.isPublic ?? true);
   const [error, setError] = useState<StudioActionState>(null);
   const [pending, startTransition] = useTransition();
 
@@ -92,7 +88,7 @@ export function CastingForm({
       backstory,
       tone,
       toolsEnabled,
-      isPublic: canPrivate ? isPublic : true,
+      isPublic,
     };
   }
 
@@ -327,22 +323,15 @@ export function CastingForm({
           </button>
           <button
             type="button"
-            onClick={() => {
-              if (canPrivate) {
-                setIsPublic(false);
-              }
-            }}
+            onClick={() => setIsPublic(false)}
             aria-pressed={!isPublic}
-            disabled={!canPrivate}
             className={`rounded-md border-2 p-3 text-left ${
               !isPublic ? "border-night bg-stub" : "border-night/20 bg-cream"
-            } ${canPrivate ? "" : "opacity-50"}`}
+            }`}
           >
             <span className="block font-display text-xl italic">Private</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
-              {canPrivate
-                ? "Only you can chat with this agent."
-                : "Private agents are Plus."}
+              Only you can chat with this agent.
             </span>
           </button>
         </div>

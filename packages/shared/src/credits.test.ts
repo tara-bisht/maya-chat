@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   CREDIT_SCALE_DEFAULT,
+  EXPENSIVE_MODEL_OUTPUT_USD_THRESHOLD,
+  LAB_PROVIDERS,
   creditsFromRates,
   creditsFromUsd,
   estimateCharsAsTokens,
@@ -11,6 +13,7 @@ import {
   parseCreditBalance,
   parseModelId,
   parseReserveChatTurn,
+  plansForModelRate,
   resolveModelId,
   usdFromTokens,
 } from "./credits";
@@ -161,5 +164,42 @@ describe("rpc parsers", () => {
       reason: "forbidden_model",
       allowed: ["qwen-flash"],
     });
+  });
+});
+
+describe("plansForModelRate", () => {
+  it("allows free/plus/pro at or below threshold", () => {
+    expect(plansForModelRate(0.47)).toEqual(["free", "plus", "pro"]);
+    expect(plansForModelRate(15)).toEqual(["free", "plus", "pro"]);
+    expect(plansForModelRate(20)).toEqual(["free", "plus", "pro"]);
+    expect(plansForModelRate(EXPENSIVE_MODEL_OUTPUT_USD_THRESHOLD)).toEqual([
+      "free",
+      "plus",
+      "pro",
+    ]);
+  });
+
+  it("restricts to plus/pro above threshold", () => {
+    expect(plansForModelRate(20.01)).toEqual(["plus", "pro"]);
+    expect(plansForModelRate(50)).toEqual(["plus", "pro"]);
+  });
+});
+
+describe("LAB_PROVIDERS", () => {
+  it("defines the 10 supported labs ranked in order", () => {
+    expect(LAB_PROVIDERS).toHaveLength(10);
+    expect(LAB_PROVIDERS.map((p) => p.id)).toEqual([
+      "openai",
+      "anthropic",
+      "google",
+      "deepseek",
+      "xai",
+      "meta",
+      "mistral",
+      "qwen",
+      "moonshot",
+      "cohere",
+    ]);
+    expect(LAB_PROVIDERS.every((p, idx) => p.rank === idx + 1)).toBe(true);
   });
 });

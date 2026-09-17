@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "catalog:sync": "tsx scripts/sync-catalog.ts",
     "openrouter:ping": "tsx scripts/openrouter-ping.ts"
   },
   "dependencies": {

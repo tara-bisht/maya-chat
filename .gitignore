@@ -16,6 +16,7 @@ playwright-report
 test-results
 .pnpm-store
 .worktrees/
+.superpowers/
 
 # Marketing video outputs
 marketing/**/out/

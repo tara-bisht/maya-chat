@@ -79,7 +79,7 @@ describe("HERO_SCENES", () => {
     ]);
     expect(HERO_SCENES[0]?.shortName).toBe("Marcus");
     expect(HERO_SCENES[0]?.freeTier).toBe(true);
-    expect(HERO_SCENES[2]?.freeTier).toBe(false);
+    expect(HERO_SCENES[2]?.freeTier).toBe(true);
   });
 
   it("gives each scene a quote and the line that prompted it", () => {

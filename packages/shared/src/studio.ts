@@ -74,7 +74,6 @@ export function evaluateStudioWrite(input: StudioWriteInput): StudioWriteResult 
     planId,
     maxCustomAgents,
     liveCustomCount,
-    desiredPublic,
     existing,
   } = input;
 
@@ -90,20 +89,6 @@ export function evaluateStudioWrite(input: StudioWriteInput): StudioWriteResult 
       ok: false,
       code: "studio_cap",
       upgradePlan: upgradePlanFor(planId),
-    };
-  }
-
-  const flippingToPrivate =
-    desiredPublic === false &&
-    (action === "create" ||
-      (action === "update" && existing?.isPublic === true) ||
-      (action === "restore" && existing?.isPublic === true));
-
-  if (planId === "free" && flippingToPrivate) {
-    return {
-      ok: false,
-      code: "studio_private_forbidden",
-      upgradePlan: "plus",
     };
   }
 
@@ -125,7 +110,7 @@ export function canUseAgent(input: {
     return false;
   }
   if (input.agent.isCurated) {
-    return input.planId !== "free" || input.agent.freeTier;
+    return true;
   }
   if (input.agent.userId === input.viewerId) {
     return true;

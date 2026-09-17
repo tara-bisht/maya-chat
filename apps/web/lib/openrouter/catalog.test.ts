@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { parseGatewayId, SEED_MODELS } from "./catalog";
+import { isExpensiveModel, parseGatewayId, SEED_MODELS } from "./catalog";
 
 describe("SEED_MODELS", () => {
-  it("covers the seed aliases", () => {
-    expect(SEED_MODELS.map((model) => model.alias)).toEqual([
+  it("contains exactly 57 models", () => {
+    expect(SEED_MODELS).toHaveLength(57);
+  });
+
+  it("includes all 9 legacy aliases", () => {
+    const legacyAliases = [
       "qwen-flash",
       "gemini-flash",
       "grok-fast",
@@ -13,7 +17,37 @@ describe("SEED_MODELS", () => {
       "gpt",
       "claude",
       "kimi",
-    ]);
+    ];
+    const aliases = new Set(SEED_MODELS.map((model) => model.alias));
+    for (const alias of legacyAliases) {
+      expect(aliases.has(alias)).toBe(true);
+    }
+  });
+
+  it("has unique aliases and gateway IDs", () => {
+    const aliases = SEED_MODELS.map((m) => m.alias);
+    const gatewayIds = SEED_MODELS.map((m) => m.gatewayId);
+    expect(new Set(aliases).size).toBe(57);
+    expect(new Set(gatewayIds).size).toBe(57);
+  });
+
+  it("represents all 10 labs in SEED_MODELS", () => {
+    const expectedLabs = [
+      "openai",
+      "anthropic",
+      "google",
+      "deepseek",
+      "xai",
+      "meta",
+      "mistral",
+      "qwen",
+      "moonshot",
+      "cohere",
+    ];
+    const providers = new Set(SEED_MODELS.map((m) => m.provider));
+    for (const lab of expectedLabs) {
+      expect(providers.has(lab)).toBe(true);
+    }
   });
 
   it("pins reserve rates used by the credit formula", () => {
@@ -40,6 +74,24 @@ describe("SEED_MODELS", () => {
     expect(SEED_MODELS.find((model) => model.alias === "grok")?.gatewayId).toBe(
       "x-ai/grok-4.5",
     );
+  });
+});
+
+describe("isExpensiveModel", () => {
+  it("recognizes frontier expensive models", () => {
+    const astra = SEED_MODELS.find((m) => m.alias === "gpt-6-astra")!;
+    const fable = SEED_MODELS.find((m) => m.alias === "claude-fable-5-1")!;
+    expect(isExpensiveModel(astra)).toBe(true);
+    expect(isExpensiveModel(fable)).toBe(true);
+    expect(isExpensiveModel({ outputUsdPerMillion: 20.01 })).toBe(true);
+  });
+
+  it("does not flag standard or cheap models as expensive", () => {
+    const gpt = SEED_MODELS.find((m) => m.alias === "gpt")!;
+    const flash = SEED_MODELS.find((m) => m.alias === "qwen-flash")!;
+    expect(isExpensiveModel(gpt)).toBe(false);
+    expect(isExpensiveModel(flash)).toBe(false);
+    expect(isExpensiveModel({ outputUsdPerMillion: 20 })).toBe(false);
   });
 });
 

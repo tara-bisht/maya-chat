@@ -62,19 +62,19 @@ describe("toHouseAgent", () => {
     expect(agent.backstory).toBeNull();
   });
 
-  it("blocks Free on a Plus player but still describes them", () => {
+  it("lets Free talk to Alex and any curated player", () => {
     const agent = toHouseAgent({
       row: row({
         id: COMPANY[2].id,
         name: COMPANY[2].name,
-        free_tier: false,
+        free_tier: true,
         costume_id: "alex",
       }),
       viewerId: "user-1",
       planId: "free",
       backstory: null,
     });
-    expect(agent.canChat).toBe(false);
+    expect(agent.canChat).toBe(true);
     expect(agent.shortName).toBe("Alex");
   });
 

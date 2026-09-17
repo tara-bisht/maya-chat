@@ -85,7 +85,7 @@ Your Core Personality Rules:
   array['code_sandbox', 'web_search', 'memory_saver'],
   true,
   true,
-  false
+  true
 ),
 (
   '00000000-0000-0000-0000-000000000004',
@@ -108,7 +108,7 @@ Your Core Personality Rules:
   array['memory_saver'],
   true,
   true,
-  false
+  true
 ),
 (
   '00000000-0000-0000-0000-000000000005',
@@ -131,7 +131,7 @@ Your Core Personality Rules:
   array['memory_saver'],
   true,
   true,
-  false
+  true
 ),
 (
   '00000000-0000-0000-0000-000000000006',
@@ -156,7 +156,7 @@ Your Core Personality Rules:
   array['math_solver', 'memory_saver'],
   true,
   true,
-  false
+  true
 ),
 (
   '00000000-0000-0000-0000-000000000007',
@@ -180,7 +180,7 @@ Your Core Personality Rules:
   array['memory_saver'],
   true,
   true,
-  false
+  true
 ),
 (
   '00000000-0000-0000-0000-000000000008',
@@ -204,7 +204,7 @@ Your Core Personality Rules:
   array['memory_saver'],
   true,
   true,
-  false
+  true
 )
 on conflict (id) do update set
   name = excluded.name,
@@ -281,3 +281,8 @@ on conflict (id) do update set
   is_public = excluded.is_public,
   free_tier = excluded.free_tier,
   is_host = true;
+
+update public.plans
+set
+  max_custom_agents = null,
+  curated_agent_limit = null;

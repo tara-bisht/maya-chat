@@ -56,7 +56,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "productivity",
     costume: "alex",
     avatar: "/avatars/alex-tech-lead.jpg",
-    freeTier: false,
+    freeTier: true,
   },
   {
     id: "00000000-0000-0000-0000-000000000004",
@@ -67,7 +67,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "wellbeing",
     costume: "nonna",
     avatar: "/avatars/nonna-maria.jpg",
-    freeTier: false,
+    freeTier: true,
   },
   {
     id: "00000000-0000-0000-0000-000000000005",
@@ -78,7 +78,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "productivity",
     costume: "viktor",
     avatar: "/avatars/viktor-drill-sergeant.jpg",
-    freeTier: false,
+    freeTier: true,
   },
   {
     id: "00000000-0000-0000-0000-000000000006",
@@ -89,7 +89,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "learning",
     costume: "valerian",
     avatar: "/avatars/valerian-polymath.jpg",
-    freeTier: false,
+    freeTier: true,
   },
   {
     id: "00000000-0000-0000-0000-000000000007",
@@ -100,7 +100,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "lifestyle",
     costume: "barnaby",
     avatar: "/avatars/barnaby-cat.jpg",
-    freeTier: false,
+    freeTier: true,
   },
   {
     id: "00000000-0000-0000-0000-000000000008",
@@ -111,7 +111,7 @@ export const COMPANY: CompanyPlayer[] = [
     category: "philosophy",
     costume: "ren",
     avatar: "/avatars/ren-philosopher.jpg",
-    freeTier: false,
+    freeTier: true,
   },
 ];
 

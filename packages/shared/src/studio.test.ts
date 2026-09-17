@@ -22,6 +22,15 @@ describe("evaluateStudioWrite", () => {
     expect(evaluateStudioWrite(freeCreate)).toEqual({ ok: true });
   });
 
+  it("allows creating a private agent on Free plan", () => {
+    expect(
+      evaluateStudioWrite({
+        ...freeCreate,
+        desiredPublic: false,
+      }),
+    ).toEqual({ ok: true });
+  });
+
   it("rejects the 4th live custom agent on Free", () => {
     expect(
       evaluateStudioWrite({ ...freeCreate, liveCustomCount: 3 }),
@@ -60,14 +69,10 @@ describe("evaluateStudioWrite", () => {
     ).toEqual({ ok: true });
   });
 
-  it("rejects a private create on Free", () => {
+  it("allows a private create on Free", () => {
     expect(
       evaluateStudioWrite({ ...freeCreate, desiredPublic: false }),
-    ).toEqual({
-      ok: false,
-      code: "studio_private_forbidden",
-      upgradePlan: "plus",
-    });
+    ).toEqual({ ok: true });
   });
 
   it("allows Plus to create a private role", () => {
@@ -95,7 +100,7 @@ describe("evaluateStudioWrite", () => {
     ).toEqual({ ok: true });
   });
 
-  it("rejects flipping public to private on Free", () => {
+  it("allows flipping public to private on Free", () => {
     expect(
       evaluateStudioWrite({
         action: "update",
@@ -105,11 +110,7 @@ describe("evaluateStudioWrite", () => {
         desiredPublic: false,
         existing: { isPublic: true, archived: false },
       }),
-    ).toEqual({
-      ok: false,
-      code: "studio_private_forbidden",
-      upgradePlan: "plus",
-    });
+    ).toEqual({ ok: true });
   });
 
   it("does not apply the cap to edits of live rows", () => {
@@ -188,7 +189,7 @@ describe("canUseAgent", () => {
     ).toBe(true);
   });
 
-  it("blocks Free on a Plus curated player", () => {
+  it("allows Free to talk to a curated player even if freeTier is false", () => {
     expect(
       canUseAgent({
         planId: "free",
@@ -201,7 +202,7 @@ describe("canUseAgent", () => {
           userId: null,
         },
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it("lets the owner talk to a private custom role", () => {
