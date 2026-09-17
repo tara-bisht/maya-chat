@@ -185,6 +185,7 @@ export function toHouseRecents(input: {
   const agentsById = new Map(input.agents.map((agent) => [agent.id, agent]));
   const limit = input.limit ?? HOUSE_RECENTS_LIMIT;
   const recents: HouseRecent[] = [];
+  const seenAgents = new Set<string>();
   for (const row of input.conversations) {
     if (recents.length >= limit) {
       break;
@@ -192,10 +193,14 @@ export function toHouseRecents(input: {
     if (row.messageCount <= 0) {
       continue;
     }
+    if (seenAgents.has(row.agent_id)) {
+      continue;
+    }
     const agent = agentsById.get(row.agent_id);
     if (!agent || agent.archived_at) {
       continue;
     }
+    seenAgents.add(agent.id);
     recents.push({
       conversationId: row.id,
       agentId: agent.id,

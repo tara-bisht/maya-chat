@@ -197,7 +197,7 @@ describe("buildRoster", () => {
 });
 
 describe("toHouseRecents", () => {
-  it("keeps one row per thread and caps the list", () => {
+  it("keeps one live thread per agent, newest first", () => {
     const recents = toHouseRecents({
       agents: [agent(), agent({ id: PRIYA.id, name: PRIYA.name, costume_id: "priya" })],
       conversations: [
@@ -216,6 +216,13 @@ describe("toHouseRecents", () => {
           messageCount: 2,
         },
         {
+          id: "p1",
+          agent_id: PRIYA.id,
+          title: "Priya live",
+          updated_at: "2026-09-10T11:00:00.000Z",
+          messageCount: 1,
+        },
+        {
           id: "ghost",
           agent_id: MARCUS.id,
           title: "Empty",
@@ -225,7 +232,7 @@ describe("toHouseRecents", () => {
       ],
       limit: HOUSE_RECENTS_LIMIT,
     });
-    expect(recents.map((item) => item.conversationId)).toEqual(["c1", "c0"]);
+    expect(recents.map((item) => item.conversationId)).toEqual(["c1", "p1"]);
     expect(recents[0]?.title).toBe("Newer Marcus");
   });
 });

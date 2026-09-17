@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import { LANGUAGE_PRESETS } from "@maya/shared";
 import { COSTUME_CLASS } from "@/lib/company";
@@ -16,6 +19,19 @@ export function CharacterSheet({
   open: boolean;
   onClose: () => void;
 }) {
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
   if (!open) {
     return null;
   }

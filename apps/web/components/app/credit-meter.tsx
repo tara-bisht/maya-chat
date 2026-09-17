@@ -37,7 +37,7 @@ export function CreditMeter({
     return (
       <p
         className="font-mono text-xs text-ink-soft"
-        title={`${creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)} · ${creditsResetLabel()}`}
+        title={`${creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)} · ${creditsResetLabel(credits.resetsAt)}`}
       >
         {creditsLeftLabel(credits.dailyRemaining)}
       </p>
@@ -60,7 +60,7 @@ export function CreditMeter({
           {creditsMonthLabel(credits.monthlyRemaining, credits.monthlyLimit)}
         </p>
         <p className="mt-1 font-sans text-sm text-ink-soft">
-          {creditsResetLabel()}
+          {creditsResetLabel(credits.resetsAt)}
         </p>
         <div className="mt-3 h-[3px] bg-rule">
           <div
@@ -75,12 +75,17 @@ export function CreditMeter({
   return (
     <div
       className={`shrink-0 border-t border-rule py-3 ${collapsed ? "px-3" : "px-4"}`}
-      title={`${creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)} · ${creditsResetLabel()}`}
+      title={`${creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)} · ${creditsResetLabel(credits.resetsAt)}`}
     >
       {collapsed ? null : (
-        <p className="font-mono text-xs text-ink-soft">
-          {creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)}
-        </p>
+        <>
+          <p className="font-mono text-xs text-ink-soft">
+            {creditsRailLabel(credits.dailyRemaining, credits.dailyLimit)}
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-ink-soft">
+            {creditsResetLabel(credits.resetsAt)}
+          </p>
+        </>
       )}
       <div className={`h-[3px] bg-rule ${collapsed ? "" : "mt-2"}`}>
         <div

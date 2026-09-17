@@ -4,23 +4,20 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MAYA_HOME_HREF } from "@maya/shared";
-import type { Playbill } from "@/lib/gallery/playbill";
 import type { GalleryViewer, RecentChat } from "@/lib/gallery/recents";
-import {
-  APP_NAV,
-  COPY,
-  MOBILE_NAV,
-  greetingName,
-  navIsActive,
-} from "@/lib/ui-copy";
+import { newChatHref, parseChatPath } from "@/lib/house/href";
+import { APP_NAV, COPY, navIsActive } from "@/lib/ui-copy";
 import { AccountMenu } from "./account-menu";
+import { AppShellProvider, useAppShell } from "./app-shell-context";
 import { CreditMeter } from "./credit-meter";
 import {
   CollapseIcon,
   ExpandIcon,
   MenuIcon,
   NAV_ICONS,
+  NewChatIcon,
 } from "./nav-icons";
+import { RecentChatsList } from "./recent-chats";
 
 const RAIL_STORAGE_KEY = "maya.navRail";
 
@@ -96,7 +93,7 @@ function NavLinks({
             onClick={onClick}
             title={collapsed ? item.label : undefined}
             aria-label={collapsed ? item.label : undefined}
-            className={`flex items-center rounded-md py-2 font-sans text-sm font-semibold ${
+            className={`flex items-center rounded-md py-1.5 font-sans text-sm font-semibold ${
               collapsed ? "justify-center" : "gap-3 px-2"
             } ${
               active
@@ -115,31 +112,61 @@ function NavLinks({
   );
 }
 
-function SidebarBody({
+function NewChatLink({
   pathname,
   collapsed,
-  showBrand,
-  onNavigate,
+  onClick,
 }: {
   pathname: string;
   collapsed: boolean;
-  showBrand: boolean;
+  onClick?: () => void;
+}) {
+  const href = newChatHref(pathname);
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      title={collapsed ? COPY.newChat : undefined}
+      aria-label={collapsed ? COPY.newChat : undefined}
+      className={`flex items-center rounded-md py-1.5 font-sans text-sm font-semibold text-cream-dim hover:bg-rule/40 hover:text-cream ${
+        collapsed ? "justify-center" : "mx-2 gap-3 px-2"
+      }`}
+    >
+      <RailSlot>
+        <NewChatIcon />
+      </RailSlot>
+      {collapsed ? null : COPY.newChat}
+    </Link>
+  );
+}
+
+function RecentsBlock({
+  recents,
+  pathname,
+  collapsed,
+  onNavigate,
+}: {
+  recents: RecentChat[];
+  pathname: string;
+  collapsed: boolean;
   onNavigate?: () => void;
 }) {
+  const chat = parseChatPath(pathname);
   return (
-    <>
-      {showBrand ? (
-        <div className={`shrink-0 py-4 ${collapsed ? "flex justify-center" : "px-4"}`}>
-          <RailBrand collapsed={collapsed} onClick={onNavigate} />
-        </div>
-      ) : null}
-      <NavLinks
-        pathname={pathname}
-        collapsed={collapsed}
-        onClick={onNavigate}
+    <div className={`mt-4 min-h-0 flex-1 overflow-y-auto ${collapsed ? "" : "px-2"}`}>
+      {collapsed ? null : (
+        <p className="px-2 pb-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
+          {COPY.recentChats}
+        </p>
+      )}
+      <RecentChatsList
+        recents={recents}
+        iconOnly={collapsed}
+        activeConversationId={chat.conversationId}
+        currentAgentId={chat.agentId}
+        onNavigate={onNavigate}
       />
-      <div className="mt-4 min-h-0 flex-1" />
-    </>
+    </div>
   );
 }
 
@@ -163,23 +190,52 @@ function RailToggle({
   );
 }
 
-export function AppShellChrome({
+function ShellInner({
   viewer,
+  recents,
   children,
 }: {
   viewer: GalleryViewer;
   recents: RecentChat[];
-  custom: Playbill[];
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { menuOpen, closeMenu, openMenu } = useAppShell();
   const [collapsed, setCollapsed] = useState(false);
-  const hideCreateCta = pathname.startsWith("/studio/new");
+  const isChat = pathname.startsWith("/chat");
 
   useEffect(() => {
     setCollapsed(readRailCollapsed());
   }, []);
+
+  useEffect(() => {
+    closeMenu();
+  }, [pathname, closeMenu]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    }
+
+    function onResize() {
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        closeMenu();
+      }
+    }
+
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [menuOpen, closeMenu]);
 
   function toggleRail() {
     setCollapsed((current) => {
@@ -206,10 +262,14 @@ export function AppShellChrome({
           <RailBrand collapsed={collapsed} />
           <RailToggle collapsed={collapsed} onToggle={toggleRail} />
         </div>
-        <SidebarBody
+        <NavLinks pathname={pathname} collapsed={collapsed} />
+        <div className={`mt-1 ${collapsed ? "" : "px-0"}`}>
+          <NewChatLink pathname={pathname} collapsed={collapsed} />
+        </div>
+        <RecentsBlock
+          recents={recents}
           pathname={pathname}
           collapsed={collapsed}
-          showBrand={false}
         />
         {viewer.credits ? (
           <CreditMeter
@@ -218,96 +278,124 @@ export function AppShellChrome({
             collapsed={collapsed}
           />
         ) : null}
+        <div
+          className={`shrink-0 border-t border-rule py-2 ${
+            collapsed ? "px-1" : "px-2"
+          }`}
+        >
+          <AccountMenu
+            displayName={viewer.displayName}
+            plan={viewer.plan}
+            collapsed={collapsed}
+            placement="up"
+            layout="rail"
+          />
+        </div>
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="flex shrink-0 items-center gap-3 border-b border-rule bg-night px-4 py-3 lg:px-8">
-          <Link
-            href={MAYA_HOME_HREF}
-            className="font-display text-2xl text-cream italic lg:hidden"
-          >
-            Maya
-          </Link>
-          <p className="hidden min-w-0 flex-1 truncate font-display text-2xl text-cream italic lg:block">
-            {greetingName(viewer.displayName)}
-          </p>
-          <div className="ml-auto flex items-center gap-3 lg:gap-6">
-            {hideCreateCta ? null : (
-              <Link
-                href="/studio/new"
-                className="hidden h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#F6EFE4] hover:bg-acid-hover lg:inline-flex"
-              >
-                {COPY.createAgent}
-              </Link>
-            )}
-            <AccountMenu displayName={viewer.displayName} plan={viewer.plan} />
+        {isChat ? null : (
+          <header className="flex shrink-0 items-center gap-2 border-b border-rule bg-night px-3 py-1.5 lg:hidden">
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center text-cream lg:hidden"
+              className="flex h-10 w-10 shrink-0 items-center justify-center text-cream"
               aria-label={COPY.menu}
-              onClick={() => setMenuOpen(true)}
+              aria-expanded={menuOpen}
+              onClick={openMenu}
             >
               <MenuIcon />
             </button>
-          </div>
-        </header>
+            <Link
+              href={MAYA_HOME_HREF}
+              className="font-display text-2xl text-cream italic"
+            >
+              Maya
+            </Link>
+          </header>
+        )}
         <div
           id="maya-stage"
-          className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-0"
+          className={`min-h-0 min-w-0 flex-1 ${
+            isChat
+              ? "flex flex-col overflow-hidden"
+              : "overflow-x-hidden overflow-y-auto"
+          }`}
         >
           {children}
         </div>
       </div>
 
-      <nav
-        aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-rule bg-night lg:hidden"
-      >
-        {MOBILE_NAV.map((item) => {
-          const active = navIsActive(item.href, pathname);
-          const Icon = NAV_ICONS[item.id];
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex h-14 flex-1 flex-col items-center justify-center gap-0.5 font-sans text-[11px] font-semibold ${
-                active ? "text-cream" : "text-ink-soft"
-              }`}
-            >
-              <Icon />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
       {menuOpen ? (
         <div
           className="fixed inset-0 z-30 bg-[color:var(--maya-overlay)] lg:hidden"
-          onClick={() => setMenuOpen(false)}
+          onClick={closeMenu}
         >
           <aside
-            className="absolute inset-y-0 left-0 flex w-[min(20rem,calc(100%-2rem))] flex-col overflow-y-auto bg-night"
+            role="dialog"
+            aria-modal="true"
+            aria-label={COPY.menu}
+            className="absolute inset-y-0 left-0 flex w-[min(268px,calc(100%-2rem))] flex-col overflow-hidden border-r border-rule bg-night"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex justify-end px-4 pt-4">
+            <div className="flex items-center justify-between px-4 pt-4 pb-2">
+              <RailBrand collapsed={false} onClick={closeMenu} />
               <button
                 type="button"
                 className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
                 {COPY.close}
               </button>
             </div>
-            <SidebarBody
+            <NavLinks
               pathname={pathname}
               collapsed={false}
-              showBrand
-              onNavigate={() => setMenuOpen(false)}
+              onClick={closeMenu}
             />
+            <NewChatLink
+              pathname={pathname}
+              collapsed={false}
+              onClick={closeMenu}
+            />
+            <RecentsBlock
+              recents={recents}
+              pathname={pathname}
+              collapsed={false}
+              onNavigate={closeMenu}
+            />
+            {viewer.credits ? (
+              <CreditMeter credits={viewer.credits} variant="rail" />
+            ) : null}
+            <div className="shrink-0 border-t border-rule px-2 py-2">
+              <AccountMenu
+                displayName={viewer.displayName}
+                plan={viewer.plan}
+                placement="up"
+                layout="rail"
+                onNavigate={closeMenu}
+              />
+            </div>
           </aside>
         </div>
       ) : null}
     </div>
+  );
+}
+
+export function AppShellChrome({
+  viewer,
+  recents,
+  children,
+}: {
+  viewer: GalleryViewer;
+  recents: RecentChat[];
+  children: ReactNode;
+}) {
+  return (
+    <AppShellProvider>
+      <ShellInner viewer={viewer} recents={recents}>
+        {children}
+      </ShellInner>
+    </AppShellProvider>
   );
 }
