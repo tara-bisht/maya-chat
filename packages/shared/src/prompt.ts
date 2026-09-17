@@ -6,6 +6,12 @@ export type CompilePromptMemory = {
   createdAt?: string;
 };
 
+export type CompilePromptYourAgent = {
+  name: string;
+  tagline: string;
+  category: string;
+};
+
 export type CompilePromptInput = {
   isCurated: boolean;
   basePrompt: string;
@@ -18,6 +24,7 @@ export type CompilePromptInput = {
   memories?: CompilePromptMemory[] | null;
   toolsAllowed?: readonly string[];
   toolsEnabled?: readonly string[];
+  yourAgents?: CompilePromptYourAgent[] | null;
 };
 
 function bandLine(
@@ -107,6 +114,22 @@ export function compilePrompt(input: CompilePromptInput): string {
       parts.push(`Bio: ${bio}`);
     }
     merged.push(`<user_profile>\n${parts.join("\n")}\n</user_profile>`);
+  }
+
+  const yourAgents = (input.yourAgents ?? [])
+    .map((agent) => {
+      const name = agent.name.trim();
+      if (!name) {
+        return "";
+      }
+      const tagline = agent.tagline.trim();
+      const category = agent.category.trim();
+      const detail = [category, tagline].filter(Boolean).join(" — ");
+      return detail ? `- ${name}: ${detail}` : `- ${name}`;
+    })
+    .filter(Boolean);
+  if (yourAgents.length > 0) {
+    merged.push(`<your_agents>\n${yourAgents.join("\n")}\n</your_agents>`);
   }
 
   const memories = (input.memories ?? [])

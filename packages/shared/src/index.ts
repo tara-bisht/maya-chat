@@ -19,11 +19,46 @@ export {
 } from "./costumes";
 
 export {
+  HOST_ROUTE,
   HOST_TOOLS,
   MAYA_AGENT_ID,
   MAYA_HOME_HREF,
+  parseHostRoute,
+  type HostRoute,
   type HostTool,
 } from "./maya";
+
+export {
+  isCreateIntent,
+  isMetaTurn,
+  matchCatalog,
+  matchRoster,
+  scoreCandidate,
+  type MatchCandidate,
+  type MatchHit,
+} from "./host-match";
+
+export {
+  firstTicket,
+  handoffRequestSchema,
+  hostTicketSchema,
+  hostToolCallsSchema,
+  offerSwitchSchema,
+  parseHandoffRequest,
+  parseHostRouteWrite,
+  parseHostToolCalls,
+  parseRosterWrite,
+  proposeCustomAgentSchema,
+  recommendAddSchema,
+  rosterWriteSchema,
+  type HandoffRequest,
+  type HostTicket,
+  type HostToolCalls,
+  type OfferSwitchTicket,
+  type ProposeCustomAgentTicket,
+  type RecommendAddTicket,
+  type RosterWrite,
+} from "./host-tickets";
 
 export {
   STUDIO_TOOLS,
@@ -76,6 +111,7 @@ export {
   intersectTools,
   type CompilePromptInput,
   type CompilePromptMemory,
+  type CompilePromptYourAgent,
 } from "./prompt";
 
 export {

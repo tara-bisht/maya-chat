@@ -10,7 +10,7 @@ Specialized named agents, a **Model** from any listed lab, personality you can s
 
 ## On `main` today
 
-Signed-in web: Google auth, gallery, streaming chat, prompt compiler, Studio form, AI credits, model picker, catalog-driven seats, Plus/Pro episodic memory, Stripe Checkout and Customer Portal. This branch lands Maya as signed-in home (chat, recents on the right). Roster routing (pause / add) is the next PR on this epic. Conversational create is not on `main`. Not Phase 0.
+Signed-in web: Google auth, gallery, streaming chat, prompt compiler, Studio form, AI credits, model picker, catalog-driven seats, Plus/Pro episodic memory, Stripe Checkout and Customer Portal, Maya as signed-in home. This branch adds Your agents roster, pause/switch, trailing Add, and in-chat Create agent. Not Phase 0.
 
 ## Catalog
 

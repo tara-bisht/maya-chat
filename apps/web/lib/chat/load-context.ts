@@ -8,8 +8,12 @@ import {
   HISTORY_WINDOW,
   canUseAgent,
   chronologicalWindow,
+  firstTicket,
+  parseHostRoute,
   parseMayaPlan,
   resolveModelId,
+  type HostRoute,
+  type HostTicket,
   type MayaPlan,
 } from "@maya/shared";
 import { HOUSE_AGENT_COLUMNS, type HouseAgentRow } from "@/lib/house/columns";
@@ -241,14 +245,23 @@ export async function loadConversationHistory(
         title: string;
         agent_id: string;
         modelId: string | null;
+        hostRoute: HostRoute;
       };
-      history: Array<{ role: "user" | "assistant"; content: string }>;
+      history: Array<{
+        role: "user" | "assistant";
+        content: string;
+        ticket: HostTicket | null;
+      }>;
+      lastUserText: string | null;
+      hasPause: boolean;
+      hasRecommend: boolean;
+      hasProposal: boolean;
     }
   | { ok: false; reason: "not_found" | "dropped" }
 > {
   const conversationResult = await supabase
     .from("conversations")
-    .select("id, title, agent_id, user_id, model_id")
+    .select("id, title, agent_id, user_id, model_id, host_route")
     .eq("id", input.conversationId)
     .maybeSingle();
 
@@ -267,7 +280,7 @@ export async function loadConversationHistory(
 
   const messagesResult = await supabase
     .from("messages")
-    .select("role, content")
+    .select("role, content, tool_calls")
     .eq("conversation_id", conversation.id)
     .in("role", ["user", "assistant"])
     .order("created_at", { ascending: false })
@@ -277,10 +290,34 @@ export async function loadConversationHistory(
     return { ok: false, reason: "dropped" };
   }
 
-  const history: Array<{ role: "user" | "assistant"; content: string }> = [];
+  const history: Array<{
+    role: "user" | "assistant";
+    content: string;
+    ticket: HostTicket | null;
+  }> = [];
   for (const row of chronologicalWindow(messagesResult.data ?? [])) {
     if (row.role === "user" || row.role === "assistant") {
-      history.push({ role: row.role, content: row.content });
+      history.push({
+        role: row.role,
+        content: row.content,
+        ticket: row.role === "assistant" ? firstTicket(row.tool_calls) : null,
+      });
+    }
+  }
+
+  const lastUser = [...history].reverse().find((turn) => turn.role === "user");
+  let hasPause = false;
+  let hasRecommend = false;
+  let hasProposal = false;
+  for (const turn of history) {
+    if (turn.ticket?.type === "offerSwitch") {
+      hasPause = true;
+    }
+    if (turn.ticket?.type === "recommendAdd") {
+      hasRecommend = true;
+    }
+    if (turn.ticket?.type === "proposeCustomAgent") {
+      hasProposal = true;
     }
   }
 
@@ -291,7 +328,12 @@ export async function loadConversationHistory(
       title: conversation.title,
       agent_id: conversation.agent_id,
       modelId: conversation.model_id,
+      hostRoute: parseHostRoute(conversation.host_route),
     },
     history,
+    lastUserText: lastUser?.content ?? null,
+    hasPause,
+    hasRecommend,
+    hasProposal,
   };
 }

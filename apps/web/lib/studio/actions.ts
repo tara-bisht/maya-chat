@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
+  DEFAULT_TONE,
   allowedStudioTools,
   evaluateStudioWrite,
   parseStudioWriteError,
+  proposeCustomAgentSchema,
   studioUpsertSchema,
   type StudioWriteCode,
   type StudioWriteResult,
@@ -153,6 +155,85 @@ export async function saveCastingNotes(
   revalidatePath(MAYA_HOME_HREF);
   revalidatePath("/settings");
   redirect(`/studio/${data.id}`);
+}
+
+export type CommitProposedAgentResult =
+  | { ok: true; id: string; name: string }
+  | {
+      ok: false;
+      code: StudioWriteCode | "invalid";
+      upgradePlan?: "plus" | "pro";
+    };
+
+export async function commitProposedAgent(
+  raw: unknown,
+): Promise<CommitProposedAgentResult> {
+  const user = await requireUser(MAYA_HOME_HREF);
+  const parsed = proposeCustomAgentSchema.safeParse(
+    typeof raw === "object" && raw !== null && "type" in raw
+      ? raw
+      : { type: "proposeCustomAgent", ...(raw as object) },
+  );
+  if (!parsed.success) {
+    return { ok: false, code: "invalid" };
+  }
+
+  const context = await loadStudioContext(user.id);
+  if (!context) {
+    return { ok: false, code: "invalid" };
+  }
+
+  const desiredPublic = true;
+  const decision = evaluateStudioWrite({
+    action: "create",
+    planId: context.planId,
+    maxCustomAgents: context.maxCustomAgents,
+    liveCustomCount: context.liveCustomCount,
+    desiredPublic,
+  });
+  if (!decision.ok) {
+    return {
+      ok: false,
+      code: decision.code,
+      upgradePlan: decision.upgradePlan,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("agents")
+    .insert({
+      user_id: user.id,
+      name: parsed.data.name,
+      tagline: parsed.data.tagline,
+      category: "custom",
+      language_preset: parsed.data.languagePreset,
+      costume_id: parsed.data.costumeId,
+      system_prompt: parsed.data.backstory,
+      tone_settings: DEFAULT_TONE,
+      tools_enabled: allowedStudioTools([], context.toolsAllowed),
+      is_public: desiredPublic,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    const code = parseStudioWriteError(error?.message);
+    if (code) {
+      return {
+        ok: false,
+        code,
+        upgradePlan: code === "studio_cap" ? (context.planId === "free" ? "plus" : "pro") : "plus",
+      };
+    }
+    return { ok: false, code: "invalid" };
+  }
+
+  revalidatePath("/studio");
+  revalidatePath("/gallery");
+  revalidatePath(MAYA_HOME_HREF);
+  revalidatePath("/settings");
+  return { ok: true, id: data.id, name: parsed.data.name };
 }
 
 export async function archiveCustomAgent(agentId: string): Promise<StudioActionState> {

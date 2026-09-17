@@ -97,6 +97,31 @@ describe("compilePrompt", () => {
     expect(compiled).not.toContain("web_search");
   });
 
+  it("lists Your agents before memories", () => {
+    const compiled = compilePrompt({
+      isCurated: true,
+      basePrompt: "You are Maya.",
+      userProfile: { displayName: "Kamal" },
+      yourAgents: [
+        {
+          name: "Dr. Priya",
+          tagline: "Proofs.",
+          category: "learning",
+        },
+      ],
+      memories: [{ content: "Likes Priya." }],
+      toolsEnabled: ["proposeCustomAgent"],
+      toolsAllowed: ["proposeCustomAgent"],
+    });
+    const profile = compiled.indexOf("<user_profile>");
+    const agents = compiled.indexOf("<your_agents>");
+    const memory = compiled.indexOf("<episodic_memory>");
+    expect(agents).toBeGreaterThan(profile);
+    expect(memory).toBeGreaterThan(agents);
+    expect(compiled).toContain("- Dr. Priya: learning — Proofs.");
+    expect(compiled).toContain("You may use only these tools: proposeCustomAgent.");
+  });
+
   it("renders dated episodic memories between profile and tools", () => {
     const compiled = compilePrompt({
       isCurated: true,

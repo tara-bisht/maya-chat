@@ -1,10 +1,15 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
+import {
+  hostTicketSchema,
+  type HostTicket,
+  type HostRoute,
+} from "@maya/shared";
 import { AccountMenu } from "@/components/app/account-menu";
 import { AgentPortrait } from "@/components/app/agent-portrait";
 import { ChatNav } from "@/components/app/chat-nav";
@@ -29,13 +34,35 @@ import { Composer } from "./composer";
 import { RecentsRail } from "./recents-rail";
 import { Transcript, type StageTurn } from "./transcript";
 import { VoicePicker } from "./voice-picker";
+import { commitProposedAgent } from "@/lib/studio/actions";
 
-function toUiMessages(house: HouseViewData): UIMessage[] {
+type MayaUIMessage = UIMessage<unknown, { ticket: HostTicket }>;
+
+function ticketFromParts(parts: MayaUIMessage["parts"]): HostTicket | null {
+  for (const part of parts) {
+    if (part.type === "data-ticket" && "data" in part) {
+      const parsed = hostTicketSchema.safeParse(part.data);
+      if (parsed.success) {
+        return parsed.data;
+      }
+    }
+  }
+  return null;
+}
+
+function toUiMessages(house: HouseViewData): MayaUIMessage[] {
   return (
     house.conversation?.messages.map((turn) => ({
       id: turn.id,
       role: turn.role,
-      parts: [{ type: "text" as const, text: turn.content }],
+      parts: [
+        ...(turn.content
+          ? [{ type: "text" as const, text: turn.content }]
+          : []),
+        ...(turn.ticket
+          ? [{ type: "data-ticket" as const, data: turn.ticket }]
+          : []),
+      ],
     })) ?? []
   );
 }
@@ -56,9 +83,27 @@ type WellError =
   | "dropped"
   | null;
 
-export function HouseView({ house }: { house: HouseViewData }) {
+export function HouseView({
+  house,
+  intentCreate = false,
+  autoReplay = false,
+}: {
+  house: HouseViewData;
+  intentCreate?: boolean;
+  autoReplay?: boolean;
+}) {
   const pathname = usePathname();
+  const router = useRouter();
   const conversationIdRef = useRef(house.conversation?.id ?? null);
+  const [hostRoute, setHostRoute] = useState<HostRoute>(
+    house.conversation?.hostRoute ?? "open",
+  );
+  const [roster, setRoster] = useState(house.roster);
+  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
+  const [createdIds, setCreatedIds] = useState<Record<string, string>>({});
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [ticketBusy, setTicketBusy] = useState(false);
+  const replayed = useRef(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [nightsOpen, setNightsOpen] = useState(false);
   const [selectedModelId, setSelectedModelId] = useState(house.selectedModelId);
@@ -71,17 +116,19 @@ export function HouseView({ house }: { house: HouseViewData }) {
 
   const initialMessages = useMemo(() => toUiMessages(house), [house]);
 
-  const { messages, sendMessage, status, error, clearError } = useChat({
+  const { messages, sendMessage, status, error, clearError } = useChat<MayaUIMessage>({
     messages: initialMessages,
-    transport: new DefaultChatTransport({
+    transport: new DefaultChatTransport<MayaUIMessage>({
       api: "/api/chat",
-      prepareSendMessagesRequest({ messages: pending }) {
+      prepareSendMessagesRequest({ messages: pending, body }) {
+        const lastUser = [...pending].reverse().find((item) => item.role === "user");
         return {
           body: {
-            message: pending[pending.length - 1],
+            message: lastUser ?? pending[pending.length - 1],
             conversationId: conversationIdRef.current,
             agentId: house.agent.id,
             modelId: selectedModelIdRef.current,
+            ...body,
           },
         };
       },
@@ -91,8 +138,9 @@ export function HouseView({ house }: { house: HouseViewData }) {
   const busy = status === "submitted" || status === "streaming";
   const turns: StageTurn[] = messages.flatMap((message, index) => {
     const content = textFromMessage(message);
+    const ticket = ticketFromParts(message.parts);
     const last = index === messages.length - 1;
-    if (!content && !(busy && last)) {
+    if (!content && !ticket && !(busy && last)) {
       return [];
     }
     return [
@@ -102,6 +150,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
           | "assistant"
           | "user",
         content,
+        ticket,
       },
     ];
   });
@@ -153,6 +202,164 @@ export function HouseView({ house }: { house: HouseViewData }) {
     setLockedVoice(model);
     setWellError("forbidden_model");
     clearError();
+  }
+
+  useEffect(() => {
+    if (!autoReplay || replayed.current || busy) {
+      return;
+    }
+    if (!house.conversation || house.conversation.messages.length !== 1) {
+      return;
+    }
+    if (house.conversation.messages[0]?.role !== "user") {
+      return;
+    }
+    replayed.current = true;
+    void sendMessage(undefined, { body: { replay: true } }).then(() => {
+      router.replace(houseHref(house.agent.id, house.conversation?.id));
+    });
+  }, [autoReplay, busy, house, router, sendMessage]);
+
+  async function onKeepGoing() {
+    setTicketBusy(true);
+    try {
+      setHostRoute("stay");
+      await sendMessage(undefined, { body: { hostChoice: "stay" } });
+    } finally {
+      setTicketBusy(false);
+    }
+  }
+
+  async function onSwitch(agentId: string) {
+    const conversationId = conversationIdRef.current;
+    if (!conversationId) {
+      return;
+    }
+    setTicketBusy(true);
+    try {
+      const response = await fetch("/api/chat/handoff", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          fromConversationId: conversationId,
+          agentId,
+        }),
+      });
+      const payload = (await response.json()) as { href?: string };
+      if (!response.ok || !payload.href) {
+        setWellError("dropped");
+        return;
+      }
+      setHostRoute("handed_off");
+      router.push(payload.href);
+    } catch {
+      setWellError("dropped");
+    } finally {
+      setTicketBusy(false);
+    }
+  }
+
+  async function onAdd(agentId: string) {
+    const conversationId = conversationIdRef.current;
+    setTicketBusy(true);
+    try {
+      const response = await fetch("/api/roster", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ agentId, conversationId }),
+      });
+      const payload = (await response.json()) as {
+        agent?: { id: string; shortName: string; costume: string; avatar: string };
+      };
+      const agent = payload.agent;
+      if (!response.ok || !agent) {
+        setWellError("dropped");
+        return;
+      }
+      setAddedIds((current) => new Set(current).add(agent.id));
+      setHostRoute("stay");
+      setRoster((current) => {
+        if (current.some((item) => item.id === agent.id)) {
+          return current;
+        }
+        return [
+          ...current,
+          {
+            id: agent.id,
+            shortName: agent.shortName,
+            costume: agent.costume as (typeof current)[number]["costume"],
+            avatar: agent.avatar,
+          },
+        ];
+      });
+      router.refresh();
+    } catch {
+      setWellError("dropped");
+    } finally {
+      setTicketBusy(false);
+    }
+  }
+
+  async function onDismiss() {
+    const conversationId = conversationIdRef.current;
+    if (!conversationId) {
+      setHostRoute("stay");
+      return;
+    }
+    setTicketBusy(true);
+    try {
+      await fetch("/api/chat/host-route", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ conversationId, hostRoute: "stay" }),
+      });
+      setHostRoute("stay");
+    } finally {
+      setTicketBusy(false);
+    }
+  }
+
+  async function onCreate(ticket: Extract<HostTicket, { type: "proposeCustomAgent" }>) {
+    setTicketBusy(true);
+    setCreateError(null);
+    try {
+      const result = await commitProposedAgent(ticket);
+      if (!result.ok) {
+        setCreateError(
+          result.code === "studio_cap" ? COPY.agentLimit : COPY.studioInvalid,
+        );
+        return;
+      }
+      setCreatedIds((current) => ({ ...current, [ticket.name]: result.id }));
+      setHostRoute("stay");
+      setRoster((current) => {
+        if (current.some((item) => item.id === result.id)) {
+          return current;
+        }
+        return [
+          ...current,
+          {
+            id: result.id,
+            shortName: result.name,
+            costume: "custom",
+            avatar: "",
+          },
+        ];
+      });
+      if (conversationIdRef.current) {
+        await fetch("/api/chat/host-route", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            conversationId: conversationIdRef.current,
+            hostRoute: "stay",
+          }),
+        });
+      }
+      router.refresh();
+    } finally {
+      setTicketBusy(false);
+    }
   }
 
   const listening = `${house.agent.shortName} is listening.`;
@@ -273,7 +480,25 @@ export function HouseView({ house }: { house: HouseViewData }) {
                 streaming={status === "streaming"}
                 tagline={house.agent.tagline}
                 hostEmpty={house.agent.isHost}
+                createIntent={intentCreate}
                 onChip={onSend}
+                tickets={
+                  house.agent.isHost
+                    ? {
+                        resolved: hostRoute !== "open",
+                        addedIds,
+                        createdIds,
+                        createError,
+                        busy: ticketBusy || busy,
+                        onKeepGoing,
+                        onSwitch,
+                        onOpenAgent: (agentId) => router.push(houseHref(agentId)),
+                        onAdd,
+                        onDismiss,
+                        onCreate,
+                      }
+                    : undefined
+                }
               />
               {showDropped ? (
                 <p className="mx-auto max-w-measure px-4 pb-6 font-sans text-base text-cream">
@@ -307,7 +532,7 @@ export function HouseView({ house }: { house: HouseViewData }) {
       <RecentsRail
         activeAgentId={house.agent.id}
         activeConversationId={house.conversation?.id ?? null}
-        roster={house.roster}
+        roster={roster}
         recents={house.recents}
       />
 

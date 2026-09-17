@@ -173,6 +173,27 @@ describe("buildRoster", () => {
     });
     expect(roster.map((member) => member.shortName)).toEqual(["Maya", "Auntie Ji"]);
   });
+
+  it("inserts pinned official agents after Maya", () => {
+    const host = agent({
+      id: "00000000-0000-0000-0000-00000000000a",
+      name: "Maya",
+      is_host: true,
+      costume_id: "maya",
+      category: "host",
+    });
+    const priya = agent({
+      id: PRIYA.id,
+      name: PRIYA.name,
+      costume_id: "priya",
+    });
+    const roster = buildRoster({
+      agents: [agent(), host, priya],
+      viewerId: "user-1",
+      pinnedIds: [PRIYA.id],
+    });
+    expect(roster.map((member) => member.shortName)).toEqual(["Maya", "Dr. Priya"]);
+  });
 });
 
 describe("toHouseRecents", () => {

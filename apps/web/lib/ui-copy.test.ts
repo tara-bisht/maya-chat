@@ -18,7 +18,7 @@ describe("APP_NAV", () => {
     expect(APP_NAV.map((item) => item.href)).toEqual([
       MAYA_HOME_HREF,
       "/explore",
-      "/studio/new",
+      `${MAYA_HOME_HREF}?intent=create`,
       "/settings",
     ]);
   });
@@ -29,7 +29,7 @@ describe("MOBILE_NAV", () => {
     expect(MOBILE_NAV.map((item) => item.href)).toEqual([
       MAYA_HOME_HREF,
       "/explore",
-      "/studio/new",
+      `${MAYA_HOME_HREF}?intent=create`,
       "/settings",
     ]);
   });

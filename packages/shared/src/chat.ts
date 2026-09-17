@@ -48,6 +48,8 @@ export const chatRequestSchema = z.object({
     modelIdSchema.optional(),
   ),
   message: userMessageSchema,
+  hostChoice: z.enum(["stay"]).optional(),
+  replay: z.boolean().optional(),
 });
 
 export type ChatRequest = z.infer<typeof chatRequestSchema>;

@@ -27,6 +27,7 @@ export type ConversationQueryRow = {
   title: string;
   updated_at: string;
   model_id?: string | null;
+  host_route?: string | null;
   messages?: unknown;
 };
 
@@ -140,20 +141,40 @@ export function buildCast(input: {
 export function buildRoster(input: {
   agents: HouseAgentRow[];
   viewerId: string;
+  pinnedIds?: readonly string[];
 }): RosterMember[] {
   const live = input.agents.filter((agent) => !agent.archived_at);
+  const byId = new Map(live.map((agent) => [agent.id, agent]));
   const host = live.find((agent) => agent.is_host);
+  const pinned = (input.pinnedIds ?? [])
+    .map((id) => byId.get(id))
+    .filter((agent): agent is HouseAgentRow => {
+      if (!agent || agent.is_host || agent.archived_at) {
+        return false;
+      }
+      return agent.is_curated || agent.user_id === input.viewerId;
+    });
   const custom = live.filter(
-    (agent) => agent.user_id === input.viewerId && !agent.is_curated,
+    (agent) =>
+      agent.user_id === input.viewerId &&
+      !agent.is_curated &&
+      !pinned.some((item) => item.id === agent.id),
   );
-  return [...(host ? [host] : []), ...custom]
-    .slice(0, ROSTER_PORTRAIT_LIMIT)
-    .map((agent) => ({
-      id: agent.id,
-      shortName: shortNameFor(agent),
-      costume: parseCostumeId(agent.costume_id),
-      avatar: avatarFor(agent),
-    }));
+  const seen = new Set<string>();
+  const ordered: HouseAgentRow[] = [];
+  for (const agent of [...(host ? [host] : []), ...pinned, ...custom]) {
+    if (seen.has(agent.id)) {
+      continue;
+    }
+    seen.add(agent.id);
+    ordered.push(agent);
+  }
+  return ordered.slice(0, ROSTER_PORTRAIT_LIMIT).map((agent) => ({
+    id: agent.id,
+    shortName: shortNameFor(agent),
+    costume: parseCostumeId(agent.costume_id),
+    avatar: avatarFor(agent),
+  }));
 }
 
 export function toHouseRecents(input: {

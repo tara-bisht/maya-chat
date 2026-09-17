@@ -264,10 +264,7 @@ export function AppShellChrome({
         className="fixed inset-x-0 bottom-0 z-20 flex border-t border-rule bg-night lg:hidden"
       >
         {MOBILE_NAV.map((item) => {
-          const active = navIsActive(
-            item.href === "/studio/new" ? "/studio/new" : item.href,
-            pathname,
-          );
+          const active = navIsActive(item.href, pathname);
           const Icon = NAV_ICONS[item.id];
           return (
             <Link
