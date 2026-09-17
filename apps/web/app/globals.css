@@ -27,6 +27,7 @@
   --maya-costume-meera: #1a3f3a;
   --maya-costume-kenji: #2e2450;
   --maya-costume-sofia: #7a4a12;
+  --maya-costume-maya: #5c1e32;
 
   --background: var(--maya-night);
   --foreground: var(--maya-cream);
@@ -76,6 +77,7 @@
   --color-costume-meera: var(--maya-costume-meera);
   --color-costume-kenji: var(--maya-costume-kenji);
   --color-costume-sofia: var(--maya-costume-sofia);
+  --color-costume-maya: var(--maya-costume-maya);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);

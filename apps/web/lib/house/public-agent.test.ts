@@ -21,6 +21,7 @@ function row(overrides: Partial<HouseAgentRow> = {}): HouseAgentRow {
     tools_enabled: ["memory_saver"],
     costume_id: "marcus",
     archived_at: null,
+    is_host: false,
     ...overrides,
   };
 }
@@ -38,6 +39,27 @@ describe("toHouseAgent", () => {
     expect(agent.backstory).toBeNull();
     expect(agent.shortName).toBe("Marcus");
     expect(agent.costume).toBe("marcus");
+    expect(agent.isHost).toBe(false);
+  });
+
+  it("marks Maya as the host", () => {
+    const agent = toHouseAgent({
+      row: row({
+        id: "00000000-0000-0000-0000-00000000000a",
+        name: "Maya",
+        is_host: true,
+        costume_id: "maya",
+        category: "host",
+      }),
+      viewerId: "user-1",
+      planId: "free",
+      backstory: "HOST PROMPT",
+    });
+    expect(agent.isHost).toBe(true);
+    expect(agent.canChat).toBe(true);
+    expect(agent.shortName).toBe("Maya");
+    expect(agent.costume).toBe("maya");
+    expect(agent.backstory).toBeNull();
   });
 
   it("blocks Free on a Plus player but still describes them", () => {

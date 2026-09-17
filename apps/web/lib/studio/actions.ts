@@ -9,6 +9,7 @@ import {
   studioUpsertSchema,
   type StudioWriteCode,
   type StudioWriteResult,
+  MAYA_HOME_HREF,
 } from "@maya/shared";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -102,6 +103,7 @@ export async function saveCastingNotes(
     revalidatePath("/studio");
     revalidatePath(`/studio/${agentId}`);
     revalidatePath("/gallery");
+    revalidatePath(MAYA_HOME_HREF);
     revalidatePath("/settings");
     return null;
   }
@@ -148,6 +150,7 @@ export async function saveCastingNotes(
 
   revalidatePath("/studio");
   revalidatePath("/gallery");
+  revalidatePath(MAYA_HOME_HREF);
   revalidatePath("/settings");
   redirect(`/studio/${data.id}`);
 }
@@ -172,6 +175,7 @@ export async function archiveCustomAgent(agentId: string): Promise<StudioActionS
 
   revalidatePath("/studio");
   revalidatePath("/gallery");
+  revalidatePath(MAYA_HOME_HREF);
   revalidatePath("/settings");
   redirect("/settings#your-agents");
 }

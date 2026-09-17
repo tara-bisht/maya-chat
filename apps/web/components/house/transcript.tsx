@@ -24,25 +24,49 @@ function formatTime(iso?: string): string | null {
   });
 }
 
+const HOST_CHIPS = [
+  { label: "I have a midterm", text: "I have a calculus midterm." },
+  { label: "Make me an agent", text: "I want to create an agent." },
+  { label: "What can you do?", text: "What can you do?" },
+] as const;
+
 export function Transcript({
   turns,
   agentName,
   costume,
   streaming,
   tagline,
+  hostEmpty = false,
+  onChip,
 }: {
   turns: StageTurn[];
   agentName: string;
   costume: CostumeId;
   streaming: boolean;
   tagline: string;
+  hostEmpty?: boolean;
+  onChip?: (text: string) => void;
 }) {
   if (turns.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4">
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4">
         <p className="max-w-measure font-display text-center text-3xl leading-tight text-cream italic">
           {tagline}
         </p>
+        {hostEmpty && onChip ? (
+          <div className="flex flex-wrap justify-center gap-2">
+            {HOST_CHIPS.map((chip) => (
+              <button
+                key={chip.label}
+                type="button"
+                className="rounded-md bg-cream px-3 py-2 font-sans text-sm font-semibold text-night shadow-[4px_4px_0_#FF4D2E]"
+                onClick={() => onChip(chip.text)}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   }

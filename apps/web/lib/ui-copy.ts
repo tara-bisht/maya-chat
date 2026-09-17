@@ -1,14 +1,16 @@
+import { MAYA_HOME_HREF } from "@maya/shared";
+
 export type AppNavId = "home" | "explore" | "create" | "profile";
 
 export const APP_NAV = [
-  { id: "home" as const, href: "/gallery", label: "Home" },
+  { id: "home" as const, href: MAYA_HOME_HREF, label: "Home" },
   { id: "explore" as const, href: "/explore", label: "Explore" },
   { id: "create" as const, href: "/studio/new", label: "Create agent" },
   { id: "profile" as const, href: "/settings", label: "Profile" },
 ] as const;
 
 export const MOBILE_NAV = [
-  { id: "home" as const, href: "/gallery", label: "Home" },
+  { id: "home" as const, href: MAYA_HOME_HREF, label: "Home" },
   { id: "explore" as const, href: "/explore", label: "Explore" },
   { id: "create" as const, href: "/studio/new", label: "Create" },
   { id: "profile" as const, href: "/settings", label: "Profile" },
@@ -45,7 +47,8 @@ export const COPY = {
   noAgents: "You have not created an agent yet.",
   featuredBody: "Marcus and Dr. Priya are free. The others need Plus.",
   yourAgentsEmpty: "You have not created an agent yet.",
-  recentChats: "Recent chats",
+  recentChats: "Chats",
+  newChat: "New chat",
   plan: "Plan",
   credits: "Credits",
   managePlan: "Manage plan",
@@ -161,8 +164,10 @@ export function profileInitial(displayName: string): string {
 }
 
 export function navIsActive(href: string, pathname: string): boolean {
-  if (href === "/gallery") {
-    return pathname === "/gallery" || pathname.startsWith("/gallery/");
+  if (href === MAYA_HOME_HREF) {
+    return (
+      pathname === MAYA_HOME_HREF || pathname.startsWith(`${MAYA_HOME_HREF}/`)
+    );
   }
   if (href === "/studio/new") {
     return pathname.startsWith("/studio");

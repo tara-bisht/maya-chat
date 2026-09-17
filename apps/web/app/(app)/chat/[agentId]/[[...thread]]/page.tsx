@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MAYA_HOME_HREF } from "@maya/shared";
 import { HouseView } from "@/components/house/house-view";
 import { requireUser } from "@/lib/auth/session";
 import { loadHouse } from "@/lib/house/load";
@@ -42,7 +43,7 @@ export default async function HousePage({
           </p>
           <p className="mt-4">
             <Link
-              href="/gallery"
+              href={MAYA_HOME_HREF}
               className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
             >
               Home

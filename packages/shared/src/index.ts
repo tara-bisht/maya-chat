@@ -7,10 +7,23 @@ export const AGENT_CATEGORIES = [
   "wellbeing",
   "lifestyle",
   "custom",
+  "host",
 ] as const;
 export type AgentCategory = (typeof AGENT_CATEGORIES)[number];
 
-export { COSTUME_IDS, parseCostumeId, type CostumeId } from "./costumes";
+export {
+  COSTUME_IDS,
+  STUDIO_COSTUME_IDS,
+  parseCostumeId,
+  type CostumeId,
+} from "./costumes";
+
+export {
+  HOST_TOOLS,
+  MAYA_AGENT_ID,
+  MAYA_HOME_HREF,
+  type HostTool,
+} from "./maya";
 
 export {
   STUDIO_TOOLS,

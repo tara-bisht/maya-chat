@@ -2,11 +2,14 @@ import { describe, expect, it } from "vitest";
 import { COMPANY } from "@/lib/company";
 import { OPEN_NIGHT_TITLE } from "@maya/shared";
 import {
+  HOUSE_RECENTS_LIMIT,
   buildCast,
+  buildRoster,
   displayThreadTitle,
   latestByAgent,
   messageCountFromEmbed,
   threadsForAgent,
+  toHouseRecents,
 } from "./threads";
 import type { HouseAgentRow } from "./columns";
 
@@ -29,6 +32,7 @@ function agent(overrides: Partial<HouseAgentRow> = {}): HouseAgentRow {
     tools_enabled: [],
     costume_id: "marcus",
     archived_at: null,
+    is_host: false,
     ...overrides,
   };
 }
@@ -142,5 +146,65 @@ describe("buildCast", () => {
     ]);
     expect(cast[0]?.latestTitle).toBe("Night one");
     expect(cast[1]?.latestTitle).toBeNull();
+  });
+});
+
+describe("buildRoster", () => {
+  it("puts Maya first, then owned custom agents", () => {
+    const host = agent({
+      id: "00000000-0000-0000-0000-00000000000a",
+      name: "Maya",
+      is_host: true,
+      costume_id: "maya",
+      category: "host",
+    });
+    const custom = agent({
+      id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      user_id: "user-1",
+      name: "Auntie Ji",
+      is_curated: false,
+      is_host: false,
+      costume_id: "custom",
+      category: "custom",
+    });
+    const roster = buildRoster({
+      agents: [agent(), host, custom],
+      viewerId: "user-1",
+    });
+    expect(roster.map((member) => member.shortName)).toEqual(["Maya", "Auntie Ji"]);
+  });
+});
+
+describe("toHouseRecents", () => {
+  it("keeps one row per thread and caps the list", () => {
+    const recents = toHouseRecents({
+      agents: [agent(), agent({ id: PRIYA.id, name: PRIYA.name, costume_id: "priya" })],
+      conversations: [
+        {
+          id: "c1",
+          agent_id: MARCUS.id,
+          title: "Newer Marcus",
+          updated_at: "2026-09-10T12:00:00.000Z",
+          messageCount: 2,
+        },
+        {
+          id: "c0",
+          agent_id: MARCUS.id,
+          title: "Older Marcus",
+          updated_at: "2026-09-10T08:00:00.000Z",
+          messageCount: 2,
+        },
+        {
+          id: "ghost",
+          agent_id: MARCUS.id,
+          title: "Empty",
+          updated_at: "2026-09-10T13:00:00.000Z",
+          messageCount: 0,
+        },
+      ],
+      limit: HOUSE_RECENTS_LIMIT,
+    });
+    expect(recents.map((item) => item.conversationId)).toEqual(["c1", "c0"]);
+    expect(recents[0]?.title).toBe("Newer Marcus");
   });
 });

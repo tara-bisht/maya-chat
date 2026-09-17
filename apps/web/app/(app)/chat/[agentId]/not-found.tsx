@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MAYA_HOME_HREF } from "@maya/shared";
 
 export default function HouseNotFound() {
   return (
@@ -9,7 +10,7 @@ export default function HouseNotFound() {
         </p>
         <p className="mt-4">
           <Link
-            href="/gallery"
+            href={MAYA_HOME_HREF}
             className="font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
           >
             Home

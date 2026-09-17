@@ -1,9 +1,17 @@
-import { OPEN_NIGHT_TITLE } from "@maya/shared";
-import type { CastMember, ThreadSummary } from "./types";
+import { OPEN_NIGHT_TITLE, parseCostumeId } from "@maya/shared";
+import { COMPANY } from "@/lib/company";
+import { houseHref } from "./href";
 import type { HouseAgentRow } from "./columns";
 import { avatarFor, shortNameFor } from "./public-agent";
-import { parseCostumeId } from "@maya/shared";
-import { COMPANY } from "@/lib/company";
+import type {
+  CastMember,
+  HouseRecent,
+  RosterMember,
+  ThreadSummary,
+} from "./types";
+
+export const HOUSE_RECENTS_LIMIT = 40;
+export const ROSTER_PORTRAIT_LIMIT = 8;
 
 export type ConversationRow = {
   id: string;
@@ -127,4 +135,55 @@ export function buildCast(input: {
       latestId: thread?.id ?? null,
     };
   });
+}
+
+export function buildRoster(input: {
+  agents: HouseAgentRow[];
+  viewerId: string;
+}): RosterMember[] {
+  const live = input.agents.filter((agent) => !agent.archived_at);
+  const host = live.find((agent) => agent.is_host);
+  const custom = live.filter(
+    (agent) => agent.user_id === input.viewerId && !agent.is_curated,
+  );
+  return [...(host ? [host] : []), ...custom]
+    .slice(0, ROSTER_PORTRAIT_LIMIT)
+    .map((agent) => ({
+      id: agent.id,
+      shortName: shortNameFor(agent),
+      costume: parseCostumeId(agent.costume_id),
+      avatar: avatarFor(agent),
+    }));
+}
+
+export function toHouseRecents(input: {
+  conversations: ConversationRow[];
+  agents: HouseAgentRow[];
+  limit?: number;
+}): HouseRecent[] {
+  const agentsById = new Map(input.agents.map((agent) => [agent.id, agent]));
+  const limit = input.limit ?? HOUSE_RECENTS_LIMIT;
+  const recents: HouseRecent[] = [];
+  for (const row of input.conversations) {
+    if (recents.length >= limit) {
+      break;
+    }
+    if (row.messageCount <= 0) {
+      continue;
+    }
+    const agent = agentsById.get(row.agent_id);
+    if (!agent || agent.archived_at) {
+      continue;
+    }
+    recents.push({
+      conversationId: row.id,
+      agentId: agent.id,
+      agentName: shortNameFor(agent),
+      costume: parseCostumeId(agent.costume_id),
+      avatar: avatarFor(agent),
+      title: displayThreadTitle(row.title),
+      href: houseHref(agent.id, row.id),
+    });
+  }
+  return recents;
 }

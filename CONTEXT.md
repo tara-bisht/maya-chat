@@ -9,8 +9,12 @@ A named character the user talks to, with a system prompt, tone, tools, and cost
 _Avoid_: Bot, assistant, copilot, persona-as-UI-theme, job-title SKU (“Resume Bot”)
 
 **Maya**:
-The host character. Matches the user to an Agent, helps them create one, and explains the product. Always free. Not a generic worker.
-_Avoid_: Super agent as the product, orchestrator, default ChatGPT, copilot
+The host character. Signed-in home starts with her. She can answer, match you to an Agent on Your agents, help you create one, and explain the product. Always free.
+_Avoid_: Super agent as the product, orchestrator, team, default ChatGPT, copilot
+
+**Your agents**:
+Maya, official agents the member added, and custom agents they own. Maya only interrupts for this set. Not the whole company.
+_Avoid_: Team, AI team, roster as chrome, marketplace home
 
 **Handoff**:
 Maya sending the user into a 1:1 Chat with an Agent, via an agent card (**Chat with {name}**).
