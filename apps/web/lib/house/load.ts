@@ -5,8 +5,10 @@ import type { Database } from "@maya/database";
 import {
   HISTORY_WINDOW,
   chronologicalWindow,
+  firstTicket,
   isUuid,
   parseCreditBalance,
+  parseHostRoute,
   parseMayaPlan,
   resolveModelId,
 } from "@maya/shared";
@@ -36,6 +38,7 @@ function hydrateTurns(
     role: string;
     content: string;
     created_at: string;
+    tool_calls?: unknown;
   }>,
 ): HydratedTurn[] {
   const turns: HydratedTurn[] = [];
@@ -48,6 +51,7 @@ function hydrateTurns(
       role: row.role,
       content: row.content,
       createdAt: row.created_at,
+      ticket: row.role === "assistant" ? firstTicket(row.tool_calls) : null,
     });
   }
   return turns;
@@ -75,6 +79,7 @@ export async function loadHouse(
     agentsResult,
     profileResult,
     creditResult,
+    rosterResult,
   ] = await Promise.all([
     supabase
       .from("agents")
@@ -88,7 +93,7 @@ export async function loadHouse(
       .maybeSingle(),
     supabase
       .from("conversations")
-      .select("id, agent_id, title, updated_at, model_id, messages(count)")
+      .select("id, agent_id, title, updated_at, model_id, host_route, messages(count)")
       .eq("user_id", input.userId)
       .order("updated_at", { ascending: false })
       .limit(HOUSE_RECENTS_LIMIT),
@@ -104,6 +109,7 @@ export async function loadHouse(
       .eq("id", input.userId)
       .maybeSingle(),
     supabase.rpc("credit_balance"),
+    supabase.from("agent_roster").select("agent_id").eq("user_id", input.userId),
   ]);
 
   if (agentResult.error || conversationResult.error || agentsResult.error) {
@@ -113,6 +119,9 @@ export async function loadHouse(
       company: agentsResult.error,
     });
     return { ok: false, reason: "dropped" };
+  }
+  if (rosterResult.error) {
+    logDropped("house", { roster: rosterResult.error });
   }
 
   const row = agentResult.data as HouseAgentRow | null;
@@ -158,7 +167,7 @@ export async function loadHouse(
     }
     const messagesResult = await supabase
       .from("messages")
-      .select("id, role, content, created_at")
+      .select("id, role, content, created_at, tool_calls")
       .eq("conversation_id", summary.id)
       .in("role", ["user", "assistant"])
       .order("created_at", { ascending: false })
@@ -168,9 +177,14 @@ export async function loadHouse(
       return { ok: false, reason: "dropped" };
     }
 
+    const hostRoute = parseHostRoute(
+      (conversationResult.data ?? []).find((item) => item.id === summary.id)
+        ?.host_route,
+    );
     conversation = {
       id: summary.id,
       title: displayThreadTitle(summary.title),
+      hostRoute,
       messages: hydrateTurns(chronologicalWindow(messagesResult.data ?? [])),
     };
   }
@@ -219,6 +233,7 @@ export async function loadHouse(
       roster: buildRoster({
         agents: agentRows,
         viewerId: input.userId,
+        pinnedIds: (rosterResult.data ?? []).map((row) => row.agent_id),
       }),
       recents: toHouseRecents({
         conversations: conversationRows,

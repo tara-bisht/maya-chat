@@ -1,6 +1,8 @@
 import type {
   CostumeId,
   CreditBalance,
+  HostRoute,
+  HostTicket,
   LanguagePresetId,
   MayaPlan,
   ToneSettings,
@@ -12,6 +14,7 @@ export type HydratedTurn = {
   role: "user" | "assistant";
   content: string;
   createdAt: string;
+  ticket: HostTicket | null;
 };
 
 export type ThreadSummary = {
@@ -69,6 +72,7 @@ export type HouseAgent = {
 export type HouseConversation = {
   id: string;
   title: string;
+  hostRoute: HostRoute;
   messages: HydratedTurn[];
 };
 

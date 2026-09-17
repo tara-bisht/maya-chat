@@ -66,6 +66,43 @@ describe("persist helpers", () => {
     expect(result).toEqual({ ok: false, error: dropped });
   });
 
+  it("insertAssistantMessage stores tool_calls on the assistant row", async () => {
+    const insert = vi.fn(async (row: { tool_calls?: unknown }) => {
+      expect(row.tool_calls).toEqual({
+        tickets: [
+          {
+            type: "offerSwitch",
+            agentId: "00000000-0000-0000-0000-000000000002",
+            name: "Dr. Priya",
+            reason: "Priya is on your agents — they're stronger on this.",
+          },
+        ],
+      });
+      return { error: null };
+    });
+    const { insertAssistantMessage } = await import("./persist");
+    const result = await insertAssistantMessage(
+      { from: () => ({ insert }) } as never,
+      {
+        conversationId: "c1",
+        content: "Priya is on your agents — they're stronger on this.",
+        tokensUsed: 0,
+        toolCalls: {
+          tickets: [
+            {
+              type: "offerSwitch",
+              agentId: "00000000-0000-0000-0000-000000000002",
+              name: "Dr. Priya",
+              reason: "Priya is on your agents — they're stronger on this.",
+            },
+          ],
+        },
+      },
+    );
+    expect(result).toEqual({ ok: true });
+    expect(insert).toHaveBeenCalled();
+  });
+
   it("insertAssistantMessage returns ok:false instead of throwing", async () => {
     const { insertAssistantMessage } = await import("./persist");
     const result = await insertAssistantMessage(

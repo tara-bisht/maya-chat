@@ -57,6 +57,27 @@ describe("parseChatRequest", () => {
     });
     if (parsed.ok) {
       expect(parsed.data.modelId).toBeUndefined();
+      expect(parsed.data.hostChoice).toBeUndefined();
+      expect(parsed.data.replay).toBeUndefined();
+    }
+  });
+
+  it("reads stay and replay flags", () => {
+    const parsed = parseChatRequest({
+      conversationId: CONVERSATION_ID,
+      agentId: AGENT_ID,
+      hostChoice: "stay",
+      replay: true,
+      message: {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "Prove this integral." }],
+      },
+    });
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.data.hostChoice).toBe("stay");
+      expect(parsed.data.replay).toBe(true);
     }
   });
 

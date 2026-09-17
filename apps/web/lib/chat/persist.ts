@@ -1,8 +1,13 @@
 import "server-only";
 
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@maya/database";
-import { isDefaultConversationTitle, titleFromFirstMessage } from "@maya/shared";
+import type { Database, Json } from "@maya/database";
+import {
+  isDefaultConversationTitle,
+  parseHostToolCalls,
+  titleFromFirstMessage,
+  type HostToolCalls,
+} from "@maya/shared";
 import { logDropped } from "@/lib/supabase/dropped";
 
 export type PersistFail = { ok: false; error: PostgrestError | null };
@@ -35,6 +40,7 @@ export async function insertAssistantMessage(
     content: string;
     tokensUsed: number;
     modelId?: string | null;
+    toolCalls?: HostToolCalls | null;
   },
 ): Promise<{ ok: true } | PersistFail> {
   const { error } = await supabase.from("messages").insert({
@@ -43,12 +49,71 @@ export async function insertAssistantMessage(
     content: input.content,
     tokens_used: input.tokensUsed,
     model_id: input.modelId ?? null,
+    tool_calls: (input.toolCalls ?? null) as Json | null,
   });
 
   if (error) {
     return { ok: false, error };
   }
 
+  return { ok: true };
+}
+
+export async function updateLastAssistantMessage(
+  supabase: SupabaseClient<Database>,
+  input: {
+    conversationId: string;
+    content: string;
+    tokensUsed: number;
+    modelId?: string | null;
+    toolCalls?: HostToolCalls | null;
+  },
+): Promise<{ ok: true } | PersistFail> {
+  const existing = await supabase
+    .from("messages")
+    .select("id, tool_calls")
+    .eq("conversation_id", input.conversationId)
+    .eq("role", "assistant")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (existing.error) {
+    return { ok: false, error: existing.error };
+  }
+  if (!existing.data) {
+    return insertAssistantMessage(supabase, input);
+  }
+
+  const kept = input.toolCalls ?? parseHostToolCalls(existing.data.tool_calls);
+  const { error } = await supabase
+    .from("messages")
+    .update({
+      content: input.content,
+      tokens_used: input.tokensUsed,
+      model_id: input.modelId ?? null,
+      tool_calls: (kept ?? null) as Json | null,
+    })
+    .eq("id", existing.data.id);
+
+  if (error) {
+    return { ok: false, error };
+  }
+  return { ok: true };
+}
+
+export async function setHostRoute(
+  supabase: SupabaseClient<Database>,
+  input: { conversationId: string; hostRoute: "open" | "stay" | "handed_off" },
+): Promise<{ ok: true } | PersistFail> {
+  const { error } = await supabase
+    .from("conversations")
+    .update({ host_route: input.hostRoute })
+    .eq("id", input.conversationId);
+
+  if (error) {
+    return { ok: false, error };
+  }
   return { ok: true };
 }
 

@@ -1,5 +1,8 @@
 import { COSTUME_WASH_CLASS } from "@/lib/company";
-import type { CostumeId } from "@maya/shared";
+import type { CostumeId, HostTicket } from "@maya/shared";
+import { AddTicket } from "@/components/maya/add-ticket";
+import { CreateAgentCard } from "@/components/maya/create-agent-card";
+import { SwitchTicket } from "@/components/maya/switch-ticket";
 import { MarkdownBody } from "./markdown-body";
 
 export type StageTurn = {
@@ -7,6 +10,21 @@ export type StageTurn = {
   role: "user" | "assistant";
   content: string;
   createdAt?: string;
+  ticket?: HostTicket | null;
+};
+
+export type TicketHandlers = {
+  resolved: boolean;
+  addedIds: ReadonlySet<string>;
+  createdIds: Readonly<Record<string, string>>;
+  createError?: string | null;
+  busy?: boolean;
+  onKeepGoing: () => void;
+  onSwitch: (agentId: string) => void;
+  onOpenAgent: (agentId: string) => void;
+  onAdd: (agentId: string) => void;
+  onDismiss: () => void;
+  onCreate: (ticket: Extract<HostTicket, { type: "proposeCustomAgent" }>) => void;
 };
 
 function formatTime(iso?: string): string | null {
@@ -30,6 +48,18 @@ const HOST_CHIPS = [
   { label: "What can you do?", text: "What can you do?" },
 ] as const;
 
+const CREATE_CHIPS = [
+  {
+    label: "A lifting coach",
+    text: "Make me a sarcastic Hinglish lifting coach.",
+  },
+  {
+    label: "A math tutor",
+    text: "Make me a patient math tutor who explains proofs.",
+  },
+  { label: "What do you need?", text: "I want to create an agent. Ask me." },
+] as const;
+
 export function Transcript({
   turns,
   agentName,
@@ -37,7 +67,9 @@ export function Transcript({
   streaming,
   tagline,
   hostEmpty = false,
+  createIntent = false,
   onChip,
+  tickets,
 }: {
   turns: StageTurn[];
   agentName: string;
@@ -45,7 +77,9 @@ export function Transcript({
   streaming: boolean;
   tagline: string;
   hostEmpty?: boolean;
+  createIntent?: boolean;
   onChip?: (text: string) => void;
+  tickets?: TicketHandlers;
 }) {
   if (turns.length === 0) {
     return (
@@ -55,7 +89,7 @@ export function Transcript({
         </p>
         {hostEmpty && onChip ? (
           <div className="flex flex-wrap justify-center gap-2">
-            {HOST_CHIPS.map((chip) => (
+            {(createIntent ? CREATE_CHIPS : HOST_CHIPS).map((chip) => (
               <button
                 key={chip.label}
                 type="button"
@@ -87,10 +121,15 @@ export function Transcript({
                 <span>{label}</span>
                 <span>{formatTime(turn.createdAt)}</span>
               </p>
-              <MarkdownBody
-                text={turn.content}
-                className="mt-2 font-sans text-lg leading-relaxed text-cream"
-              />
+              {turn.content ? (
+                <MarkdownBody
+                  text={turn.content}
+                  className="mt-2 font-sans text-lg leading-relaxed text-cream"
+                />
+              ) : null}
+              {turn.ticket && tickets ? (
+                <TicketBlock ticket={turn.ticket} handlers={tickets} />
+              ) : null}
               {last && streaming ? <span className="maya-caret mt-2 inline-block" /> : null}
             </article>
           );
@@ -115,5 +154,50 @@ export function Transcript({
         <span className="maya-caret ml-4" />
       ) : null}
     </div>
+  );
+}
+
+function TicketBlock({
+  ticket,
+  handlers,
+}: {
+  ticket: HostTicket;
+  handlers: TicketHandlers;
+}) {
+  if (ticket.type === "offerSwitch") {
+    return (
+      <SwitchTicket
+        name={ticket.name}
+        reason={ticket.reason}
+        resolved={handlers.resolved}
+        busy={handlers.busy}
+        onKeepGoing={handlers.onKeepGoing}
+        onSwitch={() => handlers.onSwitch(ticket.agentId)}
+      />
+    );
+  }
+  if (ticket.type === "recommendAdd") {
+    return (
+      <AddTicket
+        name={ticket.name}
+        reason={ticket.reason}
+        added={handlers.addedIds.has(ticket.agentId)}
+        dismissed={handlers.resolved && !handlers.addedIds.has(ticket.agentId)}
+        busy={handlers.busy}
+        onAdd={() => handlers.onAdd(ticket.agentId)}
+        onDismiss={handlers.onDismiss}
+        onChat={() => handlers.onOpenAgent(ticket.agentId)}
+      />
+    );
+  }
+  return (
+    <CreateAgentCard
+      name={ticket.name}
+      tagline={ticket.tagline}
+      createdId={handlers.createdIds[ticket.name] ?? null}
+      busy={handlers.busy}
+      error={handlers.createError}
+      onCreate={() => handlers.onCreate(ticket)}
+    />
   );
 }

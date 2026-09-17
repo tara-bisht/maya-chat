@@ -13,16 +13,22 @@ export const metadata: Metadata = {
 
 export default async function HousePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ agentId: string; thread?: string[] }>;
+  searchParams: Promise<{ intent?: string; play?: string }>;
 }) {
   const { agentId, thread } = await params;
+  const query = await searchParams;
   const conversationId = thread?.[0] ?? null;
   if (thread && thread.length > 1) {
     notFound();
   }
 
-  const user = await requireUser(`/chat/${agentId}`);
+  const nextPath = query.intent === "create"
+    ? `/chat/${agentId}?intent=create`
+    : `/chat/${agentId}`;
+  const user = await requireUser(nextPath);
   const supabase = await createClient();
   const loaded = await loadHouse(supabase, {
     userId: user.id,
@@ -54,5 +60,11 @@ export default async function HousePage({
     );
   }
 
-  return <HouseView house={loaded.house} />;
+  return (
+    <HouseView
+      house={loaded.house}
+      intentCreate={query.intent === "create"}
+      autoReplay={query.play === "1"}
+    />
+  );
 }

@@ -5,14 +5,22 @@ export type AppNavId = "home" | "explore" | "create" | "profile";
 export const APP_NAV = [
   { id: "home" as const, href: MAYA_HOME_HREF, label: "Home" },
   { id: "explore" as const, href: "/explore", label: "Explore" },
-  { id: "create" as const, href: "/studio/new", label: "Create agent" },
+  {
+    id: "create" as const,
+    href: `${MAYA_HOME_HREF}?intent=create`,
+    label: "Create agent",
+  },
   { id: "profile" as const, href: "/settings", label: "Profile" },
 ] as const;
 
 export const MOBILE_NAV = [
   { id: "home" as const, href: MAYA_HOME_HREF, label: "Home" },
   { id: "explore" as const, href: "/explore", label: "Explore" },
-  { id: "create" as const, href: "/studio/new", label: "Create" },
+  {
+    id: "create" as const,
+    href: `${MAYA_HOME_HREF}?intent=create`,
+    label: "Create",
+  },
   { id: "profile" as const, href: "/settings", label: "Profile" },
 ] as const;
 
@@ -76,7 +84,21 @@ export const COPY = {
   close: "Close",
   collapseRail: "Collapse",
   expandRail: "Expand",
+  keepGoingHere: "Keep going here",
+  notNow: "Not now",
 } as const;
+
+export function chatWithLabel(name: string): string {
+  return `Chat with ${name}`;
+}
+
+export function addAgentLabel(name: string): string {
+  return `Add ${name}`;
+}
+
+export function addedAgentLabel(name: string): string {
+  return `${name} is on your agents`;
+}
 
 export function greetingName(displayName: string): string {
   const first = displayName.trim().split(/\s+/)[0];
@@ -168,6 +190,9 @@ export function navIsActive(href: string, pathname: string): boolean {
     return (
       pathname === MAYA_HOME_HREF || pathname.startsWith(`${MAYA_HOME_HREF}/`)
     );
+  }
+  if (href.startsWith(`${MAYA_HOME_HREF}?intent=create`)) {
+    return false;
   }
   if (href === "/studio/new") {
     return pathname.startsWith("/studio");

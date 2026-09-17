@@ -1,5 +1,6 @@
 import {
   convertToModelMessages,
+  createUIMessageStream,
   createUIMessageStreamResponse,
   stepCountIs,
   streamText,
@@ -7,13 +8,21 @@ import {
   type UIMessage,
 } from "ai";
 import {
+  HOST_TOOLS,
   compilePrompt,
   estimateCharsAsTokens,
   estimateReserveCredits,
+  hostTicketSchema,
+  isCreateIntent,
+  isMetaTurn,
+  matchCatalog,
+  matchRoster,
   parseChatRequest,
   parseReserveChatTurn,
   parseSettleChatTurn,
   toneSettingsSchema,
+  type HostTicket,
+  type HostToolCalls,
 } from "@maya/shared";
 import { getSessionUser } from "@/lib/auth/session";
 import { chatError } from "@/lib/chat/errors";
@@ -30,14 +39,48 @@ import {
   insertUserMessage,
   rememberVoice,
   retitleConversation,
+  setHostRoute,
+  updateLastAssistantMessage,
 } from "@/lib/chat/persist";
 import { settleCreditsFromUsage } from "@/lib/credits/usage";
+import {
+  addReason,
+  pauseStreamResponse,
+  switchLine,
+} from "@/lib/maya/pause-stream";
+import {
+  loadCatalogForMatch,
+  loadRosterForMatch,
+} from "@/lib/maya/roster";
 import { getOpenRouterModel } from "@/lib/openrouter/ai";
 import { logDropped } from "@/lib/supabase/dropped";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+function proposalFromTools(toolResults: unknown): HostTicket | null {
+  if (!Array.isArray(toolResults)) {
+    return null;
+  }
+  for (const item of toolResults) {
+    if (!item || typeof item !== "object") {
+      continue;
+    }
+    const row = item as { toolName?: string; output?: unknown };
+    if (row.toolName !== "proposeCustomAgent") {
+      continue;
+    }
+    const output = row.output as
+      | { ok?: boolean; proposal?: unknown }
+      | undefined;
+    const parsed = hostTicketSchema.safeParse(output?.proposal);
+    if (parsed.success) {
+      return parsed.data;
+    }
+  }
+  return null;
+}
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
@@ -57,6 +100,9 @@ export async function POST(request: Request) {
     return chatError("invalid", 400);
   }
 
+  const stay = parsed.data.hostChoice === "stay";
+  const replay = parsed.data.replay === true || stay;
+
   const supabase = await createClient();
   const agentLoad = await loadChatAgent(supabase, {
     userId: user.id,
@@ -74,6 +120,8 @@ export async function POST(request: Request) {
     return chatError("locked_agent", 403);
   }
 
+  const isHost = agentLoad.agent.is_host === true;
+
   const [conversationLoad, profile] = await Promise.all([
     loadConversationHistory(supabase, {
       userId: user.id,
@@ -88,6 +136,100 @@ export async function POST(request: Request) {
       conversationLoad.reason === "not_found" ? "not_found" : "dropped",
       conversationLoad.reason === "not_found" ? 404 : 500,
     );
+  }
+
+  if (replay && !conversationLoad.lastUserText) {
+    return chatError("invalid", 400);
+  }
+
+  const userText = replay ? conversationLoad.lastUserText ?? parsed.text : parsed.text;
+  const hostRoute = conversationLoad.conversation.hostRoute;
+  const interviewing =
+    isCreateIntent(userText) || conversationLoad.hasProposal;
+  const routingOpen = isHost && hostRoute === "open" && !stay && !replay;
+
+  if (stay && isHost) {
+    const routed = await setHostRoute(supabase, {
+      conversationId: conversationLoad.conversation.id,
+      hostRoute: "stay",
+    });
+    if (!routed.ok) {
+      logDropped("setHostRoute", { update: routed.error });
+      return chatError("dropped", 500);
+    }
+  }
+
+  if (
+    routingOpen &&
+    !interviewing &&
+    !isMetaTurn(userText) &&
+    !conversationLoad.hasPause
+  ) {
+    const roster = await loadRosterForMatch(supabase, { userId: user.id });
+    const hit = matchRoster(userText, roster);
+    if (hit) {
+      const inserted = await insertUserMessage(supabase, {
+        conversationId: conversationLoad.conversation.id,
+        content: userText,
+      });
+      if (!inserted.ok) {
+        logDropped("insertUserMessage", { insert: inserted.error });
+        return chatError("dropped", 500);
+      }
+      const ticket: HostTicket = {
+        type: "offerSwitch",
+        agentId: hit.id,
+        name: hit.name,
+        reason: switchLine(hit.name),
+      };
+      const saved = await insertAssistantMessage(supabase, {
+        conversationId: conversationLoad.conversation.id,
+        content: ticket.reason,
+        tokensUsed: 0,
+        toolCalls: { tickets: [ticket] },
+      });
+      if (!saved.ok) {
+        logDropped("insertAssistantMessage", { insert: saved.error });
+        return chatError("dropped", 500);
+      }
+      await retitleConversation(supabase, {
+        conversationId: conversationLoad.conversation.id,
+        currentTitle: conversationLoad.conversation.title,
+        firstUserText: userText,
+      });
+      return pauseStreamResponse({ text: ticket.reason, ticket });
+    }
+  }
+
+  const roster = isHost
+    ? await loadRosterForMatch(supabase, { userId: user.id })
+    : [];
+
+  let trailing: HostTicket | null = null;
+  if (
+    isHost &&
+    (hostRoute === "open" || stay) &&
+    !conversationLoad.hasRecommend &&
+    !conversationLoad.hasPause &&
+    !interviewing &&
+    !isMetaTurn(userText) &&
+    !stay
+  ) {
+    const catalog = await loadCatalogForMatch(supabase, {
+      userId: user.id,
+      excludeIds: roster.map((item) => item.id),
+    });
+    const hit = matchCatalog(catalog.length ? userText : "", catalog, {
+      preferFree: agentLoad.planId === "free",
+    });
+    if (hit) {
+      trailing = {
+        type: "recommendAdd",
+        agentId: hit.id,
+        name: hit.name,
+        reason: addReason(hit.name, hit.category),
+      };
+    }
   }
 
   const planLoad = await loadPlanModel(supabase, agentLoad.planId, {
@@ -107,9 +249,16 @@ export async function POST(request: Request) {
 
   const memories = await retrieveMemories(supabase, {
     agentId: parsed.data.agentId,
-    text: parsed.text,
+    text: userText,
     vectorMemory: planLoad.vectorMemory,
   });
+
+  const toolsEnabled = isHost
+    ? [...agentLoad.agent.tools_enabled, ...HOST_TOOLS]
+    : agentLoad.agent.tools_enabled;
+  const toolsAllowed = isHost
+    ? [...planLoad.toolsAllowed, ...HOST_TOOLS]
+    : planLoad.toolsAllowed;
 
   const system = compilePrompt({
     isCurated: agentLoad.agent.is_curated,
@@ -118,8 +267,9 @@ export async function POST(request: Request) {
     tone: toneSettingsSchema.safeParse(agentLoad.agent.tone_settings).data,
     userProfile: profile,
     memories,
-    toolsEnabled: agentLoad.agent.tools_enabled,
-    toolsAllowed: planLoad.toolsAllowed,
+    toolsEnabled,
+    toolsAllowed,
+    yourAgents: isHost ? roster : null,
   });
 
   const historyChars = conversationLoad.history.reduce(
@@ -127,7 +277,7 @@ export async function POST(request: Request) {
     0,
   );
   const estimatedPromptTokens = estimateCharsAsTokens(
-    system.length + historyChars + parsed.text.length,
+    system.length + historyChars + userText.length,
   );
   const reserveCredits = estimateReserveCredits({
     estimatedPromptTokens,
@@ -138,13 +288,15 @@ export async function POST(request: Request) {
     scale: planLoad.creditScale,
   });
 
-  const inserted = await insertUserMessage(supabase, {
-    conversationId: conversationLoad.conversation.id,
-    content: parsed.text,
-  });
-  if (!inserted.ok) {
-    logDropped("insertUserMessage", { insert: inserted.error });
-    return chatError("dropped", 500);
+  if (!replay) {
+    const inserted = await insertUserMessage(supabase, {
+      conversationId: conversationLoad.conversation.id,
+      content: userText,
+    });
+    if (!inserted.ok) {
+      logDropped("insertUserMessage", { insert: inserted.error });
+      return chatError("dropped", 500);
+    }
   }
 
   const quota = await supabase.rpc("reserve_chat_turn", {
@@ -193,7 +345,7 @@ export async function POST(request: Request) {
     retitleConversation(supabase, {
       conversationId: conversationLoad.conversation.id,
       currentTitle: conversationLoad.conversation.title,
-      firstUserText: parsed.text,
+      firstUserText: userText,
     }),
   ]);
 
@@ -202,14 +354,16 @@ export async function POST(request: Request) {
     role: turn.role,
     parts: [{ type: "text" as const, text: turn.content }],
   }));
-  const nextMessages: UIMessage[] = [
-    ...prior,
-    {
-      id: parsed.data.message.id,
-      role: "user",
-      parts: [{ type: "text" as const, text: parsed.text }],
-    },
-  ];
+  const nextMessages: UIMessage[] = replay
+    ? prior
+    : [
+        ...prior,
+        {
+          id: parsed.data.message.id,
+          role: "user",
+          parts: [{ type: "text" as const, text: userText }],
+        },
+      ];
 
   const eventId = reserved.eventId;
   const reservedAmount = reserved.reserved;
@@ -218,6 +372,7 @@ export async function POST(request: Request) {
   const modelId = planLoad.modelId;
   const conversationId = conversationLoad.conversation.id;
   let settled = false;
+  let liveTicket: HostTicket | null = trailing;
 
   async function settleTurn(input: {
     text: string;
@@ -230,6 +385,7 @@ export async function POST(request: Request) {
     providerMetadata?: unknown;
     aborted?: boolean;
     generationId?: string | null;
+    toolResults?: unknown;
   }) {
     if (settled) {
       return;
@@ -256,12 +412,24 @@ export async function POST(request: Request) {
       console.error("[maya] settle_chat_turn dropped: unparseable payload");
     }
     if (!input.aborted && input.text) {
+      const proposal = proposalFromTools(input.toolResults);
+      const ticket = proposal ?? (stay ? null : trailing);
+      if (proposal) {
+        liveTicket = proposal;
+      }
+      const toolCalls: HostToolCalls | undefined = ticket
+        ? { tickets: [ticket] }
+        : undefined;
       const tokens = input.usage?.totalTokens ?? 0;
-      const saved = await insertAssistantMessage(supabase, {
+      const persist = stay
+        ? updateLastAssistantMessage
+        : insertAssistantMessage;
+      const saved = await persist(supabase, {
         conversationId,
         content: input.text,
         tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
         modelId,
+        toolCalls,
       });
       if (!saved.ok) {
         logDropped("insertAssistantMessage", { insert: saved.error });
@@ -272,8 +440,9 @@ export async function POST(request: Request) {
   const tools = createChatTools(supabase, {
     userId: user.id,
     agentId: parsed.data.agentId,
-    toolsEnabled: agentLoad.agent.tools_enabled,
-    toolsAllowed: planLoad.toolsAllowed,
+    toolsEnabled,
+    toolsAllowed,
+    isHost,
   });
 
   const result = streamText({
@@ -303,11 +472,36 @@ export async function POST(request: Request) {
         },
         providerMetadata: event.providerMetadata,
         generationId,
+        toolResults: event.toolResults,
       });
     },
   });
 
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({ stream: result.stream }),
+  if (!isHost || stay) {
+    return createUIMessageStreamResponse({
+      stream: toUIMessageStream({ stream: result.stream }),
+    });
+  }
+
+  const stream = createUIMessageStream({
+    execute: async ({ writer }) => {
+      const ui = toUIMessageStream({ stream: result.stream });
+      const reader = ui.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        writer.write(value);
+      }
+      if (liveTicket) {
+        writer.write({
+          type: "data-ticket",
+          data: liveTicket,
+        } as never);
+      }
+    },
   });
+
+  return createUIMessageStreamResponse({ stream });
 }
