@@ -11,6 +11,9 @@ describe("safeNextPath", () => {
     expect(safeNextPath("gallery")).toBe(MAYA_HOME_HREF);
     expect(safeNextPath("//evil.example")).toBe(MAYA_HOME_HREF);
     expect(safeNextPath("https://evil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("/\\evil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("/\\\\evil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("/\\/evil.example")).toBe(MAYA_HOME_HREF);
   });
 
   it("keeps same-origin absolute paths", () => {
