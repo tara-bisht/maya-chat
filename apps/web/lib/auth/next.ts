@@ -9,3 +9,39 @@ export function safeNextPath(raw: string | null | undefined): string {
   }
   return raw;
 }
+
+/** Extracts hostname from URL string if valid. */
+export function safeHostFromUrl(rawUrl: string | null | undefined): string | null {
+  if (!rawUrl) {
+    return null;
+  }
+  try {
+    return new URL(rawUrl).host.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Validates x-forwarded-host against a list of trusted hosts to prevent Host Header Injection / Open Redirects.
+ * Returns the forwardedHost if it matches one of the trusted hosts, otherwise null.
+ */
+export function safeRedirectHost(
+  forwardedHost: string | null | undefined,
+  allowedHosts: Array<string | null | undefined>,
+): string | null {
+  if (!forwardedHost) {
+    return null;
+  }
+  const cleanForwarded = forwardedHost.trim().toLowerCase();
+  const validAllowed = allowedHosts
+    .filter((h): h is string => Boolean(h && h.trim()))
+    .map((h) => h.trim().toLowerCase());
+
+  if (validAllowed.includes(cleanForwarded)) {
+    return cleanForwarded;
+  }
+
+  // Reject untrusted forwarded host to prevent Host Header Injection
+  return null;
+}
