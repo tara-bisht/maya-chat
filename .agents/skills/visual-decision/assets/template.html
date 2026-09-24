@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decision</title>
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #e4ddd0;
+      --card: #fffcf7;
+      --accent: #1f4d3a;
+      --accent-soft: #e7f2eb;
+      --shadow: 0 1px 2px rgba(28, 25, 21, 0.06);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--bg);
+      font: 16px/1.45 ui-sans-serif, system-ui, sans-serif;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+    }
+    header, main { padding: 28px 32px; }
+    header { padding-bottom: 0; }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: 32px; line-height: 1.15; letter-spacing: -0.03em; }
+    #intro { margin: 10px 0 0; max-width: 62ch; color: var(--muted); }
+    section { margin-top: 28px; }
+    section h2 { margin: 0 0 12px; font-size: 18px; }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .options.with-mock { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .card {
+      position: relative;
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .card:has(input:checked) {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+      background: var(--accent-soft);
+    }
+    .card:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .mock {
+      background: #efeae1;
+      border-top: 1px solid var(--line);
+      padding: 14px;
+      min-height: 180px;
+    }
+    .card-body { display: block; padding: 14px 16px 16px; }
+    .card-body h3 { margin: 0; font-size: 17px; }
+    .summary { margin: 6px 0 0; color: var(--muted); }
+    .badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    details { margin-top: 8px; color: var(--muted); font-size: 14px; }
+    summary { cursor: pointer; color: var(--ink); }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      background: #fffdf9;
+      border-left: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    aside h2 { margin: 0; font-size: 16px; }
+    aside p { margin: 0; color: var(--muted); font-size: 14px; }
+    label.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; }
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--ink);
+      background: white;
+      resize: vertical;
+    }
+    #notes { min-height: 72px; font-family: ui-sans-serif, system-ui, sans-serif; }
+    #reply { min-height: 140px; flex: 1; }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      background: var(--accent);
+      color: white;
+      font: 15px/1 ui-sans-serif, system-ui, sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+    #status { min-height: 1.2em; font-size: 13px; color: var(--accent); }
+    .error { color: #8a2b12; }
+    @media (max-width: 860px) {
+      body { display: block; }
+      header, main { padding: 20px 16px 12px; }
+      main { padding-bottom: 280px; }
+      .card { scroll-margin-bottom: 280px; }
+      aside {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: auto;
+        max-height: none;
+        overflow: auto;
+        z-index: 2;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        box-shadow: 0 -8px 24px rgba(28, 25, 21, 0.08);
+        padding: 12px 16px;
+        gap: 8px;
+      }
+      aside h2, aside > p { display: none; }
+      #notes, #reply { min-height: 40px; flex: none; }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <header>
+      <p class="eyebrow">Decision</p>
+      <h1 id="title">Loading</h1>
+      <p id="intro"></p>
+    </header>
+    <main id="sections"></main>
+  </div>
+  <aside>
+    <h2>Feedback</h2>
+    <p>Choose on the left. Paste this reply back to the agent.</p>
+    <label class="field">Notes
+      <textarea id="notes" placeholder="Optional. Anything the choice should still respect."></textarea>
+    </label>
+    <label class="field">Reply
+      <textarea id="reply" readonly></textarea>
+    </label>
+    <button id="copy" type="button">Copy feedback</button>
+    <p id="status" role="status"></p>
+  </aside>
+
+  <script type="application/json" id="decision">
+  {
+    "title": "Where should settings live?",
+    "intro": "Same three sections. The choice is only the layout.",
+    "sections": [
+      {
+        "id": "layout",
+        "prompt": "Pick a layout",
+        "select": "one",
+        "options": [
+          {
+            "id": "sidebar",
+            "title": "Sidebar",
+            "summary": "The three sections stay visible while one is open.",
+            "recommended": true,
+            "detail": "Fits when people move between settings often.",
+            "mock": "sidebar"
+          },
+          {
+            "id": "stacked",
+            "title": "Stacked page",
+            "summary": "All sections sit on one scrolling page.",
+            "detail": "Fits when each section is short and visited in order.",
+            "mock": "stacked"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <template id="mock-sidebar">
+    <style>
+      .app { display: grid; grid-template-columns: 118px 1fr; min-height: 220px; background: white; border-radius: 12px; overflow: hidden; color: #1c1915; font: 13px/1.3 ui-sans-serif, system-ui, sans-serif; }
+      aside { background: #f6f3ec; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+      .item { padding: 8px; border-radius: 8px; color: #5c564c; }
+      .item.on { background: #1f4d3a; color: white; font-weight: 700; }
+      section { padding: 12px; }
+      h3 { margin: 0 0 10px; font-size: 15px; }
+      .field { height: 28px; margin-bottom: 8px; border: 1px solid #e4ddd0; border-radius: 8px; color: #5c564c; padding: 6px 8px; }
+      .btn { display: inline-block; margin-top: 4px; background: #1f4d3a; color: white; border-radius: 999px; padding: 6px 10px; font-weight: 700; }
+    </style>
+    <div class="app">
+      <aside>
+        <div class="item on">Profile</div>
+        <div class="item">Notifications</div>
+        <div class="item">Billing</div>
+      </aside>
+      <section>
+        <h3>Profile</h3>
+        <div class="field">Maya Chen</div>
+        <div class="field">maya@example.com</div>
+        <div class="btn">Save</div>
+      </section>
+    </div>
+  </template>
+
+  <template id="mock-stacked">
+    <style>
+      .app { background: white; border-radius: 12px; padding: 12px; color: #1c1915; font: 13px/1.3 ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; gap: 8px; }
+      article { border: 1px solid #e4ddd0; border-radius: 10px; padding: 8px 10px; }
+      article.open { border-color: #1f4d3a; }
+      h3 { margin: 0 0 8px; font-size: 14px; }
+      .field { height: 26px; margin-bottom: 6px; border: 1px solid #e4ddd0; border-radius: 8px; color: #5c564c; padding: 5px 8px; }
+      .btn { display: inline-block; background: #1f4d3a; color: white; border-radius: 999px; padding: 6px 10px; font-weight: 700; }
+    </style>
+    <div class="app">
+      <article class="open">
+        <h3>Profile</h3>
+        <div class="field">Maya Chen</div>
+        <div class="field">maya@example.com</div>
+        <div class="btn">Save</div>
+      </article>
+      <article><h3>Notifications</h3></article>
+      <article><h3>Billing</h3></article>
+    </div>
+  </template>
+
+  <script>
+    const dataEl = document.getElementById("decision");
+    const titleEl = document.getElementById("title");
+    const introEl = document.getElementById("intro");
+    const sectionsEl = document.getElementById("sections");
+    const notesEl = document.getElementById("notes");
+    const replyEl = document.getElementById("reply");
+    const statusEl = document.getElementById("status");
+
+    function fail(message) {
+      titleEl.textContent = "This decision page has a problem";
+      sectionsEl.innerHTML = '<p class="error"></p>';
+      sectionsEl.querySelector("p").textContent = message;
+    }
+
+    function replyText() {
+      const lines = data.sections.map((section) => {
+        const chosen = [...sectionsEl.querySelectorAll('input[name="' + section.id + '"]:checked')].map((input) => input.value);
+        return section.id + ": " + (chosen.length ? chosen.join(", ") : "(none)");
+      });
+      const notes = notesEl.value.trim();
+      if (notes) lines.push("", "Notes: " + notes);
+      return lines.join("\n");
+    }
+
+    function render() {
+      titleEl.textContent = data.title || "Decision";
+      document.title = titleEl.textContent;
+      introEl.textContent = data.intro || "";
+      sectionsEl.replaceChildren();
+
+      for (const section of data.sections) {
+        const wrap = document.createElement("section");
+        const heading = document.createElement("h2");
+        heading.textContent = section.prompt || section.id;
+        wrap.appendChild(heading);
+
+        const options = document.createElement("div");
+        options.className = "options";
+        if (section.options.some((option) => option.mock)) options.classList.add("with-mock");
+
+        for (const option of section.options) {
+          const card = document.createElement("label");
+          card.className = "card";
+          const input = document.createElement("input");
+          input.type = section.select === "many" ? "checkbox" : "radio";
+          input.name = section.id;
+          input.value = option.id;
+          if (option.recommended) input.checked = true;
+          card.appendChild(input);
+
+          const body = document.createElement("span");
+          body.className = "card-body";
+          if (option.recommended) {
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = "Suggested";
+            body.appendChild(badge);
+          }
+          const name = document.createElement("h3");
+          name.textContent = option.title || option.id;
+          const summary = document.createElement("p");
+          summary.className = "summary";
+          summary.textContent = option.summary || "";
+          body.append(name, summary);
+          if (option.detail) {
+            const details = document.createElement("details");
+            const summaryEl = document.createElement("summary");
+            summaryEl.textContent = "More";
+            const extra = document.createElement("p");
+            extra.textContent = option.detail;
+            details.append(summaryEl, extra);
+            body.appendChild(details);
+          }
+          card.appendChild(body);
+          if (option.mock) {
+            const frame = document.createElement("div");
+            frame.className = "mock";
+            const tpl = document.getElementById("mock-" + option.mock);
+            if (tpl) {
+              const host = document.createElement("div");
+              host.attachShadow({ mode: "open" }).appendChild(tpl.content.cloneNode(true));
+              frame.appendChild(host);
+            }
+            card.appendChild(frame);
+          }
+          options.appendChild(card);
+        }
+
+        wrap.appendChild(options);
+        sectionsEl.appendChild(wrap);
+      }
+      replyEl.value = replyText();
+    }
+
+    let data;
+    try {
+      data = JSON.parse(dataEl.textContent);
+      if (!data.sections || !data.sections.length) throw new Error("Add at least one section.");
+      render();
+    } catch (error) {
+      fail(error.message);
+    }
+
+    sectionsEl.addEventListener("change", () => { replyEl.value = replyText(); statusEl.textContent = ""; });
+    notesEl.addEventListener("input", () => { replyEl.value = replyText(); statusEl.textContent = ""; });
+
+    document.getElementById("copy").addEventListener("click", async () => {
+      const text = replyText();
+      replyEl.value = text;
+      replyEl.focus();
+      replyEl.select();
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch (error) {
+        copied = false;
+      }
+      if (!copied) {
+        try { copied = document.execCommand("copy"); } catch (error) { copied = false; }
+      }
+      statusEl.textContent = copied ? "Copied. Paste it back to the agent." : "Select the reply and copy it.";
+    });
+  </script>
+</body>
+</html>
