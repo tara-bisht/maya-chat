@@ -140,7 +140,7 @@ export function SettingsForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex h-11 items-center justify-center rounded-md bg-acid px-5 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#F6EFE4] hover:bg-acid-hover disabled:opacity-40"
+          className="inline-flex h-11 items-center justify-center rounded-md bg-acid px-5 font-sans text-sm font-semibold text-on-acid hover:bg-acid-hover disabled:opacity-40"
         >
           {pending ? "Saving…" : "Save"}
         </button>
@@ -150,7 +150,7 @@ export function SettingsForm({
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
           Plan
         </p>
-        <p className="mt-2 font-display text-2xl text-cream italic">
+        <p className="mt-2 font-sans text-2xl text-cream ">
           {view.seat.displayName} · {seatStatusLabel(view.seat.status)}
         </p>
         <p className="mt-3">

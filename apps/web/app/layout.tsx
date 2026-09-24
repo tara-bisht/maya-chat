@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
 import {
-  Bricolage_Grotesque,
-  Fraunces,
   IBM_Plex_Mono,
+  IBM_Plex_Sans,
   IBM_Plex_Sans_Devanagari,
 } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   weight: ["400", "500", "600"],
-});
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["400", "600", "800"],
 });
 
 const plexDevanagari = IBM_Plex_Sans_Devanagari({
@@ -46,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fraunces.variable} ${bricolage.variable} ${plexDevanagari.variable} ${plexMono.variable} bg-night text-cream antialiased`}
+        className={`${plexSans.variable} ${plexDevanagari.variable} ${plexMono.variable} bg-night text-cream antialiased`}
       >
         {children}
       </body>

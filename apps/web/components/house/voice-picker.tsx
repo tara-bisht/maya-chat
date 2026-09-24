@@ -227,7 +227,7 @@ export function VoicePicker({
 
       {open ? (
         <div
-          className={`absolute left-0 z-40 flex max-h-96 w-[min(24rem,calc(100vw-2rem))] flex-col border border-rule bg-night shadow-[6px_6px_0_#F6EFE4] ${
+          className={`absolute left-0 z-40 flex max-h-96 w-[min(24rem,calc(100vw-2rem))] flex-col border border-rule bg-night ${
             placement === "up" ? "bottom-full mb-2" : "top-9"
           }`}
         >

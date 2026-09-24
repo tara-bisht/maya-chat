@@ -8,8 +8,8 @@ import { formatModelsSummary } from "@/lib/plan/present";
 function SeatTicket({ seat }: { seat: Seat }) {
   const stampClass =
     seat.stampTone === "stub"
-      ? "bg-stub text-on-stub shadow-[3px_3px_0_#14110F]"
-      : "bg-cream text-night shadow-[3px_3px_0_#FF4D2E] border-2 border-night";
+      ? "bg-stub text-on-stub"
+      : "bg-cream text-night border-2 border-night";
 
   return (
     <article
@@ -30,7 +30,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
       <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
         Plan
       </p>
-      <h3 className="mt-1 font-display text-[2rem] leading-none font-semibold tracking-[-0.03em] italic">
+      <h3 className="mt-1 font-sans text-[2rem] leading-none font-semibold tracking-[-0.03em] ">
         {seat.name}
       </h3>
       <p className="mt-3 font-sans text-lg font-semibold">
@@ -56,7 +56,7 @@ function SeatTicket({ seat }: { seat: Seat }) {
         {seat.cta.kind === "acid" ? (
           <Link
             href={seat.cta.href}
-            className="inline-flex h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#14110F] hover:bg-acid-hover"
+            className="inline-flex h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid hover:bg-acid-hover"
           >
             {seat.cta.label}
           </Link>

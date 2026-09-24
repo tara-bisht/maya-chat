@@ -26,7 +26,7 @@ export function StudioSheet({
             } as CSSProperties
           }
         >
-          <h1 className="font-display text-4xl leading-[1.05] font-semibold tracking-[-0.03em] italic">
+          <h1 className="font-sans text-4xl leading-[1.05] font-semibold tracking-[-0.03em] ">
             {title}
           </h1>
           <div className="mt-6">{children}</div>

@@ -6,7 +6,7 @@ export function DroppedNotice({ retryHref }: { retryHref: string }) {
   return (
     <section className="py-16">
       <PageInner width="sheet">
-        <p className="font-display text-3xl text-cream italic">{COPY.dropped}</p>
+        <p className="font-sans text-3xl text-cream ">{COPY.dropped}</p>
         <p className="mt-4">
           <Link
             href={retryHref}

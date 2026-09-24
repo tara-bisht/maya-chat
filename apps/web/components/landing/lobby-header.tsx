@@ -12,10 +12,10 @@ export function LobbyHeader({
 }) {
   return (
     <header className="sticky top-0 z-30 bg-night py-2.5 md:py-0 md:pt-3 md:pb-2">
-      <PageInner className="grid grid-cols-[1fr_auto] items-center gap-x-3 border-b border-rule pb-2.5 md:grid-cols-[1fr_auto_1fr] md:gap-x-4 md:rounded-md md:border-2 md:border-cream md:bg-night md:px-5 md:py-3 md:pb-3 md:shadow-[6px_6px_0_#FF4D2E]">
+      <PageInner className="grid grid-cols-[1fr_auto] items-center gap-x-3 border-b border-rule pb-2.5 md:grid-cols-[1fr_auto_1fr] md:gap-x-4 md:px-1 md:py-3">
         <Link
           href="/"
-          className="justify-self-start font-display text-3xl text-cream italic"
+          className="justify-self-start text-lg font-semibold text-cream"
         >
           Maya
         </Link>
@@ -51,7 +51,7 @@ export function LobbyHeader({
           )}
           <Link
             href={cta.href}
-            className="inline-flex h-11 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#F6EFE4] hover:bg-acid-hover md:px-4"
+            className="inline-flex h-11 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid hover:bg-acid-hover md:px-4"
           >
             {cta.label}
           </Link>

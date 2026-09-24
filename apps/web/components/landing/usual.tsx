@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { PageInner } from "@/components/app/page-frame";
 import { LandingHeading } from "@/components/landing/section-kicker";
-import { COSTUME_CLASS } from "@/lib/company";
 import { USUAL } from "@/lib/landing";
 
 export function Usual() {
@@ -45,7 +44,7 @@ export function Usual() {
             );
           })}
         </div>
-        <article className="mb-8 rounded-md bg-cream px-4 py-3 text-night shadow-[4px_4px_0_#FF4D2E]">
+        <article className="mb-8 rounded-md bg-cream px-4 py-3 text-night">
           <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase">
             You
           </p>
@@ -59,7 +58,7 @@ export function Usual() {
               className="ticket relative flex h-full flex-col gap-4 bg-cream p-5 text-night"
               style={{ borderRadius: 10 }}
             >
-              <span className="absolute -top-2 -right-2 z-10 bg-cream px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night uppercase shadow-[3px_3px_0_#FF4D2E]">
+              <span className="absolute -top-2 -right-2 z-10 bg-cream px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night uppercase">
                 {scene.leftover.stamp}
               </span>
               <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
@@ -80,7 +79,7 @@ export function Usual() {
           {scene.nights.map((night) => (
             <li key={night.player} className="min-w-0">
               <article
-                className={`poster relative flex h-full flex-col gap-3 p-5 text-cream ${COSTUME_CLASS[night.costume]}`}
+                className="relative flex h-full flex-col gap-3 rounded-xl border border-rule bg-panel p-5 text-cream"
                 style={{ borderRadius: 10 }}
               >
                 <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">

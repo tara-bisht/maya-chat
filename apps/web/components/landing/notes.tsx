@@ -13,18 +13,18 @@ export function Notes() {
         <div className="border-t border-rule">
           {NOTES.map((note) => (
             <details key={note.q} className="group border-b border-rule">
-              <summary className="cursor-pointer list-none py-4 font-display text-2xl leading-tight font-semibold tracking-[-0.03em] text-cream italic [&::-webkit-details-marker]:hidden">
+              <summary className="cursor-pointer list-none py-4 font-sans text-2xl leading-tight font-semibold tracking-[-0.03em] text-cream [&::-webkit-details-marker]:hidden">
                 <span className="flex items-start justify-between gap-4">
                   {note.q}
                   <span
                     aria-hidden
-                    className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub shadow-[2px_2px_0_#FF4D2E] group-open:hidden"
+                    className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub group-open:hidden"
                   >
                     +
                   </span>
                   <span
                     aria-hidden
-                    className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub shadow-[2px_2px_0_#FF4D2E] group-open:inline-flex"
+                    className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center bg-stub font-sans text-base font-extrabold text-on-stub group-open:inline-flex"
                   >
                     −
                   </span>

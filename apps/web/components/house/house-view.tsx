@@ -9,8 +9,8 @@ import {
   type HostTicket,
   type HostRoute,
 } from "@maya/shared";
-import { AgentPortrait } from "@/components/app/agent-portrait";
 import { useAppShell } from "@/components/app/app-shell-context";
+import { CreditMeter } from "@/components/app/credit-meter";
 import { MenuIcon } from "@/components/app/nav-icons";
 import { PaywallTicket } from "@/components/app/paywall-ticket";
 import type { CatalogModel } from "@/lib/credits/catalog";
@@ -28,6 +28,7 @@ import { COPY } from "@/lib/ui-copy";
 import { CharacterSheet } from "./character-sheet";
 import { Composer } from "./composer";
 import { Transcript, type StageTurn } from "./transcript";
+import { VoicePicker } from "./voice-picker";
 import { commitProposedAgent } from "@/lib/studio/actions";
 
 type MayaUIMessage = UIMessage<unknown, { ticket: HostTicket }>;
@@ -98,7 +99,7 @@ export function HouseView({
   const [createError, setCreateError] = useState<string | null>(null);
   const [ticketBusy, setTicketBusy] = useState(false);
   const replayed = useRef(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [pane, setPane] = useState<"chat" | "about">("chat");
   const [selectedModelId, setSelectedModelId] = useState(house.selectedModelId);
   const selectedModelIdRef = useRef(selectedModelId);
   selectedModelIdRef.current = selectedModelId;
@@ -198,9 +199,26 @@ export function HouseView({
   }
 
   useEffect(() => {
-    setAboutOpener(house.agent.id, () => setSheetOpen(true));
+    setAboutOpener(house.agent.id, () => setPane("about"));
     return () => setAboutOpener(null, null);
   }, [house.agent.id, setAboutOpener]);
+
+  useEffect(() => {
+    setPane("chat");
+  }, [house.agent.id]);
+
+  useEffect(() => {
+    if (pane !== "about") {
+      return;
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setPane("chat");
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [pane]);
 
   useEffect(() => {
     if (!autoReplay || replayed.current || busy) {
@@ -382,32 +400,58 @@ export function HouseView({
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-night text-cream">
-      <header className="flex shrink-0 items-center gap-2 border-b border-rule px-3 py-1.5 lg:hidden">
-        <button
-          type="button"
-          className="flex h-10 w-10 shrink-0 items-center justify-center text-cream"
-          aria-label={COPY.menu}
-          aria-expanded={menuOpen}
-          onClick={openMenu}
-        >
-          <MenuIcon />
-        </button>
-        <AgentPortrait
-          name={house.agent.shortName}
-          costume={house.agent.costume}
-          avatar={house.agent.avatar}
-          size="rail"
-        />
-        <p className="min-w-0 flex-1 truncate font-display text-xl leading-none text-cream italic">
-          {house.agent.shortName}
-        </p>
-        <button
-          type="button"
-          className="px-2 font-sans text-sm font-semibold text-cream underline-offset-4 hover:underline"
-          onClick={() => setSheetOpen(true)}
-        >
-          {COPY.about}
-        </button>
+      <header className="flex shrink-0 flex-col gap-2 border-b border-rule px-4 py-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-2">
+            <button
+              type="button"
+              className="flex h-9 w-9 shrink-0 items-center justify-center text-cream lg:hidden"
+              aria-label={COPY.menu}
+              aria-expanded={menuOpen}
+              onClick={openMenu}
+            >
+              <MenuIcon />
+            </button>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-semibold">
+                {house.agent.shortName}
+                <span className="ml-2 text-sm font-medium text-ink-soft">
+                  {house.agent.category}
+                </span>
+              </h1>
+              <p className="truncate text-[13px] text-ink-soft">{house.agent.tagline}</p>
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <VoicePicker
+              models={house.models}
+              selectedModelId={selectedModelId}
+              disabled={!house.agent.canChat}
+              tone="night"
+              placement="down"
+              onSelect={selectAllowedVoice}
+              onLocked={selectLockedVoice}
+            />
+            {house.credits ? (
+              <CreditMeter credits={house.credits} variant="compact" />
+            ) : null}
+          </div>
+        </div>
+        <div className="inline-flex w-fit gap-0.5 rounded-lg border border-rule bg-panel p-0.5">
+          {(["chat", "about"] as const).map((item) => (
+            <button
+              key={item}
+              type="button"
+              aria-pressed={pane === item}
+              className={`rounded-md px-3 py-1 text-[13px] font-medium ${
+                pane === item ? "bg-raised text-cream" : "text-ink-soft"
+              }`}
+              onClick={() => setPane(item)}
+            >
+              {item === "chat" ? COPY.chat : COPY.about}
+            </button>
+          ))}
+        </div>
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
@@ -444,6 +488,11 @@ export function HouseView({
                 cta={COPY.upgrade}
               />
             </div>
+          ) : pane === "about" ? (
+            <CharacterSheet
+              agent={house.agent}
+              onClose={() => setPane("chat")}
+            />
           ) : (
             <>
               <Transcript
@@ -492,24 +541,14 @@ export function HouseView({
           )}
         </div>
 
-        {house.agent.canChat && !showQuota ? (
+        {house.agent.canChat && !showQuota && pane === "chat" ? (
           <Composer
             placeholder={listening}
             disabled={false}
             busy={busy}
-            models={house.models}
-            selectedModelId={selectedModelId}
-            onSelectModel={selectAllowedVoice}
-            onLockedModel={selectLockedVoice}
             onSend={onSend}
           />
         ) : null}
-
-      <CharacterSheet
-        agent={house.agent}
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-      />
     </div>
   );
 }

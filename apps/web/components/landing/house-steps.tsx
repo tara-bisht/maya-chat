@@ -22,7 +22,7 @@ export function HouseSteps() {
                 <p className="font-mono text-xs tracking-[0.08em] text-night/60 uppercase">
                   {step.n}
                 </p>
-                <h3 className="font-display text-[1.75rem] leading-none font-semibold tracking-[-0.03em] italic">
+                <h3 className="font-sans text-[1.75rem] leading-none font-semibold tracking-[-0.03em] ">
                   {step.title}
                 </h3>
                 <p className="font-sans text-sm leading-snug text-night/80">

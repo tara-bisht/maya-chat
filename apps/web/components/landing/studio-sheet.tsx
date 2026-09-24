@@ -20,7 +20,7 @@ export function StudioSheet() {
             } as CSSProperties
           }
         >
-          <h2 className="font-display text-4xl leading-[1.05] font-semibold tracking-[-0.03em] italic">
+          <h2 className="font-sans text-4xl leading-[1.05] font-semibold tracking-[-0.03em] ">
             {STUDIO.title}
           </h2>
           <p className="mt-3 font-sans text-base leading-snug text-night/80">

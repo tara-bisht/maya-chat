@@ -1,19 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --maya-night: #14110f;
-  --maya-cream: #f6efe4;
-  --maya-cream-dim: #e4d8c8;
-  --maya-acid: #ff4d2e;
-  --maya-acid-hover: #e03a1c;
-  --maya-on-acid: #14110f;
-  --maya-stub: #d6f25c;
-  --maya-on-stub: #14110f;
-  --maya-rule: #3a342e;
-  --maya-ink-soft: #b7a99a;
-  --maya-code-well: #0c0a09;
-  --maya-on-code: #e4d8c8;
-  --maya-overlay: #14110f99;
+  --maya-night: #0e0f12;
+  --maya-panel: #13151a;
+  --maya-raised: #1c1f26;
+  --maya-cream: #f3f1ec;
+  --maya-sheet: #f7f6f3;
+  --maya-sheet-ink: #1c1a17;
+  --maya-cream-dim: #a39e95;
+  --maya-acid: #f3f1ec;
+  --maya-acid-hover: #e4e0d8;
+  --maya-on-acid: #141311;
+  --maya-stub: #1c1f26;
+  --maya-on-stub: #f3f1ec;
+  --maya-rule: #2a2d34;
+  --maya-ink-soft: #a39e95;
+  --maya-code-well: #0e0f12;
+  --maya-on-code: #f3f1ec;
+  --maya-overlay: #0e0f12cc;
+  --maya-ready: #1f6b45;
   --maya-costume-marcus: #1f5a3c;
   --maya-costume-priya: #9b1b4e;
   --maya-costume-alex: #3a2418;
@@ -31,29 +36,33 @@
 
   --background: var(--maya-night);
   --foreground: var(--maya-cream);
-  --card: var(--maya-cream);
-  --card-foreground: var(--maya-night);
-  --popover: var(--maya-cream);
-  --popover-foreground: var(--maya-night);
+  --card: var(--maya-panel);
+  --card-foreground: var(--maya-cream);
+  --popover: var(--maya-panel);
+  --popover-foreground: var(--maya-cream);
   --primary: var(--maya-acid);
   --primary-foreground: var(--maya-on-acid);
-  --secondary: var(--maya-rule);
+  --secondary: var(--maya-raised);
   --secondary-foreground: var(--maya-cream);
-  --muted: var(--maya-rule);
+  --muted: var(--maya-raised);
   --muted-foreground: var(--maya-ink-soft);
-  --accent: var(--maya-stub);
-  --accent-foreground: var(--maya-on-stub);
-  --destructive: var(--maya-acid);
-  --destructive-foreground: var(--maya-on-acid);
+  --accent: var(--maya-raised);
+  --accent-foreground: var(--maya-cream);
+  --destructive: #c4554a;
+  --destructive-foreground: var(--maya-cream);
   --border: var(--maya-rule);
   --input: var(--maya-rule);
-  --ring: var(--maya-acid);
-  --radius: 10px;
+  --ring: var(--maya-cream);
+  --radius: 8px;
 }
 
 @theme inline {
   --color-night: var(--maya-night);
+  --color-panel: var(--maya-panel);
+  --color-raised: var(--maya-raised);
   --color-cream: var(--maya-cream);
+  --color-sheet: var(--maya-sheet);
+  --color-sheet-ink: var(--maya-sheet-ink);
   --color-cream-dim: var(--maya-cream-dim);
   --color-acid: var(--maya-acid);
   --color-acid-hover: var(--maya-acid-hover);
@@ -64,6 +73,7 @@
   --color-ink-soft: var(--maya-ink-soft);
   --color-code-well: var(--maya-code-well);
   --color-on-code: var(--maya-on-code);
+  --color-ready: var(--maya-ready);
   --color-costume-marcus: var(--maya-costume-marcus);
   --color-costume-priya: var(--maya-costume-priya);
   --color-costume-alex: var(--maya-costume-alex);
@@ -84,13 +94,13 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
-  --font-display: var(--font-fraunces);
-  --font-sans: var(--font-bricolage), var(--font-plex-devanagari), sans-serif;
+  --font-display: var(--font-plex-sans), var(--font-plex-devanagari), sans-serif;
+  --font-sans: var(--font-plex-sans), var(--font-plex-devanagari), sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
   --radius-sm: 4px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --max-width-measure: 42rem;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --max-width-measure: 46rem;
   --max-width-stage: 80rem;
 }
 
@@ -101,115 +111,25 @@ body {
 }
 
 body {
-  font-family: var(--font-bricolage), var(--font-plex-devanagari), sans-serif;
-}
-
-body::before {
-  content: "";
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  font-family: var(--font-plex-sans), var(--font-plex-devanagari), sans-serif;
 }
 
 ::selection {
-  background: var(--maya-acid);
-  color: var(--maya-night);
+  background: #f3f1ec33;
+  color: var(--maya-cream);
 }
 
 :focus-visible {
-  outline: 2px solid var(--maya-acid);
+  outline: 2px solid var(--maya-cream);
   outline-offset: 2px;
 }
 
-.poster {
-  box-shadow: 6px 6px 0 var(--maya-cream);
-  transform: rotate(var(--tilt, 0deg));
-  transition:
-    transform 180ms cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.poster:hover {
-  transform: translate(-3px, -3px) rotate(var(--tilt, 0deg));
-  box-shadow: 9px 9px 0 var(--maya-cream);
-}
-
-.ticket {
-  box-shadow: var(--ticket-shadow, 6px 6px 0 var(--maya-acid));
-  transition:
-    transform 180ms cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1);
-}
-
+.poster,
+.ticket,
+.poster:hover,
 .ticket:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: var(--ticket-shadow-hover, 9px 9px 0 var(--maya-acid));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .poster,
-  .poster:hover,
-  .ticket,
-  .ticket:hover {
-    transition: none;
-    transform: none;
-  }
-}
-
-@keyframes maya-floaty {
-  0%,
-  100% {
-    transform: translateY(0) rotate(var(--tilt, 0deg));
-  }
-  50% {
-    transform: translateY(-8px) rotate(var(--tilt, 0deg));
-  }
-}
-
-.maya-floaty {
-  animation: maya-floaty 5s ease-in-out infinite;
-}
-
-.maya-floaty-late {
-  animation-delay: -2.4s;
-}
-
-@keyframes maya-spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.maya-spin-slow {
-  animation: maya-spin-slow 14s linear infinite;
-}
-
-@keyframes maya-scribble {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.maya-scribble path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: maya-scribble 0.7s ease-out 0.2s forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .maya-floaty,
-  .maya-floaty-late,
-  .maya-spin-slow,
-  .maya-scribble path {
-    animation: none;
-  }
-
-  .maya-scribble path {
-    stroke-dashoffset: 0;
-  }
+  box-shadow: none;
+  transform: none;
 }
 
 @keyframes maya-caret {
@@ -224,9 +144,10 @@ body::before {
 }
 
 .maya-caret {
-  width: 6px;
-  height: 6px;
-  background: var(--maya-acid);
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--maya-cream);
   animation: maya-caret 1s steps(1) infinite;
 }
 

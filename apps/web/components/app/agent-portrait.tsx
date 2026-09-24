@@ -30,7 +30,7 @@ export function AgentPortrait({
       <div
         className={`flex h-8 w-8 items-center justify-center rounded-md ${COSTUME_CLASS[costume]}`}
       >
-        <span className="font-display text-sm leading-none text-cream italic">
+        <span className="font-sans text-sm leading-none text-cream ">
           {letter}
         </span>
       </div>
@@ -54,7 +54,7 @@ export function AgentPortrait({
     <div
       className={`flex aspect-square w-full items-center justify-center ${COSTUME_CLASS[costume]}`}
     >
-      <span className="font-display text-6xl leading-none text-cream italic">
+      <span className="font-sans text-6xl leading-none text-cream ">
         {letter}
       </span>
     </div>

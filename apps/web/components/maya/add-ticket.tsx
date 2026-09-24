@@ -22,8 +22,8 @@ export function AddTicket({
   onChat: () => void;
 }) {
   return (
-    <div className="mt-3 rounded-md bg-cream px-3 py-3 text-night shadow-[4px_4px_0_#FF4D2E]">
-      <p className="font-sans text-sm leading-snug">
+    <div className="mt-3 rounded-xl border border-rule bg-panel px-3 py-3">
+      <p className="text-sm leading-relaxed">
         {added ? addedAgentLabel(name) : reason}
       </p>
       {dismissed && !added ? null : (
@@ -31,7 +31,7 @@ export function AddTicket({
           {added ? (
             <button
               type="button"
-              className="inline-flex h-9 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[3px_3px_0_#14110F]"
+              className="inline-flex h-9 items-center rounded-lg bg-cream px-3 text-sm font-semibold text-night"
               onClick={onChat}
             >
               {chatWithLabel(name)}
@@ -41,7 +41,7 @@ export function AddTicket({
               <button
                 type="button"
                 disabled={busy}
-                className="inline-flex h-9 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[3px_3px_0_#14110F]"
+                className="inline-flex h-9 items-center rounded-lg bg-cream px-3 text-sm font-semibold text-night"
                 onClick={onAdd}
               >
                 {addAgentLabel(name)}
@@ -49,7 +49,7 @@ export function AddTicket({
               <button
                 type="button"
                 disabled={busy}
-                className="inline-flex h-9 items-center rounded-md px-3 font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
+                className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-semibold text-ink-soft hover:text-cream"
                 onClick={onDismiss}
               >
                 {COPY.notNow}

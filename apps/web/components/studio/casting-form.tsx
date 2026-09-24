@@ -215,11 +215,11 @@ export function CastingForm({
               type="button"
               onClick={() => setCostumeId(id)}
               aria-pressed={costumeId === id}
-              className={`flex h-11 items-center gap-2 rounded-md border-2 px-3 font-sans text-sm font-semibold ${
+              className={`flex h-11 items-center gap-2 rounded-lg border px-3 text-sm font-semibold ${
                 costumeId === id
-                  ? "border-night text-cream"
-                  : "border-night/20 text-night"
-              } ${costumeId === id ? COSTUME_CLASS[id] : "bg-cream"}`}
+                  ? "border-night bg-night text-cream"
+                  : "border-night/15 bg-cream text-night"
+              }`}
             >
               <span
                 className={`inline-block size-3 rounded-sm ${COSTUME_CLASS[id]}`}
@@ -316,7 +316,7 @@ export function CastingForm({
               isPublic ? "border-night bg-stub" : "border-night/20 bg-cream"
             }`}
           >
-            <span className="block font-display text-xl italic">Public</span>
+            <span className="block font-sans text-xl ">Public</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
               Anyone signed in can chat. They do not see the instructions.
             </span>
@@ -329,7 +329,7 @@ export function CastingForm({
               !isPublic ? "border-night bg-stub" : "border-night/20 bg-cream"
             }`}
           >
-            <span className="block font-display text-xl italic">Private</span>
+            <span className="block font-sans text-xl ">Private</span>
             <span className="mt-1 block font-sans text-sm text-night/70">
               Only you can chat with this agent.
             </span>
@@ -342,7 +342,7 @@ export function CastingForm({
           <button
             type="submit"
             disabled={pending}
-            className="inline-flex h-11 items-center justify-center rounded-md bg-acid px-5 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#14110F] disabled:opacity-60"
+            className="inline-flex h-11 items-center justify-center rounded-md bg-acid px-5 font-sans text-sm font-semibold text-on-acid disabled:opacity-60"
           >
             {pending ? "Saving…" : "Save"}
           </button>

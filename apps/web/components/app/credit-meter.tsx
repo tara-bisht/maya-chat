@@ -50,7 +50,7 @@ export function CreditMeter({
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
           {COPY.credits}
         </p>
-        <p className="mt-2 font-display text-2xl text-cream italic">
+        <p className="mt-2 font-sans text-2xl text-cream ">
           {creditsLeftLabel(credits.dailyRemaining)}
         </p>
         <p className="mt-1 font-mono text-xs text-ink-soft">

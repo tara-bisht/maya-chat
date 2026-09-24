@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AgentPortrait } from "@/components/app/agent-portrait";
-import { COSTUME_WASH_CLASS } from "@/lib/company";
 import { HERO_SCENES, type HeroScene } from "@/lib/landing";
 
 function SendGlyph() {
@@ -26,13 +25,7 @@ function SendGlyph() {
 
 function TierStamp({ freeTier }: { freeTier: boolean }) {
   return (
-    <span
-      className={`shrink-0 px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase ${
-        freeTier
-          ? "bg-cream text-night shadow-[3px_3px_0_#FF4D2E]"
-          : "bg-stub text-on-stub shadow-[3px_3px_0_#F6EFE4]"
-      }`}
-    >
+    <span className="shrink-0 text-xs text-ink-soft">
       {freeTier ? "Free" : "Plus"}
     </span>
   );
@@ -145,7 +138,7 @@ function PreviewWell({
           size="rail"
         />
         <div className="min-w-0 flex-1">
-          <p className="font-display text-xl leading-none text-cream italic">
+          <p className="font-sans text-xl leading-none text-cream ">
             {scene.shortName}
           </p>
           <p className="mt-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
@@ -163,26 +156,18 @@ function PreviewWell({
         <p className="sr-only">
           You: {scene.prompt} {scene.shortName}: {scene.quote}
         </p>
-        <article
-          aria-hidden
-          className="rounded-md bg-cream px-4 py-3 text-night shadow-[4px_4px_0_#FF4D2E]"
-        >
-          <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase">
-            You
-          </p>
-          <p className="mt-2 font-sans text-base leading-snug md:text-lg">
+        <article aria-hidden className="ml-auto max-w-[80%] rounded-xl rounded-br-sm bg-raised px-4 py-3">
+          <p className="text-[11px] font-medium tracking-[0.06em] text-ink-soft uppercase">You</p>
+          <p className="mt-2 text-base leading-snug">
             {turn.prompt}
             {turn.typingPrompt ? <Caret /> : null}
           </p>
         </article>
-        <article
-          aria-hidden
-          className={`rounded-md px-4 py-3 ${COSTUME_WASH_CLASS[scene.costume]}`}
-        >
-          <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
+        <article aria-hidden className="max-w-[85%]">
+          <p className="text-[11px] font-medium tracking-[0.06em] text-ink-soft uppercase">
             {scene.shortName}
           </p>
-          <p className="mt-2 font-sans text-base leading-relaxed text-cream md:text-lg">
+          <p className="mt-2 text-base leading-relaxed text-cream">
             {turn.quote}
             {turn.typingQuote ? <Caret /> : null}
           </p>
@@ -193,10 +178,10 @@ function PreviewWell({
         className="shrink-0 border-t border-rule bg-night px-3 py-3"
       >
         <div className="flex items-end gap-2">
-          <p className="min-h-11 flex-1 rounded-md bg-cream-dim px-3 py-2.5 font-sans text-base text-night/40 md:text-lg">
+          <p className="min-h-11 flex-1 rounded-xl border border-rule bg-panel px-3 py-2.5 text-base text-ink-soft">
             Ask {scene.shortName}…
           </p>
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-acid text-on-acid">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cream text-night">
             <SendGlyph />
           </span>
         </div>
@@ -237,7 +222,7 @@ export function HeroStage() {
         }
       }}
     >
-      <div className="flex flex-col overflow-hidden rounded-md border-2 border-cream bg-night shadow-[8px_8px_0_#FF4D2E] md:aspect-[16/10]">
+      <div className="flex flex-col overflow-hidden rounded-xl border border-rule bg-night md:aspect-[16/10]">
         <div
           role="tablist"
           aria-label="Preview agents"
@@ -289,15 +274,8 @@ export function HeroStage() {
                   aria-selected={selected}
                   aria-controls="hero-stage-panel"
                   className={`flex w-full items-center gap-3 px-3 py-3 text-left ${
-                    selected ? "bg-rule/60" : "hover:bg-rule/40"
+                    selected ? "bg-raised" : "hover:bg-raised/60"
                   }`}
-                  style={
-                    selected
-                      ? {
-                          boxShadow: `inset 3px 0 0 var(--maya-costume-${entry.costume})`,
-                        }
-                      : undefined
-                  }
                   onClick={() => setActiveId(entry.id)}
                 >
                   <AgentPortrait
@@ -311,9 +289,7 @@ export function HeroStage() {
                       {entry.shortName}
                     </span>
                     {entry.freeTier ? null : (
-                      <span className="mt-1 inline-block bg-stub px-1.5 py-0.5 font-sans text-[11px] font-extrabold tracking-[0.08em] text-on-stub uppercase shadow-[2px_2px_0_#F6EFE4]">
-                        Plus
-                      </span>
+                      <span className="mt-0.5 block text-[11px] text-ink-soft">Plus</span>
                     )}
                   </span>
                 </button>
@@ -324,30 +300,6 @@ export function HeroStage() {
         </div>
       </div>
 
-      <span
-        aria-hidden
-        className="maya-floaty pointer-events-none absolute top-0 right-0 hidden px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-on-stub uppercase shadow-[3px_3px_0_#F6EFE4] md:inline-block"
-        style={
-          {
-            background: "var(--maya-stub)",
-            "--tilt": "8deg",
-          } as CSSProperties
-        }
-      >
-        {scene.kicker}
-      </span>
-      <span
-        aria-hidden
-        className="maya-floaty maya-floaty-late pointer-events-none absolute bottom-8 -left-1 hidden px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night uppercase shadow-[3px_3px_0_#FF4D2E] md:inline-block"
-        style={
-          {
-            background: "var(--maya-cream)",
-            "--tilt": "-6deg",
-          } as CSSProperties
-        }
-      >
-        {scene.sticker}
-      </span>
     </div>
   );
 }

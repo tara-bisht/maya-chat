@@ -1,4 +1,3 @@
-import { COSTUME_WASH_CLASS } from "@/lib/company";
 import type { CostumeId, HostTicket } from "@maya/shared";
 import { AddTicket } from "@/components/maya/add-ticket";
 import { CreateAgentCard } from "@/components/maya/create-agent-card";
@@ -84,16 +83,16 @@ export function Transcript({
   if (turns.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4">
-        <p className="max-w-measure font-display text-center text-2xl leading-tight text-cream italic">
+        <p className="max-w-measure text-center text-lg leading-snug text-cream">
           {tagline}
         </p>
         {hostEmpty && onChip ? (
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex w-full max-w-md flex-col gap-2">
             {(createIntent ? CREATE_CHIPS : HOST_CHIPS).map((chip) => (
               <button
                 key={chip.label}
                 type="button"
-                className="rounded-md bg-cream px-3 py-1.5 font-sans text-sm font-semibold text-night shadow-[3px_3px_0_#FF4D2E]"
+                className="rounded-lg border border-rule bg-panel px-3 py-2.5 text-left text-sm font-medium hover:bg-raised"
                 onClick={() => onChip(chip.text)}
               >
                 {chip.label}
@@ -105,26 +104,29 @@ export function Transcript({
     );
   }
 
-  const label = agentName.toLocaleUpperCase();
-
   return (
-    <div className="mx-auto flex w-full max-w-measure flex-col gap-3 px-4 py-4">
+    <div className="mx-auto flex w-full max-w-measure flex-col gap-4 px-4 py-5">
       {turns.map((turn, index) => {
         const last = index === turns.length - 1;
+        const time = formatTime(turn.createdAt);
         if (turn.role === "assistant") {
           return (
-            <article
-              key={turn.id}
-              className={`rounded-md px-3 py-2 ${COSTUME_WASH_CLASS[costume]}`}
-            >
-              <p className="flex items-baseline justify-between gap-4 font-sans text-[11px] font-extrabold tracking-[0.08em] text-cream/80 uppercase">
-                <span>{label}</span>
-                <span>{formatTime(turn.createdAt)}</span>
+            <article key={turn.id} className="max-w-[40rem]">
+              <p className="mb-1 flex items-baseline justify-between gap-4 text-[11px] font-medium tracking-[0.06em] text-ink-soft uppercase">
+                <span className="inline-flex items-center gap-1.5 normal-case tracking-normal">
+                  <i
+                    aria-hidden
+                    className="inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ background: `var(--maya-costume-${costume})` }}
+                  />
+                  {agentName}
+                </span>
+                {time ? <span className="tracking-normal normal-case">{time}</span> : null}
               </p>
               {turn.content ? (
                 <MarkdownBody
                   text={turn.content}
-                  className="mt-1.5 font-sans text-base leading-snug text-cream"
+                  className="text-[14.5px] leading-relaxed text-cream"
                 />
               ) : null}
               {turn.ticket && tickets ? (
@@ -136,17 +138,16 @@ export function Transcript({
         }
 
         return (
-          <article
-            key={turn.id}
-            className="rounded-md bg-cream px-3 py-2 text-night shadow-[3px_3px_0_#FF4D2E]"
-          >
-            <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase">
+          <article key={turn.id} className="flex flex-col items-end">
+            <p className="mb-1 text-[11px] font-medium tracking-[0.06em] text-ink-soft uppercase">
               You
             </p>
-            <MarkdownBody
-              text={turn.content}
-              className="mt-1.5 font-sans text-base leading-snug"
-            />
+            <div className="max-w-[min(32rem,100%)] rounded-xl rounded-br-sm bg-raised px-3 py-2">
+              <MarkdownBody
+                text={turn.content}
+                className="text-[14.5px] leading-relaxed"
+              />
+            </div>
           </article>
         );
       })}

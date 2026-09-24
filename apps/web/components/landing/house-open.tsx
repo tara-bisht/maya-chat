@@ -47,7 +47,7 @@ export function HouseOpen() {
         <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-ink-soft uppercase">
           {HOUSE_OPEN.kicker}
         </p>
-        <h2 className="mt-3 font-display text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-cream italic md:text-5xl">
+        <h2 className="mt-3 font-sans text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-cream md:text-5xl">
           {HOUSE_OPEN.title}
         </h2>
         <p className="mx-auto mt-4 max-w-xl font-sans text-base leading-snug text-cream-dim md:text-lg">
@@ -56,7 +56,7 @@ export function HouseOpen() {
         <p className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
             href={HOUSE_OPEN.cta.href}
-            className="inline-flex h-11 items-center rounded-md border-2 border-night bg-cream px-4 font-sans text-sm font-semibold text-night shadow-[4px_4px_0_#FF4D2E]"
+            className="inline-flex h-11 items-center rounded-md border-2 border-night bg-cream px-4 font-sans text-sm font-semibold text-night"
           >
             {HOUSE_OPEN.cta.label}
           </Link>

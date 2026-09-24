@@ -6,8 +6,8 @@ export function LobbyFooter() {
   return (
     <footer className="relative z-10 mb-10">
       <PageInner>
-        <div className="border-2 border-dashed border-night bg-stub px-5 py-5 text-on-stub shadow-[6px_6px_0_#FF4D2E]">
-          <p className="font-display text-2xl italic">{FOOTER.wordmark}</p>
+        <div className="rounded-xl border border-rule bg-panel px-5 py-5 text-cream">
+          <p className="font-sans text-2xl ">{FOOTER.wordmark}</p>
           <p className="mt-1 max-w-xl font-sans text-sm font-semibold">
             {FOOTER.tagline}
           </p>

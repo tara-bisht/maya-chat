@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import type { PlanTicket } from "@/lib/plan/load";
 import { formatModelsSummary, priceLabel } from "@/lib/plan/present";
 import { BillingCta } from "./billing-cta";
@@ -20,36 +19,12 @@ function cadenceLabel(ticket: PlanTicket): string | null {
 }
 
 function PlanTicketCard({ ticket }: { ticket: PlanTicket }) {
-  const stamp = ticket.current ? "Current" : ticket.displayName;
-  const stampClass =
-    ticket.current || ticket.highlighted
-      ? "bg-stub text-on-stub shadow-[3px_3px_0_#14110F]"
-      : "bg-cream text-night shadow-[3px_3px_0_#FF4D2E] border-2 border-night";
-
   return (
-    <article
-      className="ticket relative flex h-full flex-col bg-cream p-5 text-night"
-      style={
-        {
-          borderRadius: 14,
-          "--ticket-shadow": ticket.highlighted
-            ? "8px 8px 0 #FF4D2E"
-            : "8px 8px 0 #F6EFE4",
-          "--ticket-shadow-hover": ticket.highlighted
-            ? "11px 11px 0 #FF4D2E"
-            : "11px 11px 0 #F6EFE4",
-        } as CSSProperties
-      }
-    >
-      <span
-        className={`absolute -top-2 -right-2 z-10 px-2 py-1 font-sans text-[11px] font-extrabold tracking-[0.08em] uppercase ${stampClass}`}
-      >
-        {stamp}
-      </span>
-      <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-        Plan
+    <article className="flex h-full flex-col rounded-xl border border-rule bg-sheet p-5 text-sheet-ink">
+      <p className="text-xs font-medium text-sheet-ink/60">
+        {ticket.current ? "Current plan" : "Plan"}
       </p>
-      <h3 className="mt-1 font-display text-[2rem] leading-none font-semibold tracking-[-0.03em] italic">
+      <h3 className="mt-1 font-sans text-[2rem] leading-none font-semibold tracking-[-0.03em] ">
         {ticket.displayName}
       </h3>
       <p className="mt-3 font-sans text-lg font-semibold">

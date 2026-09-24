@@ -20,17 +20,17 @@ export function CreateAgentCard({
   onCreate: () => void;
 }) {
   return (
-    <div className="mt-3 rounded-md bg-cream px-3 py-3 text-night shadow-[4px_4px_0_#FF4D2E]">
-      <p className="font-display text-xl italic">{name}</p>
-      <p className="mt-1 font-sans text-sm leading-snug text-night/80">{tagline}</p>
+    <div className="mt-3 rounded-xl bg-sheet px-4 py-4 text-sheet-ink">
+      <p className="text-lg font-semibold">{name}</p>
+      <p className="mt-1 text-sm leading-snug text-sheet-ink/80">{tagline}</p>
       {error ? (
-        <p className="mt-2 font-sans text-sm text-acid">{error}</p>
+        <p className="mt-2 text-sm font-semibold">{error}</p>
       ) : null}
       <div className="mt-3">
         {createdId ? (
           <Link
             href={houseHref(createdId)}
-            className="inline-flex h-9 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[3px_3px_0_#14110F]"
+            className="inline-flex h-9 items-center rounded-lg bg-night px-3 text-sm font-semibold text-cream"
           >
             {chatWithLabel(name)}
           </Link>
@@ -38,7 +38,7 @@ export function CreateAgentCard({
           <button
             type="button"
             disabled={busy}
-            className="inline-flex h-9 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[3px_3px_0_#14110F]"
+            className="inline-flex h-9 items-center rounded-lg bg-night px-3 text-sm font-semibold text-cream"
             onClick={onCreate}
           >
             {COPY.createAgent}
