@@ -44,7 +44,7 @@ export default async function HousePage({
     return (
       <section className="flex min-h-dvh items-center justify-center px-4">
         <div>
-          <p className="font-display text-3xl text-cream italic">
+          <p className="font-sans text-3xl text-cream ">
             Something went wrong.
           </p>
           <p className="mt-4">

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 const TITLE_CLASS =
-  "max-w-xl font-display text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-cream italic md:text-[2.5rem]";
+  "max-w-xl font-sans text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-cream md:text-[2.5rem]";
 
 const BODY_CLASS = "mt-3 max-w-xl font-sans text-base leading-snug text-cream-dim";
 

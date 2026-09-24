@@ -23,15 +23,12 @@ export default async function LoginPage({
   }
   return (
     <div className="flex min-h-screen items-center justify-center bg-night px-4">
-      <div
-        className="w-full max-w-[24rem] rotate-[-1.5deg] bg-cream p-6 text-night"
-        style={{ borderRadius: 10, boxShadow: "8px 8px 0 #FF4D2E" }}
-      >
-        <p className="font-display text-3xl italic">Maya</p>
-        <h1 className="mt-3 font-display text-3xl leading-none font-medium tracking-[-0.03em] italic">
+      <div className="w-full max-w-sm rounded-xl border border-rule bg-panel p-6 text-cream">
+        <p className="text-lg font-semibold">Maya</p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
           Sign in.
         </h1>
-        <p className="mt-3 font-sans text-sm leading-snug text-night/70">
+        <p className="mt-3 text-sm leading-snug text-ink-soft">
           Continue with Google. Apple lands later.
         </p>
         <div className="mt-6 flex flex-col gap-3">
@@ -39,7 +36,7 @@ export default async function LoginPage({
           <button
             type="button"
             disabled
-            className="inline-flex h-11 items-center justify-center rounded-md border-2 border-night bg-cream font-sans text-sm font-semibold text-night opacity-40 shadow-[4px_4px_0_#14110F]"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-rule text-sm font-semibold text-ink-soft opacity-40"
           >
             Continue with Apple
           </button>
@@ -47,7 +44,7 @@ export default async function LoginPage({
         <p className="mt-6">
           <Link
             href="/"
-            className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
+            className="text-sm font-semibold text-ink-soft underline-offset-4 hover:text-cream hover:underline"
           >
             Back
           </Link>

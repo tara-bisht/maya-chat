@@ -112,7 +112,7 @@ export function AccountMenu({
             ? `flex w-full items-center rounded-md py-2 ${
                 collapsed ? "justify-center" : "gap-3 px-2"
               } text-left hover:bg-rule/40`
-            : "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream font-display text-sm leading-none text-night italic"
+            : "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream font-sans text-sm leading-none text-night "
         }
         aria-haspopup="menu"
         aria-expanded={open}
@@ -123,7 +123,7 @@ export function AccountMenu({
       >
         {layout === "rail" ? (
           <>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream font-display text-sm leading-none text-night italic">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream font-sans text-sm leading-none text-night ">
               {profileInitial(displayName)}
             </span>
             {collapsed ? null : (
@@ -145,7 +145,7 @@ export function AccountMenu({
         <div
           id={menuId}
           role="menu"
-          className="fixed z-40 w-56 border border-rule bg-night py-1 shadow-[6px_6px_0_#F6EFE4]"
+          className="fixed z-40 w-56 border border-rule bg-night py-1"
           style={
             coords
               ? {

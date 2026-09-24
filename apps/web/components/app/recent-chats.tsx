@@ -17,7 +17,6 @@ type NestedThread = {
 
 export function RecentChatRow({
   chat,
-  compact = false,
   iconOnly = false,
   active = false,
   nested = false,
@@ -61,50 +60,25 @@ export function RecentChatRow({
     <Link
       href={chat.href}
       onClick={onNavigate}
-      className={`flex min-w-0 items-center gap-3 rounded-md py-1.5 ${
-        compact ? "px-2" : "bg-rule/25 px-3"
-      } ${active ? "bg-rule/60" : "hover:bg-rule/40"} ${nested ? "pl-6" : ""}`}
-      style={
-        active && !nested
-          ? {
-              boxShadow: `inset -3px 0 0 var(--maya-costume-${chat.costume})`,
-            }
-          : undefined
-      }
+      className={`grid min-w-0 grid-cols-[1fr_auto] gap-x-2 rounded-lg px-2 py-2 ${
+        active ? "bg-raised" : "hover:bg-raised/70"
+      } ${nested ? "pl-6" : ""}`}
     >
+      <span className="truncate text-[13.5px] font-medium text-cream">
+        {nested ? chat.title : chat.title}
+      </span>
+      {chat.relativeLabel ? (
+        <span className="shrink-0 text-[11px] text-ink-soft tabular-nums">
+          {chat.relativeLabel}
+        </span>
+      ) : (
+        <span />
+      )}
       {nested ? null : (
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center">
-          <AgentPortrait
-            name={chat.agentName}
-            costume={chat.costume}
-            avatar={chat.avatar}
-            size="rail"
-          />
+        <span className="col-span-2 truncate text-xs text-ink-soft">
+          {chat.agentName}
         </span>
       )}
-      <span className="min-w-0 flex-1">
-        {nested ? (
-          <span className="block truncate font-sans text-xs text-cream">
-            {chat.title}
-          </span>
-        ) : (
-          <>
-            <span className="flex items-baseline justify-between gap-2">
-              <span className="truncate font-sans text-sm font-semibold text-cream">
-                {chat.agentName}
-              </span>
-              {chat.relativeLabel ? (
-                <span className="shrink-0 font-sans text-[11px] text-ink-soft">
-                  {chat.relativeLabel}
-                </span>
-              ) : null}
-            </span>
-            <span className="block truncate font-sans text-xs text-ink-soft">
-              {chat.title}
-            </span>
-          </>
-        )}
-      </span>
     </Link>
   );
 }

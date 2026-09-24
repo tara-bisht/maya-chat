@@ -58,7 +58,7 @@ export function BillingCta({
   }
 
   const className = highlighted
-    ? "inline-flex h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid shadow-[4px_4px_0_#14110F] disabled:opacity-40"
+    ? "inline-flex h-11 items-center rounded-md bg-acid px-4 font-sans text-sm font-semibold text-on-acid disabled:opacity-40"
     : "font-sans text-sm font-semibold text-night underline-offset-4 hover:underline disabled:opacity-40";
 
   return (

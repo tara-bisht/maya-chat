@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { LANGUAGE_PRESETS } from "@maya/shared";
 import { COSTUME_CLASS } from "@/lib/company";
 import type { HouseAgent } from "@/lib/house/types";
+import { COPY } from "@/lib/ui-copy";
 
 function languageLabel(id: HouseAgent["languagePreset"]): string {
   return LANGUAGE_PRESETS.find((preset) => preset.id === id)?.label ?? id;
@@ -12,116 +12,70 @@ function languageLabel(id: HouseAgent["languagePreset"]): string {
 
 export function CharacterSheet({
   agent,
-  open,
   onClose,
 }: {
   agent: HouseAgent;
-  open: boolean;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div
-      className="fixed inset-0 z-30 flex items-start justify-center bg-[color:var(--maya-overlay)] p-4 pt-16"
-      onClick={onClose}
-    >
-      <article
-        className="ticket max-h-[min(36rem,calc(100dvh-6rem))] w-full max-w-md overflow-y-auto bg-cream p-6 text-night"
-        style={{ borderRadius: 10, boxShadow: "8px 8px 0 #FF4D2E" }}
-        onClick={(event) => event.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="player-sheet-title"
-      >
-        <p className="font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/50 uppercase">
-          About
-        </p>
-        <h2
-          id="player-sheet-title"
-          className="font-display mt-1 text-3xl leading-none font-semibold tracking-[-0.03em] italic"
-        >
-          {agent.shortName}
-        </h2>
-        <dl className="mt-5 divide-y divide-night/15 border-y border-night/15">
-          <SheetRow label="Category" value={agent.category} />
-          <SheetRow label="Description" value={agent.tagline} />
-          <SheetRow label="Language" value={languageLabel(agent.languagePreset)} />
-          <SheetRow
-            label="Tone"
-            value={`Warmth ${agent.tone.warmth.toFixed(1)} · Directness ${agent.tone.directness.toFixed(1)} · Humor ${agent.tone.humor.toFixed(1)}`}
-          />
-          <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-6">
-            <dt className="w-28 shrink-0 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-              Tools
-            </dt>
-            <dd className="font-mono text-xs">
-              {agent.toolsEnabled.length > 0
-                ? agent.toolsEnabled.join(" · ")
-                : "None"}
-            </dd>
-          </div>
-          <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:gap-6">
-            <dt className="w-28 shrink-0 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-              Color
-            </dt>
-            <dd>
-              <span
-                className={`inline-block h-2 w-2 rounded-sm ${COSTUME_CLASS[agent.costume]}`}
-                aria-label={agent.costume}
-              />
-            </dd>
-          </div>
-          {agent.canEdit && agent.backstory ? (
-            <SheetRow label="Instructions" value={agent.backstory} />
-          ) : null}
-        </dl>
-        <div className="mt-5 flex flex-wrap gap-4">
-          {agent.canEdit ? (
-            <Link
-              href={`/studio/${agent.id}`}
-              className="font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
-            >
-              Edit agent
-            </Link>
-          ) : null}
-          <button
-            type="button"
-            onClick={onClose}
-            className="font-sans text-sm font-semibold text-night/70 underline-offset-4 hover:underline"
-          >
-            Close
-          </button>
+    <article className="mx-auto w-full max-w-measure px-4 py-6" aria-labelledby="player-sheet-title">
+      <p className="text-xs font-medium text-ready">About</p>
+      <h2 id="player-sheet-title" className="mt-1 text-2xl font-semibold tracking-tight">
+        {agent.shortName}
+      </h2>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">{agent.tagline}</p>
+      <dl className="mt-6 divide-y divide-rule border-y border-rule">
+        <SheetRow label="Category" value={agent.category} />
+        <SheetRow label="Language" value={languageLabel(agent.languagePreset)} />
+        <SheetRow
+          label="Tone"
+          value={`Warmth ${agent.tone.warmth.toFixed(1)} · Directness ${agent.tone.directness.toFixed(1)} · Humor ${agent.tone.humor.toFixed(1)}`}
+        />
+        <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-6">
+          <dt className="w-28 shrink-0 text-sm text-ink-soft">Tools</dt>
+          <dd className="font-mono text-xs">
+            {agent.toolsEnabled.length > 0 ? agent.toolsEnabled.join(" · ") : COPY.none}
+          </dd>
         </div>
-      </article>
-    </div>
+        <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:gap-6">
+          <dt className="w-28 shrink-0 text-sm text-ink-soft">Color</dt>
+          <dd>
+            <span
+              className={`inline-block h-2 w-2 rounded-full ${COSTUME_CLASS[agent.costume]}`}
+              aria-label={agent.costume}
+            />
+          </dd>
+        </div>
+        {agent.canEdit && agent.backstory ? (
+          <SheetRow label="Instructions" value={agent.backstory} />
+        ) : null}
+      </dl>
+      <div className="mt-5 flex flex-wrap gap-4">
+        {agent.canEdit ? (
+          <Link
+            href={`/studio/${agent.id}`}
+            className="text-sm font-semibold underline-offset-4 hover:underline"
+          >
+            {COPY.editAgent}
+          </Link>
+        ) : null}
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-sm font-semibold text-ink-soft underline-offset-4 hover:text-cream hover:underline"
+        >
+          {COPY.chat}
+        </button>
+      </div>
+    </article>
   );
 }
 
 function SheetRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-6">
-      <dt className="w-28 shrink-0 font-sans text-[11px] font-extrabold tracking-[0.08em] text-night/60 uppercase">
-        {label}
-      </dt>
-      <dd className="font-sans text-sm font-semibold whitespace-pre-wrap">
-        {value}
-      </dd>
+      <dt className="w-28 shrink-0 text-sm text-ink-soft">{label}</dt>
+      <dd className="text-sm whitespace-pre-wrap">{value}</dd>
     </div>
   );
 }

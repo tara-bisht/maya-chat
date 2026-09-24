@@ -29,12 +29,12 @@ export function GoogleSignInButton({ next }: { next: string }) {
         type="button"
         onClick={signIn}
         disabled={pending}
-        className="inline-flex h-11 items-center justify-center rounded-md border-2 border-night bg-cream font-sans text-sm font-semibold text-night shadow-[4px_4px_0_#14110F] hover:bg-cream-dim disabled:opacity-40"
+        className="inline-flex h-11 items-center justify-center rounded-lg bg-cream text-sm font-semibold text-night hover:bg-acid-hover disabled:opacity-40"
       >
         {pending ? "Opening Google…" : "Continue with Google"}
       </button>
       {error ? (
-        <p className="font-sans text-xs leading-5 text-night/70">{error}</p>
+        <p className="text-xs leading-5 text-ink-soft">{error}</p>
       ) : null}
     </div>
   );

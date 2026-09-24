@@ -1,5 +1,3 @@
-"use client";
-
 import { COPY, chatWithLabel } from "@/lib/ui-copy";
 
 export function SwitchTicket({
@@ -18,14 +16,14 @@ export function SwitchTicket({
   busy?: boolean;
 }) {
   return (
-    <div className="mt-3 rounded-md bg-cream px-3 py-3 text-night shadow-[4px_4px_0_#FF4D2E]">
-      <p className="font-sans text-sm leading-snug">{reason}</p>
+    <div className="mt-3 rounded-xl border border-rule bg-panel px-3 py-3">
+      <p className="text-sm leading-relaxed">{reason}</p>
       {resolved ? null : (
         <div className="mt-3 flex flex-wrap gap-2">
           <button
             type="button"
             disabled={busy}
-            className="inline-flex h-9 items-center rounded-md bg-acid px-3 font-sans text-sm font-semibold text-on-acid shadow-[3px_3px_0_#14110F]"
+            className="inline-flex h-9 items-center rounded-lg bg-cream px-3 text-sm font-semibold text-night disabled:opacity-40"
             onClick={onSwitch}
           >
             {chatWithLabel(name)}
@@ -33,7 +31,7 @@ export function SwitchTicket({
           <button
             type="button"
             disabled={busy}
-            className="inline-flex h-9 items-center rounded-md px-3 font-sans text-sm font-semibold text-night underline-offset-4 hover:underline"
+            className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-semibold text-ink-soft hover:text-cream disabled:opacity-40"
             onClick={onKeepGoing}
           >
             {COPY.keepGoingHere}
