@@ -13,6 +13,13 @@ describe("safeNextPath", () => {
     expect(safeNextPath("https://evil.example")).toBe(MAYA_HOME_HREF);
   });
 
+  it("blocks open redirect attempts using backslashes or encoding", () => {
+    expect(safeNextPath("/\\evil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("/%5Cevil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("/\\\\evil.example")).toBe(MAYA_HOME_HREF);
+    expect(safeNextPath("javascript:alert(1)")).toBe(MAYA_HOME_HREF);
+  });
+
   it("keeps same-origin absolute paths", () => {
     expect(safeNextPath("/gallery")).toBe("/gallery");
     expect(safeNextPath("/marketplace")).toBe("/marketplace");
