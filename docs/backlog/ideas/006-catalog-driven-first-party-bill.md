@@ -1,5 +1,6 @@
 ---
 id: TODO-006
+github: https://github.com/tara-bisht/maya-chat/issues/61
 title: "Catalog-driven first-party bill"
 status: ready
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-006] Catalog-driven first-party bill
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/61 — status changes happen on this issue.
 
 ## Overview
 
@@ -44,4 +47,4 @@ Do not start while PR4c / PR5 are open unless named. Do not implement in a docs-
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement (tests: wall from `agents`, no `system_prompt` on the client)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index

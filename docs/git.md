@@ -80,6 +80,15 @@ gh pr merge --squash --delete-branch
 
 ---
 
+## Issues
+
+Open work is a [GitHub issue](https://github.com/tara-bisht/maya-chat/issues). The spec stays in [`backlog/`](backlog/) until the issue closes. The issue holds the status. Index: [`backlog/README.md`](backlog/README.md).
+
+- Title starts with the id (`MAYA-117:` or `TODO-006:`).
+- Labels: one kind (`feat` or `fix`), one priority (`p0`–`p3`), one status (`idea`, `ready`, `backlog`, `todo`), plus the area labels that apply.
+- File the issue before the worktree. When the slice merges, close the issue, move the spec to `docs/archive/`, and drop the index row.
+- Done tickets in `docs/archive/issues/` stay the historical record.
+
 ## Secrets and noise
 
 Committed: `.env.example` (names only).

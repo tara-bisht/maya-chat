@@ -1,5 +1,7 @@
 # [MAYA-117] Assistant Persist Is Best-Effort Swallow: Stream/DB Divergence, No Error Part, Abort Orphans
 
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/56 — status changes happen on this issue.
+
 | Field | Value |
 | :--- | :--- |
 | **Issue Key** | MAYA-117 |

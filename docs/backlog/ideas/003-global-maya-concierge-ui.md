@@ -1,5 +1,6 @@
 ---
 id: TODO-003
+github: https://github.com/tara-bisht/maya-chat/issues/64
 title: "Maya from anywhere (`⌘K`)"
 status: idea
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-003] Maya from anywhere (`⌘K`)
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/64 — status changes happen on this issue.
 
 ## Overview
 
@@ -40,4 +43,4 @@ Do not start while PR4c / PR5 are open, and do not start before TODO-002. This i
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement after TODO-002
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index
