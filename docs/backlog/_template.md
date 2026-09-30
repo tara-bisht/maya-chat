@@ -1,5 +1,6 @@
 ---
 id: TODO-XXX
+github: https://github.com/tara-bisht/maya-chat/issues/N
 title: "<Descriptive Title>"
 status: idea # idea | ready | in-progress | done | dropped
 area: web # web | shared | database | ai-engine | billing | tooling
@@ -37,4 +38,4 @@ updated_at: YYYY-MM-DD
 - [ ] Worktree + branch per [`git.md`](../git.md)
 - [ ] Implement (tests where the slice needs them)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, move this file to archive and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, move this file to archive, and drop it from the open index

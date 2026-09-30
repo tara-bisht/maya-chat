@@ -1,5 +1,7 @@
 # [MAYA-109] `match_agent_memories` RPC Fails for Service Role & Global HNSW Lacks Tenant Scoping
 
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/57 — status changes happen on this issue.
+
 | Field | Value |
 | :--- | :--- |
 | **Issue Key** | MAYA-109 |

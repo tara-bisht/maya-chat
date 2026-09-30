@@ -1,5 +1,7 @@
 # [MAYA-119] Live Stage Credential Material Committed in `.env.example`
 
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/55 — status changes happen on this issue.
+
 | Field | Value |
 | :--- | :--- |
 | **Issue Key** | MAYA-119 |

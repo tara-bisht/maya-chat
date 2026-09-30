@@ -1,5 +1,7 @@
 # [MAYA-110] Unbounded, Unpaginated Conversation Loading per User
 
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/60 — status changes happen on this issue.
+
 | Field | Value |
 | :--- | :--- |
 | **Issue Key** | MAYA-110 |

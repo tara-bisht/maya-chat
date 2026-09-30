@@ -1,5 +1,6 @@
 ---
 id: TODO-005
+github: https://github.com/tara-bisht/maya-chat/issues/69
 title: "Remix an agent into Studio"
 status: idea
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-005] Remix an agent into Studio
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/69 — status changes happen on this issue.
 
 ## Overview
 

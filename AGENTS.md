@@ -8,7 +8,7 @@ Consumer chat: every conversation is with a named character. Maya is the host wh
 | Words | [`CONTEXT.md`](CONTEXT.md) |
 | Screens and tokens | [`docs/DESIGN.md`](docs/DESIGN.md) |
 | Shipped / next slice | [`docs/NOW.md`](docs/NOW.md) |
-| Open work | [`docs/backlog/README.md`](docs/backlog/README.md) |
+| Open work | [GitHub Issues](https://github.com/tara-bisht/maya-chat/issues), indexed in [`docs/backlog/README.md`](docs/backlog/README.md) |
 | How a turn flows | [`docs/technical-plan.md`](docs/technical-plan.md) |
 | Libraries and env | [`docs/tech-stack.md`](docs/tech-stack.md) |
 | Git / PR | [`docs/git.md`](docs/git.md) |

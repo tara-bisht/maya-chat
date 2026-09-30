@@ -1,5 +1,6 @@
 ---
 id: TODO-004
+github: https://github.com/tara-bisht/maya-chat/issues/68
 title: "Rate an agent (1–5)"
 status: idea
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-004] Rate an agent (1–5)
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/68 — status changes happen on this issue.
 
 ## Overview
 

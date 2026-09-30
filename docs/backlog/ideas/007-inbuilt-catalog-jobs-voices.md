@@ -1,5 +1,6 @@
 ---
 id: TODO-007
+github: https://github.com/tara-bisht/maya-chat/issues/62
 title: "Launch company: Maya, Helena, promote coming soon"
 status: ready
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-007] Launch company: Maya, Helena, promote coming soon
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/62 — status changes happen on this issue.
 
 ## Overview
 
@@ -46,4 +49,4 @@ Launch specialists: Marcus, Priya, Alex, Helena, Kenji, Meera, Sofia, Nonna, Vik
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement (tests: free-tier Maya/Marcus/Priya, promoted rows chat-able)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index

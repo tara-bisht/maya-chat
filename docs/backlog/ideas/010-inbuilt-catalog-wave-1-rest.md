@@ -1,5 +1,6 @@
 ---
 id: TODO-010
+github: https://github.com/tara-bisht/maya-chat/issues/65
 title: "Inbuilt catalog: rest of wave 1"
 status: idea
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-010] Inbuilt catalog: rest of wave 1
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/65 — status changes happen on this issue.
 
 ## Overview
 
@@ -45,4 +48,4 @@ Depends on [TODO-006](006-catalog-driven-first-party-bill.md) and [TODO-007](007
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement (tests where the slice needs them)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index

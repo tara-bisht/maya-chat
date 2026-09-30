@@ -1,5 +1,6 @@
 ---
 id: TODO-008
+github: https://github.com/tara-bisht/maya-chat/issues/67
 title: "Ensembles: sequential multi-character jobs"
 status: idea
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-008] Ensembles: sequential multi-character jobs
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/67 — status changes happen on this issue.
 
 ## Overview
 
@@ -97,4 +100,4 @@ Studio grows a second sheet: pick agents the user can see, order seats, one-line
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement (tests: compiler overlay, RLS, snapshot, 403 Model)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index

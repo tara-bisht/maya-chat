@@ -1,5 +1,6 @@
 ---
 id: TODO-001
+github: https://github.com/tara-bisht/maya-chat/issues/63
 title: "Conversational create agent (Maya)"
 status: ready
 area: web
@@ -10,6 +11,8 @@ updated_at: 2026-09-17
 ---
 
 # [TODO-001] Conversational create agent (Maya)
+
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/63 — status changes happen on this issue.
 
 ## Overview
 
@@ -44,4 +47,4 @@ Depends on [TODO-002](002-maya-super-agent-host-matchmaker.md) (Maya exists as h
 - [ ] Worktree + branch per [`git.md`](../../git.md)
 - [ ] Implement (tests: draft tool, caps, Create agent saves)
 - [ ] `pnpm turbo lint typecheck test`
-- [ ] PR via `/pr-creator`; after merge, archive this file and drop it from the open index
+- [ ] PR via `/pr-creator`; after merge, close the GitHub issue, archive this file, and drop it from the open index

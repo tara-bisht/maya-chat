@@ -1,5 +1,7 @@
 # [MAYA-121] Agents DELETE Dead, Signup Not Idempotent, Missing CHECK/UNIQUE Guards, Category Escalation Surface
 
+**GitHub:** https://github.com/tara-bisht/maya-chat/issues/58 — status changes happen on this issue.
+
 | Field | Value |
 | :--- | :--- |
 | **Issue Key** | MAYA-121 |
