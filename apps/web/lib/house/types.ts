@@ -15,6 +15,7 @@ export type HydratedTurn = {
   content: string;
   createdAt: string;
   ticket: HostTicket | null;
+  clientMsgId: string | null;
 };
 
 export type ThreadSummary = {

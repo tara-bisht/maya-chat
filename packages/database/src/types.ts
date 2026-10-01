@@ -290,34 +290,43 @@ export type Database = {
       };
       messages: {
         Row: {
+          client_msg_id: string | null;
           content: string;
           conversation_id: string;
           created_at: string;
           id: string;
           model_id: string | null;
+          reply_to: string | null;
           role: string;
           tokens_used: number;
           tool_calls: Json | null;
+          turn_status: string;
         };
         Insert: {
+          client_msg_id?: string | null;
           content: string;
           conversation_id: string;
           created_at?: string;
           id?: string;
           model_id?: string | null;
+          reply_to?: string | null;
           role: string;
           tokens_used?: number;
           tool_calls?: Json | null;
+          turn_status?: string;
         };
         Update: {
+          client_msg_id?: string | null;
           content?: string;
           conversation_id?: string;
           created_at?: string;
           id?: string;
           model_id?: string | null;
+          reply_to?: string | null;
           role?: string;
           tokens_used?: number;
           tool_calls?: Json | null;
+          turn_status?: string;
         };
         Relationships: [
           {
@@ -332,6 +341,13 @@ export type Database = {
             columns: ["model_id"];
             isOneToOne: false;
             referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "messages_reply_to_fkey";
+            columns: ["reply_to"];
+            isOneToOne: false;
+            referencedRelation: "messages";
             referencedColumns: ["id"];
           },
         ];

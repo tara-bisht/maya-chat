@@ -12,6 +12,7 @@ import {
   compilePrompt,
   estimateCharsAsTokens,
   estimateReserveCredits,
+  firstTicket,
   hostTicketSchema,
   isCreateIntent,
   isMetaTurn,
@@ -35,13 +36,16 @@ import {
 import { retrieveMemories } from "@/lib/chat/retrieve";
 import { createChatTools } from "@/lib/chat/tools";
 import {
+  acceptUserTurn,
   insertAssistantMessage,
-  insertUserMessage,
+  markUserTurn,
   rememberVoice,
   retitleConversation,
   setHostRoute,
   updateLastAssistantMessage,
 } from "@/lib/chat/persist";
+import { storedReplyResponse } from "@/lib/chat/reply-stream";
+import { turnCloseParts, type TurnOutcome } from "@/lib/chat/turn-close";
 import { settleCreditsFromUsage } from "@/lib/credits/usage";
 import {
   addReason,
@@ -168,13 +172,20 @@ export async function POST(request: Request) {
     const roster = await loadRosterForMatch(supabase, { userId: user.id });
     const hit = matchRoster(userText, roster);
     if (hit) {
-      const inserted = await insertUserMessage(supabase, {
+      const accepted = await acceptUserTurn(supabase, {
         conversationId: conversationLoad.conversation.id,
         content: userText,
+        clientMsgId: parsed.data.message.id,
       });
-      if (!inserted.ok) {
-        logDropped("insertUserMessage", { insert: inserted.error });
+      if (!accepted.ok) {
+        logDropped("insertUserMessage", { insert: accepted.error });
         return chatError("dropped", 500);
+      }
+      if (accepted.stored) {
+        return storedReplyResponse({
+          text: accepted.stored.content,
+          ticket: firstTicket(accepted.stored.toolCalls),
+        });
       }
       const ticket: HostTicket = {
         type: "offerSwitch",
@@ -187,9 +198,17 @@ export async function POST(request: Request) {
         content: ticket.reason,
         tokensUsed: 0,
         toolCalls: { tickets: [ticket] },
+        replyTo: accepted.messageId,
       });
       if (!saved.ok) {
         logDropped("insertAssistantMessage", { insert: saved.error });
+        const marked = await markUserTurn(supabase, {
+          messageId: accepted.messageId,
+          status: "unsaved",
+        });
+        if (!marked.ok) {
+          logDropped("markUserTurn", { update: marked.error });
+        }
         return chatError("dropped", 500);
       }
       await retitleConversation(supabase, {
@@ -288,15 +307,29 @@ export async function POST(request: Request) {
     scale: planLoad.creditScale,
   });
 
+  let userMessageId: string | null = replay
+    ? conversationLoad.lastUserMessageId
+    : null;
+  let userAlreadyStored = replay;
+
   if (!replay) {
-    const inserted = await insertUserMessage(supabase, {
+    const accepted = await acceptUserTurn(supabase, {
       conversationId: conversationLoad.conversation.id,
       content: userText,
+      clientMsgId: parsed.data.message.id,
     });
-    if (!inserted.ok) {
-      logDropped("insertUserMessage", { insert: inserted.error });
+    if (!accepted.ok) {
+      logDropped("insertUserMessage", { insert: accepted.error });
       return chatError("dropped", 500);
     }
+    if (accepted.stored) {
+      return storedReplyResponse({
+        text: accepted.stored.content,
+        ticket: firstTicket(accepted.stored.toolCalls),
+      });
+    }
+    userMessageId = accepted.messageId;
+    userAlreadyStored = accepted.duplicate;
   }
 
   const quota = await supabase.rpc("reserve_chat_turn", {
@@ -354,7 +387,7 @@ export async function POST(request: Request) {
     role: turn.role,
     parts: [{ type: "text" as const, text: turn.content }],
   }));
-  const nextMessages: UIMessage[] = replay
+  const nextMessages: UIMessage[] = userAlreadyStored
     ? prior
     : [
         ...prior,
@@ -373,6 +406,30 @@ export async function POST(request: Request) {
   const conversationId = conversationLoad.conversation.id;
   let settled = false;
   let liveTicket: HostTicket | null = trailing;
+  let outcome: TurnOutcome = "open";
+
+  if (userMessageId) {
+    const marked = await markUserTurn(supabase, {
+      messageId: userMessageId,
+      status: "pending",
+    });
+    if (!marked.ok) {
+      logDropped("markUserTurn", { update: marked.error });
+    }
+  }
+
+  async function closeUserTurn(status: "interrupted" | "unsaved" | "complete") {
+    if (!userMessageId) {
+      return;
+    }
+    const marked = await markUserTurn(supabase, {
+      messageId: userMessageId,
+      status,
+    });
+    if (!marked.ok) {
+      logDropped("markUserTurn", { update: marked.error });
+    }
+  }
 
   async function settleTurn(input: {
     text: string;
@@ -411,30 +468,45 @@ export async function POST(request: Request) {
     } else if (!parseSettleChatTurn(settle.data)) {
       console.error("[maya] settle_chat_turn dropped: unparseable payload");
     }
-    if (!input.aborted && input.text) {
-      const proposal = proposalFromTools(input.toolResults);
-      const ticket = proposal ?? (stay ? null : trailing);
-      if (proposal) {
-        liveTicket = proposal;
-      }
-      const toolCalls: HostToolCalls | undefined = ticket
-        ? { tickets: [ticket] }
-        : undefined;
-      const tokens = input.usage?.totalTokens ?? 0;
-      const persist = stay
-        ? updateLastAssistantMessage
-        : insertAssistantMessage;
-      const saved = await persist(supabase, {
-        conversationId,
-        content: input.text,
-        tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
-        modelId,
-        toolCalls,
-      });
-      if (!saved.ok) {
-        logDropped("insertAssistantMessage", { insert: saved.error });
-      }
+    if (input.aborted || !input.text) {
+      await closeUserTurn("interrupted");
+      outcome = "interrupted";
+      return;
     }
+    const proposal = proposalFromTools(input.toolResults);
+    const ticket = proposal ?? (stay ? null : trailing);
+    if (proposal) {
+      liveTicket = proposal;
+    }
+    const toolCalls: HostToolCalls | undefined = ticket
+      ? { tickets: [ticket] }
+      : undefined;
+    const tokens = input.usage?.totalTokens ?? 0;
+    const saved = stay
+      ? await updateLastAssistantMessage(supabase, {
+          conversationId,
+          content: input.text,
+          tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
+          modelId,
+          toolCalls,
+          replyTo: userMessageId,
+        })
+      : await insertAssistantMessage(supabase, {
+          conversationId,
+          content: input.text,
+          tokensUsed: Number.isFinite(tokens) ? Math.trunc(tokens) : 0,
+          modelId,
+          toolCalls,
+          replyTo: userMessageId,
+        });
+    if (!saved.ok) {
+      logDropped("insertAssistantMessage", { insert: saved.error });
+      await closeUserTurn("unsaved");
+      outcome = "unsaved";
+      return;
+    }
+    await closeUserTurn("complete");
+    outcome = "saved";
   }
 
   const tools = createChatTools(supabase, {
@@ -456,7 +528,10 @@ export async function POST(request: Request) {
       await settleTurn({ text: "", aborted: true });
     },
     onError: async ({ error }) => {
-      console.error("[streamText error]", error);
+      console.error(
+        "[maya] streamText dropped:",
+        error instanceof Error ? error.message : "unknown",
+      );
       await settleTurn({ text: "", aborted: true });
     },
     onEnd: async (event) => {
@@ -477,28 +552,33 @@ export async function POST(request: Request) {
     },
   });
 
-  if (!isHost || stay) {
-    return createUIMessageStreamResponse({
-      stream: toUIMessageStream({ stream: result.stream }),
-    });
-  }
-
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       const ui = toUIMessageStream({ stream: result.stream });
       const reader = ui.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+          writer.write(value);
         }
-        writer.write(value);
+      } catch (error) {
+        console.error(
+          "[maya] stream read dropped:",
+          error instanceof Error ? error.message : "unknown",
+        );
+        if (outcome === "open") {
+          await closeUserTurn("interrupted");
+          outcome = "interrupted";
+        }
       }
-      if (liveTicket) {
-        writer.write({
-          type: "data-ticket",
-          data: liveTicket,
-        } as never);
+      for (const part of turnCloseParts({
+        outcome,
+        ticket: isHost && !stay ? liveTicket : null,
+      })) {
+        writer.write(part as never);
       }
     },
   });

@@ -39,6 +39,7 @@ function hydrateTurns(
     content: string;
     created_at: string;
     tool_calls?: unknown;
+    client_msg_id?: string | null;
   }>,
 ): HydratedTurn[] {
   const turns: HydratedTurn[] = [];
@@ -52,6 +53,7 @@ function hydrateTurns(
       content: row.content,
       createdAt: row.created_at,
       ticket: row.role === "assistant" ? firstTicket(row.tool_calls) : null,
+      clientMsgId: row.role === "user" ? row.client_msg_id ?? null : null,
     });
   }
   return turns;
@@ -168,7 +170,7 @@ export async function loadHouse(
     }
     const messagesResult = await supabase
       .from("messages")
-      .select("id, role, content, created_at, tool_calls")
+      .select("id, role, content, created_at, tool_calls, client_msg_id")
       .eq("conversation_id", summary.id)
       .in("role", ["user", "assistant"])
       .order("created_at", { ascending: false })
