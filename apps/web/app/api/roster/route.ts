@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   MAYA_AGENT_ID,
+  isUuid,
   parseCostumeId,
   parseRosterWrite,
 } from "@maya/shared";
@@ -29,13 +30,20 @@ export async function GET() {
     logDropped("roster GET", { roster: pinned.error });
     return chatError("dropped", 500);
   }
-  const ids = (pinned.data ?? []).map((row) => row.agent_id);
+  const validIds = (pinned.data ?? [])
+    .map((row) => row.agent_id)
+    .filter((id) => typeof id === "string" && isUuid(id));
+  const filterTerms = [
+    `id.eq.${MAYA_AGENT_ID}`,
+    `user_id.eq.${user.id}`,
+  ];
+  if (validIds.length > 0) {
+    filterTerms.push(`id.in.(${validIds.join(",")})`);
+  }
   const agents = await supabase
     .from("agents")
     .select(HOUSE_AGENT_COLUMNS)
-    .or(
-      `id.eq.${MAYA_AGENT_ID},user_id.eq.${user.id}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`,
-    );
+    .or(filterTerms.join(","));
   if (agents.error) {
     logDropped("roster GET", { agents: agents.error });
     return chatError("dropped", 500);
@@ -44,7 +52,7 @@ export async function GET() {
   const live = rows.filter((row) => !row.archived_at);
   const host = live.find((row) => row.is_host);
   const byId = new Map(live.map((row) => [row.id, row]));
-  const official = ids
+  const official = validIds
     .map((id) => byId.get(id))
     .filter((row): row is HouseAgentRow => row != null && !row.is_host);
   const custom = live.filter(
