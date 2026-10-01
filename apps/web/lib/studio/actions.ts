@@ -6,6 +6,7 @@ import {
   DEFAULT_TONE,
   allowedStudioTools,
   evaluateStudioWrite,
+  isUuid,
   parseStudioWriteError,
   proposeCustomAgentSchema,
   studioUpsertSchema,
@@ -237,6 +238,10 @@ export async function commitProposedAgent(
 }
 
 export async function archiveCustomAgent(agentId: string): Promise<StudioActionState> {
+  if (!isUuid(agentId)) {
+    return { ok: false, code: "invalid" };
+  }
+
   const user = await requireUser("/studio");
   const existing = await loadOwnSheet(agentId);
   if (!existing) {
