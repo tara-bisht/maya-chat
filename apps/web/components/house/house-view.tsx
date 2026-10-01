@@ -25,13 +25,20 @@ import {
 import { houseHref } from "@/lib/house/href";
 import type { HouseView as HouseViewData } from "@/lib/house/types";
 import { COPY } from "@/lib/ui-copy";
+import {
+  isTurnError,
+  retryPlan,
+  showTurnRetry,
+  type TurnFinishKind,
+} from "@/lib/house/turn-retry";
 import { CharacterSheet } from "./character-sheet";
 import { Composer } from "./composer";
 import { Transcript, type StageTurn } from "./transcript";
 import { VoicePicker } from "./voice-picker";
 import { commitProposedAgent } from "@/lib/studio/actions";
 
-type MayaUIMessage = UIMessage<unknown, { ticket: HostTicket }>;
+type MayaMetadata = { clientMsgId?: string | null };
+type MayaUIMessage = UIMessage<MayaMetadata, { ticket: HostTicket }>;
 
 function ticketFromParts(parts: MayaUIMessage["parts"]): HostTicket | null {
   for (const part of parts) {
@@ -48,8 +55,9 @@ function ticketFromParts(parts: MayaUIMessage["parts"]): HostTicket | null {
 function toUiMessages(house: HouseViewData): MayaUIMessage[] {
   return (
     house.conversation?.messages.map((turn) => ({
-      id: turn.id,
+      id: turn.clientMsgId ?? turn.id,
       role: turn.role,
+      metadata: { clientMsgId: turn.clientMsgId },
       parts: [
         ...(turn.content
           ? [{ type: "text" as const, text: turn.content }]
@@ -107,11 +115,26 @@ export function HouseView({
   const [wellError, setWellError] = useState<WellError>(
     house.agent.canChat ? null : "locked_agent",
   );
+  const [finishKind, setFinishKind] = useState<TurnFinishKind | null>(null);
 
   const initialMessages = useMemo(() => toUiMessages(house), [house]);
 
   const { messages, sendMessage, status, error, clearError } = useChat<MayaUIMessage>({
     messages: initialMessages,
+    onError: (err) => {
+      if (isTurnError(err.message)) {
+        setFinishKind(err.message);
+      }
+    },
+    onFinish: ({ isAbort, isDisconnect, isError }) => {
+      if (isAbort || isDisconnect) {
+        setFinishKind("interrupted");
+        return;
+      }
+      if (!isError) {
+        setFinishKind(null);
+      }
+    },
     transport: new DefaultChatTransport<MayaUIMessage>({
       api: "/api/chat",
       prepareSendMessagesRequest({ messages: pending, body }) {
@@ -177,6 +200,7 @@ export function HouseView({
         );
       }
       setWellError(null);
+      setFinishKind(null);
       await sendMessage({ text });
     } catch {
       setWellError("dropped");
@@ -235,6 +259,31 @@ export function HouseView({
       router.replace(houseHref(house.agent.id, house.conversation?.id));
     });
   }, [autoReplay, busy, house, router, sendMessage]);
+
+  async function retryTurn() {
+    const lastUser = [...messages].reverse().find((item) => item.role === "user");
+    if (!lastUser) {
+      return;
+    }
+    setFinishKind(null);
+    setWellError(null);
+    clearError();
+    try {
+      const plan = retryPlan(lastUser);
+      if (plan.kind === "replay") {
+        await sendMessage(undefined, { body: { replay: true } });
+        return;
+      }
+      await sendMessage({
+        id: plan.id,
+        role: "user",
+        parts: lastUser.parts,
+        messageId: plan.id,
+      });
+    } catch {
+      setWellError("dropped");
+    }
+  }
 
   async function onKeepGoing() {
     setTicketBusy(true);
@@ -394,9 +443,22 @@ export function HouseView({
     !showQuota &&
     !showMonth &&
     (wellError === "forbidden_model" || errorText.includes("forbidden_model"));
+  const pendingAutoReplay =
+    autoReplay &&
+    !replayed.current &&
+    (house.conversation?.messages.length ?? 0) === 1 &&
+    house.conversation?.messages[0]?.role === "user";
+  const turnRetry = showTurnRetry({
+    busy,
+    pendingAutoReplay,
+    lastRole: messages[messages.length - 1]?.role ?? null,
+    errorMessage: error?.message,
+    finishKind,
+  });
   const showDropped =
-    wellError === "dropped" ||
-    Boolean(error && !showQuota && !showLocked && !showForbidden);
+    !turnRetry &&
+    (wellError === "dropped" ||
+      Boolean(error && !showQuota && !showLocked && !showForbidden));
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-night text-cream">
@@ -522,9 +584,23 @@ export function HouseView({
                     : undefined
                 }
               />
+              {turnRetry ? (
+                <p className="mx-auto max-w-measure px-4 pb-6 font-sans text-base text-cream">
+                  {COPY.dropped}{" "}
+                  <button
+                    type="button"
+                    className="font-semibold underline-offset-4 hover:underline"
+                    onClick={() => {
+                      void retryTurn();
+                    }}
+                  >
+                    {COPY.tryAgain}
+                  </button>
+                </p>
+              ) : null}
               {showDropped ? (
                 <p className="mx-auto max-w-measure px-4 pb-6 font-sans text-base text-cream">
-                  Something went wrong.{" "}
+                  {COPY.dropped}{" "}
                   <button
                     type="button"
                     className="font-semibold underline-offset-4 hover:underline"
@@ -533,7 +609,7 @@ export function HouseView({
                       clearError();
                     }}
                   >
-                    Try again
+                    {COPY.tryAgain}
                   </button>
                 </p>
               ) : null}

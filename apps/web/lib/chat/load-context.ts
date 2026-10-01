@@ -253,6 +253,7 @@ export async function loadConversationHistory(
         ticket: HostTicket | null;
       }>;
       lastUserText: string | null;
+      lastUserMessageId: string | null;
       hasPause: boolean;
       hasRecommend: boolean;
       hasProposal: boolean;
@@ -280,7 +281,7 @@ export async function loadConversationHistory(
 
   const messagesResult = await supabase
     .from("messages")
-    .select("role, content, tool_calls")
+    .select("id, role, content, tool_calls")
     .eq("conversation_id", conversation.id)
     .in("role", ["user", "assistant"])
     .order("created_at", { ascending: false })
@@ -295,6 +296,7 @@ export async function loadConversationHistory(
     content: string;
     ticket: HostTicket | null;
   }> = [];
+  let lastUserMessageId: string | null = null;
   for (const row of chronologicalWindow(messagesResult.data ?? [])) {
     if (row.role === "user" || row.role === "assistant") {
       history.push({
@@ -302,6 +304,9 @@ export async function loadConversationHistory(
         content: row.content,
         ticket: row.role === "assistant" ? firstTicket(row.tool_calls) : null,
       });
+      if (row.role === "user") {
+        lastUserMessageId = row.id;
+      }
     }
   }
 
@@ -332,6 +337,7 @@ export async function loadConversationHistory(
     },
     history,
     lastUserText: lastUser?.content ?? null,
+    lastUserMessageId,
     hasPause,
     hasRecommend,
     hasProposal,

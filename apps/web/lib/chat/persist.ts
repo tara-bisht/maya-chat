@@ -12,25 +12,49 @@ import { logDropped } from "@/lib/supabase/dropped";
 
 export type PersistFail = { ok: false; error: PostgrestError | null };
 
+export type TurnStatus = "pending" | "complete" | "interrupted" | "unsaved";
+
+const OPEN_TURN: TurnStatus[] = ["pending", "unsaved", "interrupted"];
+
+function isUniqueViolation(error: PostgrestError | null): boolean {
+  return error?.code === "23505";
+}
+
 export async function insertUserMessage(
   supabase: SupabaseClient<Database>,
-  input: { conversationId: string; content: string },
-): Promise<{ ok: true; id: string } | PersistFail> {
+  input: { conversationId: string; content: string; clientMsgId?: string | null },
+): Promise<{ ok: true; id: string; duplicate: boolean } | PersistFail> {
   const { data, error } = await supabase
     .from("messages")
     .insert({
       conversation_id: input.conversationId,
       role: "user",
       content: input.content,
+      ...(input.clientMsgId
+        ? { client_msg_id: input.clientMsgId, turn_status: "pending" }
+        : {}),
     })
     .select("id")
     .single();
 
-  if (error || !data) {
-    return { ok: false, error: error ?? null };
+  if (!error && data) {
+    return { ok: true, id: data.id, duplicate: false };
   }
 
-  return { ok: true, id: data.id };
+  if (isUniqueViolation(error) && input.clientMsgId) {
+    const existing = await supabase
+      .from("messages")
+      .select("id")
+      .eq("conversation_id", input.conversationId)
+      .eq("client_msg_id", input.clientMsgId)
+      .maybeSingle();
+    if (existing.error || !existing.data) {
+      return { ok: false, error: existing.error ?? error };
+    }
+    return { ok: true, id: existing.data.id, duplicate: true };
+  }
+
+  return { ok: false, error: error ?? null };
 }
 
 export async function insertAssistantMessage(
@@ -41,6 +65,7 @@ export async function insertAssistantMessage(
     tokensUsed: number;
     modelId?: string | null;
     toolCalls?: HostToolCalls | null;
+    replyTo?: string | null;
   },
 ): Promise<{ ok: true } | PersistFail> {
   const { error } = await supabase.from("messages").insert({
@@ -50,13 +75,124 @@ export async function insertAssistantMessage(
     tokens_used: input.tokensUsed,
     model_id: input.modelId ?? null,
     tool_calls: (input.toolCalls ?? null) as Json | null,
+    reply_to: input.replyTo ?? null,
+    turn_status: "complete",
   });
+
+  if (error) {
+    if (isUniqueViolation(error) && input.replyTo) {
+      await completeUserTurn(supabase, input.replyTo);
+      return { ok: true };
+    }
+    return { ok: false, error };
+  }
+
+  if (input.replyTo) {
+    await completeUserTurn(supabase, input.replyTo);
+  }
+
+  return { ok: true };
+}
+
+export async function loadAssistantReply(
+  supabase: SupabaseClient<Database>,
+  userMessageId: string,
+): Promise<
+  | { ok: true; reply: { content: string; tool_calls: Json | null } | null }
+  | PersistFail
+> {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("content, tool_calls")
+    .eq("reply_to", userMessageId)
+    .eq("role", "assistant")
+    .maybeSingle();
 
   if (error) {
     return { ok: false, error };
   }
 
+  return { ok: true, reply: data };
+}
+
+export async function markUserTurn(
+  supabase: SupabaseClient<Database>,
+  input: { messageId: string; status: TurnStatus },
+): Promise<{ ok: true } | PersistFail> {
+  const { error } = await supabase
+    .from("messages")
+    .update({ turn_status: input.status })
+    .eq("id", input.messageId)
+    .in("turn_status", OPEN_TURN);
+
+  if (error) {
+    return { ok: false, error };
+  }
   return { ok: true };
+}
+
+async function completeUserTurn(
+  supabase: SupabaseClient<Database>,
+  messageId: string,
+): Promise<void> {
+  const marked = await markUserTurn(supabase, {
+    messageId,
+    status: "complete",
+  });
+  if (!marked.ok) {
+    logDropped("markUserTurn", { update: marked.error });
+  }
+}
+
+export async function acceptUserTurn(
+  supabase: SupabaseClient<Database>,
+  input: { conversationId: string; content: string; clientMsgId: string },
+): Promise<
+  | {
+      ok: true;
+      messageId: string;
+      duplicate: boolean;
+      stored: { content: string; toolCalls: Json | null } | null;
+    }
+  | PersistFail
+> {
+  const inserted = await insertUserMessage(supabase, input);
+  if (!inserted.ok) {
+    return inserted;
+  }
+  if (!inserted.duplicate) {
+    return {
+      ok: true,
+      messageId: inserted.id,
+      duplicate: false,
+      stored: null,
+    };
+  }
+
+  const reply = await loadAssistantReply(supabase, inserted.id);
+  if (!reply.ok) {
+    return reply;
+  }
+  if (reply.reply) {
+    return {
+      ok: true,
+      messageId: inserted.id,
+      duplicate: true,
+      stored: {
+        content: reply.reply.content,
+        toolCalls: reply.reply.tool_calls,
+      },
+    };
+  }
+
+  const marked = await markUserTurn(supabase, {
+    messageId: inserted.id,
+    status: "pending",
+  });
+  if (!marked.ok) {
+    logDropped("markUserTurn", { update: marked.error });
+  }
+  return { ok: true, messageId: inserted.id, duplicate: true, stored: null };
 }
 
 export async function updateLastAssistantMessage(
@@ -67,6 +203,7 @@ export async function updateLastAssistantMessage(
     tokensUsed: number;
     modelId?: string | null;
     toolCalls?: HostToolCalls | null;
+    replyTo?: string | null;
   },
 ): Promise<{ ok: true } | PersistFail> {
   const existing = await supabase
